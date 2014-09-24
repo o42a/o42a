@@ -32,6 +32,7 @@ import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.sentence.LocalRegistry;
 import org.o42a.util.log.LogInfo;
 
 
@@ -57,6 +58,11 @@ public final class RequireMacroStep extends Step {
 	protected FieldDefinition fieldDefinition(Ref ref) {
 		prohibitedExpansion(ref.getLogger(), this.expansion);
 		return invalidDefinition(ref, ref.distribute());
+	}
+
+	@Override
+	protected void localMember(LocalRegistry registry) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

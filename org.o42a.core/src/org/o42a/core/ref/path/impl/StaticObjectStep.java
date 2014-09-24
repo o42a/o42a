@@ -36,6 +36,7 @@ import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.sentence.LocalRegistry;
 import org.o42a.util.string.ID;
 
 
@@ -68,6 +69,10 @@ public class StaticObjectStep extends Step {
 	@Override
 	protected FieldDefinition fieldDefinition(Ref ref) {
 		return defaultFieldDefinition(ref);
+	}
+
+	@Override
+	protected void localMember(LocalRegistry registry) {
 	}
 
 	@Override

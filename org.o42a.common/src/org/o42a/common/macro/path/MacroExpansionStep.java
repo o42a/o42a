@@ -36,6 +36,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Statement;
+import org.o42a.core.st.sentence.LocalRegistry;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.macro.MacroConsumer;
 import org.o42a.util.log.LogInfo;
@@ -113,6 +114,11 @@ public class MacroExpansionStep extends Step {
 	@Override
 	protected FieldDefinition fieldDefinition(Ref ref) {
 		return new FieldDefinitionByMacroExpansion(ref);
+	}
+
+	@Override
+	protected void localMember(LocalRegistry registry) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

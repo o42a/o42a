@@ -50,6 +50,7 @@ import org.o42a.core.ref.path.impl.ObjectConstructorStep;
 import org.o42a.core.ref.path.impl.SyntheticObjectConstructor;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.sentence.LocalRegistry;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueRequest;
 import org.o42a.util.string.ID;
@@ -124,6 +125,10 @@ public abstract class ObjectConstructor
 	}
 
 	public abstract FieldDefinition fieldDefinition(Ref ref);
+
+	public void localMember(LocalRegistry registry) {
+		registry.declareMemberLocal();
+	}
 
 	public final Step toStep() {
 		return new ObjectConstructorStep(this);

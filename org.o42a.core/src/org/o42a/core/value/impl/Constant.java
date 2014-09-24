@@ -40,6 +40,7 @@ import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.sentence.LocalRegistry;
 import org.o42a.core.value.SingleValueType;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueRequest;
@@ -61,6 +62,14 @@ public final class Constant<T> extends ObjectConstructor {
 		this.constant = constant;
 	}
 
+	public final SingleValueType<T> getValueType() {
+		return this.valueType;
+	}
+
+	public final T getConstant() {
+		return this.constant;
+	}
+
 	@Override
 	public boolean mayContainDeps() {
 		return false;
@@ -74,14 +83,6 @@ public final class Constant<T> extends ObjectConstructor {
 	@Override
 	public TypeRef iface(Ref ref) {
 		return ancestor(ref, ref);
-	}
-
-	public final SingleValueType<T> getValueType() {
-		return this.valueType;
-	}
-
-	public final T getConstant() {
-		return this.constant;
 	}
 
 	@Override
@@ -98,6 +99,11 @@ public final class Constant<T> extends ObjectConstructor {
 	@Override
 	public FieldDefinition fieldDefinition(Ref ref) {
 		return new ConstantFieldDefinition(ref, this);
+	}
+
+	@Override
+	public void localMember(LocalRegistry registry) {
+		registry.declareMemberLocal();
 	}
 
 	@Override

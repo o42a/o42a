@@ -25,6 +25,7 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Located;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Statement;
+import org.o42a.core.st.sentence.LocalRegistry;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.log.LogInfo;
 
@@ -55,6 +56,8 @@ public abstract class RefPath extends Located {
 	protected abstract FieldDefinition toFieldDefinition(
 			Ref ref,
 			boolean rebuilt);
+
+	protected abstract void localMember(LocalRegistry registry);
 
 	protected abstract Ref consume(Ref ref, Consumer consumer);
 

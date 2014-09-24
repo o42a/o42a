@@ -411,7 +411,9 @@ public final class ObjectIRBody {
 				continue;
 			}
 
-			locals.put(local.getMemberKey(), new LocalIR(this, local));
+			if (!local.getLocal().isOmitted(getGenerator())) {
+				locals.put(local.getMemberKey(), new LocalIR(this, local));
+			}
 		}
 
 		for (Derivative derivative : ascendant.type().allDerivatives()) {

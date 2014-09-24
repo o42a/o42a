@@ -29,6 +29,7 @@ import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.sentence.LocalRegistry;
 
 
 public final class PathFragmentStep extends Step {
@@ -65,6 +66,11 @@ public final class PathFragmentStep extends Step {
 	@Override
 	protected FieldDefinition fieldDefinition(Ref ref) {
 		return this.fragment.fieldDefinition(ref);
+	}
+
+	@Override
+	protected void localMember(LocalRegistry registry) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

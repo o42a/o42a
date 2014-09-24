@@ -46,6 +46,7 @@ import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ObjectStepUses;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.sentence.LocalRegistry;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.link.Link;
@@ -85,6 +86,11 @@ public class DereferenceStep extends Step {
 	}
 
 	@Override
+	protected void localMember(LocalRegistry registry) {
+		registry.declareMemberLocal();
+	}
+
+	@Override
 	protected TypeRef ancestor(LocationInfo location, Ref ref) {
 		return linkInterfaceOf(location, ref);
 	}
@@ -94,7 +100,7 @@ public class DereferenceStep extends Step {
 		return ancestor(ref, ref);
 	}
 
-	@Override
+		@Override
 	protected Container resolve(StepResolver resolver) {
 
 		final Obj linkObject = resolver.getStart().toObject();

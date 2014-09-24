@@ -20,7 +20,7 @@
 package org.o42a.core.ref.path;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.ir.op.TargetStoreOp.indirectTargetStore;
+import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.PathIR.pathOp;
 import static org.o42a.core.ref.path.PathNormalizer.pathNormalizer;
 import static org.o42a.core.ref.path.PathResolution.noPathResolutionError;
@@ -60,6 +60,7 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
+import org.o42a.core.st.sentence.LocalRegistry;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.string.ID;
@@ -343,19 +344,20 @@ public class BoundPath extends RefPath {
 		return toString(0);
 	}
 
+	public String toString(int length) {
+		if (this.rawPath == null) {
+			return super.toString();
+		}
+		return getRawPath().toString(this.origin, length);
+	}
+
 	@Override
 	protected TypeRef ancestor(LocationInfo location, Ref ref) {
-
-		final Step[] steps = getRawSteps();
-
-		if (steps.length == 0) {
-		}
 
 		final Step lastStep = lastRawStep();
 
 		if (lastStep == null) {
-			return Path.SELF_PATH.
-					bind(location, ref.getScope())
+			return SELF_PATH.bind(location, ref.getScope())
 					.append(new AncestorFragment())
 					.typeRef(ref.distribute());
 		}
@@ -383,13 +385,6 @@ public class BoundPath extends RefPath {
 		}
 
 		return lastStep.iface(ref);
-	}
-
-	public String toString(int length) {
-		if (this.rawPath == null) {
-			return super.toString();
-		}
-		return getRawPath().toString(this.origin, length);
 	}
 
 	@Override
@@ -439,6 +434,19 @@ public class BoundPath extends RefPath {
 		}
 
 		return lastStep.fieldDefinition(ref);
+	}
+
+	@Override
+	protected void localMember(LocalRegistry registry) {
+
+		final Step lastStep = lastStep();
+
+		if (lastStep != null) {
+			lastStep.localMember(registry);
+			return;
+		}
+
+		registry.declareMemberLocal();// Just in case
 	}
 
 	@Override
@@ -946,16 +954,14 @@ public class BoundPath extends RefPath {
 
 		@Override
 		public TargetStoreOp allocateStore(ID id, Code code) {
-			return object(code).allocateStore(id, code);
+			return this.objectIR.exactTargetStore(id);
 		}
 
 		@Override
 		public TargetStoreOp localStore(
 				ID id,
 				Function<CodeDirs, LocalIROp> getLocal) {
-			return indirectTargetStore(
-					id,
-					dirs -> object(dirs.code()).localStore(id, getLocal));
+			return this.objectIR.exactTargetStore(id);
 		}
 
 		@Override

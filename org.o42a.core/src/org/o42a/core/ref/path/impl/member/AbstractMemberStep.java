@@ -39,6 +39,7 @@ import org.o42a.core.ref.path.PathKind;
 import org.o42a.core.ref.path.Step;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.sentence.LocalRegistry;
 import org.o42a.util.string.ID;
 
 
@@ -100,6 +101,11 @@ public abstract class AbstractMemberStep extends Step {
 	@Override
 	protected FieldDefinition fieldDefinition(Ref ref) {
 		return defaultFieldDefinition(ref);
+	}
+
+	@Override
+	protected void localMember(LocalRegistry registry) {
+		registry.declareMemberLocal();
 	}
 
 	@Override
