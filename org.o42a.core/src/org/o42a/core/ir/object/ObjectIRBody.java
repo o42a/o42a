@@ -103,6 +103,10 @@ public final class ObjectIRBody {
 		return deps().values();
 	}
 
+	public final Collection<LocalIR> getLocals() {
+		return locals().values();
+	}
+
 	public final Fld<?, ?> fld(MemberKey memberKey) {
 
 		final Fld<?, ?> fld = findFld(memberKey);

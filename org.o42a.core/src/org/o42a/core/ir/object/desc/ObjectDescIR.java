@@ -31,6 +31,7 @@ import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.dep.DepIR;
+import org.o42a.core.ir.field.local.LocalIR;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.core.object.Obj;
@@ -138,6 +139,7 @@ public class ObjectDescIR {
 			this.desc = data.addNewInstance(OBJECT_DESC_ID, OBJECT_DESC_TYPE);
 			allocateFieldDecls();
 			allocateDepDecls();
+			allocateLocalDecls();
 			getDesc().ascendants().addAll(getObjectIR().typeBodies());
 			getDesc().fields().allocateItems(data);
 			getDesc().ascendants().allocateItems(data);
@@ -196,6 +198,20 @@ public class ObjectDescIR {
 				if (!dep.isOmitted()) {
 					descs.add(new FieldDescIR(dep));
 				}
+			}
+		}
+
+		private void allocateLocalDecls() {
+
+			final RelList<FieldDescIR> descs = getDesc().fields();
+			final Collection<LocalIR> locals =
+					getObjectIR()
+					.typeBodies()
+					.getMainBodyIR()
+					.getLocals();
+
+			for (LocalIR local : locals) {
+				descs.add(new FieldDescIR(local));
 			}
 		}
 
