@@ -544,6 +544,14 @@ void o42a_obj_value_unknown(o42a_val_t *, o42a_obj_t *);
  */
 void o42a_obj_value_stub(o42a_val_t *, o42a_obj_t *);
 
+/**
+ * Initializes static object if not initialized yet.
+ *
+ * Does nothing if the given object is not static, or initialized already.
+ *
+ * \param an object to initialize.
+ */
+void o42a_obj_static(o42a_obj_t *);
 
 /**
  * Locks an object mutex, initializing it if necessary.

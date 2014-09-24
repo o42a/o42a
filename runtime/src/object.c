@@ -996,20 +996,22 @@ static void static_obj_init(const o42a_gc_block_t *block) {
 	O42A_RETURN;
 }
 
-void o42a_obj_lock(o42a_obj_t *const object) {
+inline void o42a_obj_static(o42a_obj_t *const object) {
 	O42A_ENTER(return);
-
 	o42a_gc_block_t *const gc_block = O42A(o42a_gc_blockof(object));
-
 	if (!gc_block->list) {
 		O42A(o42a_gc_static(gc_block, &static_obj_init));
 	}
+	O42A_RETURN;
+}
 
+void o42a_obj_lock(o42a_obj_t *const object) {
+	O42A_ENTER(return);
+	O42A(o42a_obj_static(object));
 	// Lock the mutex.
 	if (O42A(pthread_mutex_lock(&object->object_data.mutex))) {
 		o42a_error_print("Failed to lock an object mutex");
 	}
-
 	O42A_RETURN;
 }
 
