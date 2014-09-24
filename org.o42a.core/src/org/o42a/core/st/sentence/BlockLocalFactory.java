@@ -27,8 +27,9 @@ import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 import static org.o42a.util.string.Name.caseInsensitiveName;
 
 import java.util.HashMap;
+import java.util.function.Predicate;
 
-import org.o42a.core.Distributor;
+import org.o42a.codegen.Generator;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.local.MemberLocal;
@@ -54,25 +55,9 @@ final class BlockLocalFactory implements LocalFactory {
 
 	@Override
 	public void convertToMember(Local local) {
-		if (!local.isMember()) {
-			local.convertToMember(declareMember(local));
+		if (!local.isConvertedToMember()) {
+			new BlockLocalRegistry(local).convert();
 		}
-	}
-
-	private MemberLocal declareMember(Local local) {
-
-		final Distributor distributor = this.block.distribute();
-		final FieldDeclaration declaration = fieldDeclaration(
-				local,
-				distributor,
-				localName(local))
-				.setVisibilityMode(PRIVATE_VISIBILITY);
-
-		return this.block.getMemberRegistry()
-				.newLocal(declaration, local)
-				.build()
-				.toMember()
-				.toLocal();
 	}
 
 	private MemberName localName(Local local) {
@@ -99,6 +84,48 @@ final class BlockLocalFactory implements LocalFactory {
 		this.fieldNames.put(localName, newIndex);
 
 		return LOCAL_MEMBER_NAME.memberName(fieldName);
+	}
+
+	private final class BlockLocalRegistry implements LocalRegistry {
+
+		private final Local local;
+
+		BlockLocalRegistry(Local local) {
+			this.local = local;
+		}
+
+		@Override
+		public final Local getLocal() {
+			return this.local;
+		}
+
+		@Override
+		public void declareMemberLocal() {
+			declareMemberLocal(null);
+		}
+
+		@Override
+		public void declareMemberLocal(Predicate<Generator> isOmitted) {
+
+			final Block block = BlockLocalFactory.this.block;
+			final FieldDeclaration declaration = fieldDeclaration(
+					this.local,
+					block.distribute(),
+					localName(this.local))
+					.setVisibilityMode(PRIVATE_VISIBILITY);
+			final MemberLocal member = block.getMemberRegistry()
+					.newLocal(declaration, this.local)
+					.build()
+					.toMember()
+					.toLocal();
+
+			getLocal().setMember(member, isOmitted);
+		}
+
+		private void convert() {
+			getLocal().convertToMember(this);
+		}
+
 	}
 
 }

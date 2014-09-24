@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.path.impl;
 
+import static org.o42a.core.ref.RefUsage.CONTAINER_REF_USAGE;
+import static org.o42a.core.ref.path.PathKind.RELATIVE_PATH;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.impl.ObjectStepUses.definitionsChange;
 
@@ -35,6 +37,7 @@ import org.o42a.core.ref.impl.normalizer.SameNormalStep;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.sentence.LocalRegistry;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueRequest;
 
@@ -50,7 +53,7 @@ public class ObjectConstructorStep extends Step {
 
 	@Override
 	public PathKind getPathKind() {
-		return PathKind.RELATIVE_PATH;
+		return RELATIVE_PATH;
 	}
 
 	@Override
@@ -60,7 +63,7 @@ public class ObjectConstructorStep extends Step {
 
 	@Override
 	public final RefUsage getObjectUsage() {
-		return RefUsage.CONTAINER_REF_USAGE;
+		return CONTAINER_REF_USAGE;
 	}
 
 	@Override
@@ -102,6 +105,11 @@ public class ObjectConstructorStep extends Step {
 	@Override
 	protected FieldDefinition fieldDefinition(Ref ref) {
 		return getConstructor().fieldDefinition(ref);
+	}
+
+	@Override
+	protected void localMember(LocalRegistry registry) {
+		getConstructor().localMember(registry);
 	}
 
 	@Override

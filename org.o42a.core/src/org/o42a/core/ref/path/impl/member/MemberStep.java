@@ -24,6 +24,7 @@ import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import static org.o42a.core.ref.path.impl.ObjectStepUses.definitionsChange;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DumpablePtrOp;
 import org.o42a.core.Container;
@@ -37,16 +38,15 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Prediction;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.normalizer.InlineValueStep;
 import org.o42a.core.ref.impl.normalizer.SameNormalStep;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ObjectStepUses;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.sentence.LocalRegistry;
 
 
 final class MemberStep extends AbstractMemberStep {
@@ -58,8 +58,8 @@ final class MemberStep extends AbstractMemberStep {
 	}
 
 	@Override
-	protected FieldDefinition fieldDefinition(Ref ref) {
-		return defaultFieldDefinition(ref);
+	protected void localMember(LocalRegistry registry) {
+		registry.declareMemberLocal(gen -> fld(gen).isOmitted());
 	}
 
 	@Override
@@ -121,19 +121,22 @@ final class MemberStep extends AbstractMemberStep {
 	@Override
 	protected RefTargetIR targetIR(RefIR refIR) {
 
-		final Fld<?, ?> fld =
-				getMemberKey()
-				.getOrigin()
-				.toObject()
-				.ir(refIR.getGenerator())
-				.bodies()
-				.fld(getMemberKey());
+		final Fld<?, ?> fld = fld(refIR.getGenerator());
 
 		if (fld.isOmitted()) {
 			return new OmittedMemberRefTargetIR(this, fld);
 		}
 
 		return new MemberRefTargetIR(this);
+	}
+
+	private Fld<?, ?> fld(Generator generator) {
+		return getMemberKey()
+				.getOrigin()
+				.toObject()
+				.ir(generator)
+				.bodies()
+				.fld(getMemberKey());
 	}
 
 	private final ObjectStepUses uses() {

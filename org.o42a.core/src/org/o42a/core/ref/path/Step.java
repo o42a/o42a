@@ -34,6 +34,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.Local;
+import org.o42a.core.st.sentence.LocalRegistry;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueRequest;
@@ -129,6 +130,8 @@ public abstract class Step {
 	}
 
 	protected abstract FieldDefinition fieldDefinition(Ref ref);
+
+	protected abstract void localMember(LocalRegistry registry);
 
 	/**
 	 * This is ivoked by {@link Ref#consume(Consumer)} for the last step

@@ -22,6 +22,9 @@ package org.o42a.core.st.sentence;
 import static org.o42a.core.member.MemberIdKind.LOCAL_NAME;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
+import java.util.function.Predicate;
+
+import org.o42a.codegen.Generator;
 import org.o42a.core.Container;
 import org.o42a.core.ContainerInfo;
 import org.o42a.core.Scope;
@@ -57,6 +60,8 @@ public final class Local
 	private final MemberName memberId;
 	private final Ref ref;
 	private MemberLocal member;
+	private Predicate<Generator> isOmitted;
+	private boolean convertedToMember;
 
 	Local(LocationInfo location, Name name, Ref ref) {
 		assert name != null :
@@ -83,6 +88,10 @@ public final class Local
 
 	public final MemberLocal getMember() {
 		return this.member;
+	}
+
+	public final boolean isOmitted(Generator generator) {
+		return this.isOmitted != null && this.isOmitted.test(generator);
 	}
 
 	public final Ref ref() {
@@ -146,8 +155,18 @@ public final class Local
 		return this.name.toString();
 	}
 
-	void convertToMember(MemberLocal member) {
+	final boolean isConvertedToMember() {
+		return this.convertedToMember;
+	}
+
+	final void convertToMember(LocalRegistry registry) {
+		this.convertedToMember = true;
+		ref().localMember(registry);
+	}
+
+	final void setMember(MemberLocal member, Predicate<Generator> isOmitted) {
 		this.member = member;
+		this.isOmitted = isOmitted;
 	}
 
 }

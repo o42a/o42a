@@ -33,6 +33,7 @@ import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.sentence.LocalRegistry;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueRequest;
 
@@ -67,6 +68,10 @@ public class ErrorStep extends Step {
 	@Override
 	protected FieldDefinition fieldDefinition(Ref ref) {
 		return invalidDefinition(ref, ref.distribute());
+	}
+
+	@Override
+	protected void localMember(LocalRegistry registry) {
 	}
 
 	@Override

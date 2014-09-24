@@ -96,6 +96,11 @@ final class LocalStep extends Step {
 	}
 
 	@Override
+	protected void localMember(LocalRegistry registry) {
+		registry.declareMemberLocal();
+	}
+
+	@Override
 	protected TypeRef ancestor(LocationInfo location, Ref ref) {
 		return defaultAncestor(location, ref);
 	}

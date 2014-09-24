@@ -54,6 +54,7 @@ import org.o42a.core.ref.type.TypeRefParameters;
 import org.o42a.core.ref.type.impl.TargetTypeRefParameters;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
+import org.o42a.core.st.sentence.LocalRegistry;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.*;
 import org.o42a.core.value.link.TargetRef;
@@ -265,6 +266,13 @@ public class Ref extends Statement implements RefBuilder {
 		final RefPath path = getPath();
 
 		return path.iface(this, true);
+	}
+
+	public final void localMember(LocalRegistry registry) {
+
+		final RefPath path = getPath();
+
+		path.localMember(registry);
 	}
 
 	@Override

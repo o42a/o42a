@@ -28,6 +28,7 @@ import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.sentence.LocalRegistry;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueRequest;
 
@@ -62,6 +63,11 @@ public class SyntheticObjectConstructor extends ObjectConstructor {
 	}
 
 	@Override
+	public void localMember(LocalRegistry registry) {
+		this.constructor.localMember(registry);
+	}
+
+	@Override
 	public ObjectConstructor reproduce(PathReproducer reproducer) {
 
 		final ObjectConstructor reproduced =
@@ -77,7 +83,7 @@ public class SyntheticObjectConstructor extends ObjectConstructor {
 	@Override
 	public ValueAdapter valueAdapter(Ref ref, ValueRequest request) {
 		throw new UnsupportedOperationException(
-				"Synthetic object's value shoule never be used");
+				"Synthetic object's value should never be used");
 	}
 
 	@Override
