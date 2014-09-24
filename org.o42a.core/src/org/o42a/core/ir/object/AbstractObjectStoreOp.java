@@ -20,6 +20,8 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.codegen.code.AllocationMode.LAZY_ALLOCATION;
+import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
+import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
 import java.util.function.Function;
@@ -65,13 +67,20 @@ public abstract class AbstractObjectStoreOp
 
 	public abstract Obj getWellKnownType();
 
+	public final boolean isMemberStore() {
+		return this.allocator == null;
+	}
+
 	@Override
 	public void storeTarget(CodeDirs dirs) {
 
 		final Block code = dirs.code();
 		final ObjectOp object = object(dirs, this.allocator);
 
-		ptr(dirs).store(code, object.toData(null, code));
+		ptr(dirs).store(
+				code,
+				object.toData(null, code),
+				isMemberStore() ? ACQUIRE_RELEASE : NOT_ATOMIC);
 	}
 
 	@Override

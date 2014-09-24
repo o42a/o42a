@@ -20,6 +20,8 @@
 package org.o42a.core.ir.field;
 
 import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
+import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
+import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
 import java.util.function.Function;
@@ -63,13 +65,20 @@ public abstract class ByOwnerStoreOp implements FldStoreOp {
 
 	public abstract Obj getOwnerType();
 
+	public final boolean isMemberStore() {
+		return this.allocator == null;
+	}
+
 	@Override
 	public final void storeTarget(CodeDirs dirs) {
 
 		final Block code = dirs.code();
 		final ObjectOp owner = owner(dirs, this.allocator);
 
-		ownerPtr(dirs).store(code, owner.toData(null, code));
+		ownerPtr(dirs).store(
+				code,
+				owner.toData(null, code),
+				isMemberStore() ? ACQUIRE_RELEASE : NOT_ATOMIC);
 	}
 
 	@Override
