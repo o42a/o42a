@@ -46,7 +46,6 @@ import org.o42a.core.ref.impl.normalizer.SameNormalStep;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ObjectStepUses;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.sentence.LocalRegistry;
 
 
 final class MemberStep extends AbstractMemberStep {
@@ -55,11 +54,6 @@ final class MemberStep extends AbstractMemberStep {
 
 	MemberStep(MemberKey memberKey) {
 		super(memberKey);
-	}
-
-	@Override
-	protected void localMember(LocalRegistry registry) {
-		registry.declareMemberLocal(gen -> fld(gen).isOmitted());
 	}
 
 	@Override
