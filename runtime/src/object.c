@@ -166,9 +166,9 @@ const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_vmtc = {
 	},
 };
 
-const struct _O42A_DEBUG_TYPE_o42a_obj_ctr _O42A_DEBUG_TYPE_o42a_obj_ctr = {
+const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_ctr = {
 	.type_code = 0x042a0120,
-	.field_num = 5,
+	.field_num = 4,
 	.name = "o42a_obj_ctr_t",
 	.fields = {
 		{
@@ -192,12 +192,6 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_ctr _O42A_DEBUG_TYPE_o42a_obj_ctr = {
 			.name = "vmtc",
 			.type_info =
 					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_vmtc,
-		},
-		{
-			.data_type = O42A_TYPE_STRUCT,
-			.offset = offsetof(o42a_obj_ctr_t, value),
-			.name = "value",
-			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_val,
 		},
 	},
 };
@@ -751,6 +745,7 @@ o42a_obj_t *o42a_obj_alloc(const o42a_obj_desc_t *const desc) {
 	o42a_obj_data_t *const data = &object->object_data;
 
 	data->desc = desc;
+	data->value.flags = O42A_VAL_INDEFINITE;
 	data->fld_ctrs = NULL;
 
 	O42A(obj_mutex_init(data));
@@ -832,11 +827,6 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 		O42A_RETURN NULL;
 	}
 
-	const o42a_obj_data_t *const adata = &ctr->ancestor->object_data;
-	o42a_obj_data_t *const data = &object->object_data;
-
-	data->value.flags = O42A_VAL_INDEFINITE;
-
 	o42a_debug_dump_mem("Object: ", object, 3);
 
 	O42A_RETURN object;
@@ -845,12 +835,6 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
 	O42A_ENTER(return NULL);
 
-	assert(
-			!(ctr->value.flags & O42A_VAL_INDEFINITE)
-			&& "Indefinite eagerly evaluated value");
-
-	const o42a_obj_t *const ancestor = ctr->ancestor;
-	const o42a_obj_data_t *const adata = &ancestor->object_data;
 	o42a_obj_t *const object = O42A(new_obj(ctr));
 
 	if (!object) {
@@ -858,10 +842,7 @@ o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
 		O42A_RETURN NULL;
 	}
 
-	o42a_obj_data_t *const data = &object->object_data;
-
-	data->value_f = o42a_obj_value_eager;
-	O42A(adata->desc->value_type->copy(&ctr->value, &data->value));
+	object->object_data.value_f = o42a_obj_value_eager;
 
 	o42a_debug_dump_mem("Eager object: ", object, 3);
 
