@@ -16,7 +16,9 @@
 static void copy_str_val(const o42a_val_t *const from, o42a_val_t *const to) {
 	O42A_ENTER(return);
 
-	*to = *from;
+	to->flags = from->flags;
+	to->length = from->length;
+	to->value = from->value;
 
 	const uint32_t flags = from->flags;
 

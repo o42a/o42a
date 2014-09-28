@@ -19,7 +19,9 @@ extern void *o42a_val_data(const o42a_val_t *);
 
 void o42a_val_copy_as_is(const o42a_val_t *const from, o42a_val_t *const to) {
 	O42A_ENTER(return);
-	*to = *from;
+	to->flags = from->flags;
+	to->length = from->length;
+	to->value = from->value;
 	O42A_RETURN;
 }
 

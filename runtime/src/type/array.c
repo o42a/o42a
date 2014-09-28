@@ -22,7 +22,9 @@ void mark_array_val(o42a_obj_t *const object) {
 static void use_array_val(const o42a_val_t *const from, o42a_val_t *const to) {
 	O42A_ENTER(return);
 
-	*to = *from;
+	to->flags = from->flags;
+	to->length = from->length;
+	to->value = from->value;
 	O42A(o42a_array_start_use(to));
 
 	O42A_RETURN;
