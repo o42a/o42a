@@ -825,6 +825,17 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	O42A_RETURN object;
 }
 
+void o42a_obj_dispose(o42a_obj_ctr_t *const ctr) {
+	O42A_ENTER(return);
+
+	if (ctr->vmtc) {
+		O42A(o42a_obj_vmtc_free(ctr->vmtc));
+	}
+	O42A(o42a_gc_free(o42a_gc_blockof(ctr->object)));
+
+	O42A_RETURN;
+}
+
 o42a_bool_t o42a_obj_cond(o42a_obj_t *const object) {
 	O42A_ENTER(return O42A_FALSE);
 

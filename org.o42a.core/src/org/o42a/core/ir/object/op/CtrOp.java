@@ -23,6 +23,7 @@ import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.ObjectOp.objectAncestor;
 import static org.o42a.core.ir.object.op.AllocateObjectFn.ALLOCATE_OBJECT;
+import static org.o42a.core.ir.object.op.DisposeObjectFn.DISPOSE_OBJECT;
 import static org.o42a.core.ir.object.op.NewObjectFn.NEW_OBJECT;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.object.vmt.VmtIRChain.VMT_IR_CHAIN_TYPE;
@@ -210,12 +211,25 @@ public class CtrOp extends IROp {
 					code.getAllocator(),
 					sample.type().getValueType(),
 					VAL_TRAP);
-			final ValDirs eagerDirs = dirs.nested().value(value);
+
+			final Block dispose = code.addBlock("dispose");
+			final ValDirs eagerDirs =
+					dirs.setFalseDir(dispose.head()).value(value);
 			final ValOp result = ancestor.value().writeValue(eagerDirs);
 
 			value.store(dirs.code(), result);
 
 			eagerDirs.done();
+
+			if (dispose.exists()) {
+				getGenerator()
+				.externalFunction()
+				.link("o42a_obj_dispose", DISPOSE_OBJECT)
+				.op(null, dispose)
+				.dispose(dispose, this);
+
+				dispose.go(dirs.falseDir());
+			}
 		}
 
 		object(code)
