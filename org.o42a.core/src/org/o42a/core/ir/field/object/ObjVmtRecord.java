@@ -24,6 +24,7 @@ import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.field.object.FldCtrOp.ALLOCATABLE_FLD_CTR;
 import static org.o42a.core.ir.field.object.ObjectConstructorFn.OBJECT_CONSTRUCTOR;
 import static org.o42a.core.ir.field.object.VmtChainAllocFn.VMT_CHAIN_ALLOC;
+import static org.o42a.core.ir.object.ObjectOp.ANCESTOR_ID;
 import static org.o42a.core.ir.object.ObjectOp.objectAncestor;
 import static org.o42a.core.ir.object.op.ObjHolder.objTrap;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
@@ -50,7 +51,6 @@ import org.o42a.core.ir.object.vmt.VmtIROp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.FieldAnalysis;
 import org.o42a.util.fn.Init;
-import org.o42a.util.string.ID;
 
 
 final class ObjVmtRecord
@@ -136,12 +136,12 @@ final class ObjVmtRecord
 		start.go(code.tail());
 
 		final Block cont = start.otherwise();
-		final DataOp suppliedAncestorPtr = ctr.ancestor(cont).load(null, cont);
+		final DataOp suppliedAncestorPtr = cont.nullDataPtr();
 
 		cont.go(code.tail());
 
 		final DataOp ancestorPtr = code.phi(
-				ID.id("ancestor"),
+				ANCESTOR_ID,
 				evalAncestorPtr,
 				suppliedAncestorPtr);
 
