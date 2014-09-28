@@ -764,7 +764,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	assert(ancestor && "Ancestor is missing");
 
 	if (adata->desc == &o42a_obj_none_desc) {
-		O42A(o42a_obj_vmtc_free(ctr->vmtc));
+		O42A(o42a_obj_dispose(ctr));
 		O42A_RETURN NULL;
 	}
 
@@ -775,7 +775,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	} else {
 		vmtc = O42A(o42a_obj_vmtc_alloc(ctr->vmtc->vmt, adata->vmtc));
 		if (!vmtc) {
-			O42A(o42a_gc_free(o42a_gc_blockof(object)));
+			O42A(o42a_obj_dispose(ctr));
 			O42A_RETURN NULL;
 		}
 	}
@@ -825,12 +825,20 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	O42A_RETURN object;
 }
 
-void o42a_obj_dispose(o42a_obj_ctr_t *const ctr) {
+void o42a_obj_dispose(const o42a_obj_ctr_t *const ctr) {
 	O42A_ENTER(return);
 
 	if (ctr->vmtc) {
 		O42A(o42a_obj_vmtc_free(ctr->vmtc));
 	}
+
+	const o42a_obj_data_t *const data = &ctr->object->object_data;
+	const o42a_val_t *const value = &data->value;
+
+	if (value->flags & O42A_VAL_CONDITION) {
+		O42A(data->desc->value_type->discard(value));
+	}
+
 	O42A(o42a_gc_free(o42a_gc_blockof(ctr->object)));
 
 	O42A_RETURN;
