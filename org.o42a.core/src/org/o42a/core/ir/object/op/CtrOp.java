@@ -26,9 +26,8 @@ import static org.o42a.core.ir.object.op.AllocateObjectFn.ALLOCATE_OBJECT;
 import static org.o42a.core.ir.object.op.NewObjectFn.NEW_OBJECT;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.object.vmt.VmtIRChain.VMT_IR_CHAIN_TYPE;
-import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
+import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
 import static org.o42a.core.ir.value.ValOp.finalVal;
-import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
 import java.util.function.Function;
 
@@ -47,7 +46,9 @@ import org.o42a.core.ir.object.desc.ObjectDescIR;
 import org.o42a.core.ir.object.vmt.VmtIR;
 import org.o42a.core.ir.object.vmt.VmtIRChain;
 import org.o42a.core.ir.op.*;
-import org.o42a.core.ir.value.*;
+import org.o42a.core.ir.value.ObjectValueFn;
+import org.o42a.core.ir.value.ValHolderFactory;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
@@ -136,7 +137,7 @@ public class CtrOp extends IROp {
 				getSample());
 	}
 
-	public final ValOp value(
+	public final ValOp objectValue(
 			String name,
 			Allocator allocator,
 			ValueType<?> valueType,
@@ -145,7 +146,7 @@ public class CtrOp extends IROp {
 				name,
 				allocator,
 				getBuilder(),
-				code -> ptr(code).value(code),
+				code -> object(code).objectData(code).ptr().value(code),
 				valueType,
 				holderFactory);
 	}
@@ -206,15 +207,15 @@ public class CtrOp extends IROp {
 
 		if (isEager()) {
 
-			final ValOp value = value(
+			final ValOp value = objectValue(
 					"eager",
 					code.getAllocator(),
 					sample.type().getValueType(),
-					TEMP_VAL_HOLDER);
+					VAL_TRAP);
 			final ValDirs eagerDirs = dirs.nested().value(value);
 			final ValOp result = ancestor.value().writeValue(eagerDirs);
 
-			value.store(code, result);
+			value.store(dirs.code(), result);
 
 			eagerDirs.done();
 		}
@@ -329,10 +330,6 @@ public class CtrOp extends IROp {
 			return ptr(null, code, getType().vmtc());
 		}
 
-		public final ValType.Op value(Code code) {
-			return struct(null, code, getType().value());
-		}
-
 		public final CtrOp op(CodeBuilder builder) {
 			return new CtrOp(builder, code -> this);
 		}
@@ -345,7 +342,6 @@ public class CtrOp extends IROp {
 		private DataRec owner;
 		private DataRec ancestor;
 		private StructRec<VmtIRChain.Op> vmtc;
-		private ValType value;
 
 		private Type() {
 			super(ID.rawId("o42a_obj_ctr_t"));
@@ -372,17 +368,12 @@ public class CtrOp extends IROp {
 			return this.vmtc;
 		}
 
-		public final ValType value() {
-			return this.value;
-		}
-
 		@Override
 		protected void allocate(SubData<Op> data) {
 			this.object = data.addDataPtr("object");
 			this.owner = data.addDataPtr("owner");
 			this.ancestor = data.addDataPtr("ancestor");
 			this.vmtc = data.addPtr("vmtc", VMT_IR_CHAIN_TYPE);
-			this.value = data.addNewInstance(ID.rawId("value"), VAL_TYPE);
 		}
 
 		@Override

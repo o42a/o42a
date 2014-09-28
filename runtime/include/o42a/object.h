@@ -318,13 +318,6 @@ typedef struct o42a_obj_ctr {
 	 */
 	const o42a_obj_vmtc_t *vmtc;
 
-	/**
-	 * Eagerly evaluated object value.
-	 *
-	 * Ignored when constructing a non-eager object.
-	 */
-	o42a_val_t value;
-
 } o42a_obj_ctr_t;
 
 
@@ -369,10 +362,7 @@ extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_obj_ascendant;
 
 extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_field;
 
-extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctr {
-	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[5];
-} _O42A_DEBUG_TYPE_o42a_obj_ctr;
+extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_ctr;
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctable {
 	O42A_DBG_TYPE_INFO
