@@ -26,6 +26,7 @@ import static org.o42a.core.ir.object.op.AllocateObjectFn.ALLOCATE_OBJECT;
 import static org.o42a.core.ir.object.op.NewObjectFn.NEW_OBJECT;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.object.vmt.VmtIRChain.VMT_IR_CHAIN_TYPE;
+import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
 import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
 import static org.o42a.core.ir.value.ValOp.finalVal;
 
@@ -180,12 +181,12 @@ public class CtrOp extends IROp {
 		final ObjectOp ancestor = getAncestor();
 		final Obj sample = getSample();
 		final Block code = dirs.code();
+		final ObjectValueFn valueFn;
 
-		if (!isExplicitEager()) {
+		if (!isEager()) {
 
 			final ObjectIR sampleIR = sample.ir(getGenerator());
 			final ObjectValueIR valueIR = sampleIR.getObjectValueIR();
-			final ObjectValueFn valueFn;
 
 			if (sample.value().getDefinitions().areInherited()) {
 				valueFn =
@@ -197,15 +198,12 @@ public class CtrOp extends IROp {
 			} else {
 				valueFn = valueIR.ptr().op(null, code);
 			}
-
-			object(code)
-			.objectData(code)
-			.ptr()
-			.valueFunc(code)
-			.store(code, valueFn);
-		}
-
-		if (isEager()) {
+		} else {
+			valueFn =
+					getGenerator()
+					.externalFunction()
+					.link("o42a_obj_value_eager", OBJECT_VALUE)
+					.op(null, code);
 
 			final ValOp value = objectValue(
 					"eager",
@@ -219,6 +217,12 @@ public class CtrOp extends IROp {
 
 			eagerDirs.done();
 		}
+
+		object(code)
+		.objectData(code)
+		.ptr()
+		.valueFunc(code)
+		.store(code, valueFn);
 
 		return this;
 	}
@@ -263,13 +267,7 @@ public class CtrOp extends IROp {
 
 		code.dump("Constructing: ", this);
 
-		final DataOp result;
-
-		if (isEager()) {
-			result = eagerFunc().op(null, code).newObject(code, this);
-		} else {
-			result = newFunc().op(null, code).newObject(code, this);
-		}
+		final DataOp result = newFunc().op(null, code).newObject(code, this);
 
 		result.isNull(null, code).go(code, dirs.falseDir());
 
@@ -294,13 +292,6 @@ public class CtrOp extends IROp {
 				.externalFunction()
 				.noSideEffects()
 				.link("o42a_obj_new", NEW_OBJECT);
-	}
-
-	private FuncPtr<NewObjectFn> eagerFunc() {
-		return getGenerator()
-				.externalFunction()
-				.noSideEffects()
-				.link("o42a_obj_eager", NEW_OBJECT);
 	}
 
 	public static final class Op extends StructOp<Op> {

@@ -469,22 +469,13 @@ void o42a_obj_vmtc_free(const o42a_obj_vmtc_t *);
 o42a_obj_t *o42a_obj_alloc(const o42a_obj_desc_t *);
 
 /**
- * Instantiates a new object.
+ * Constructs previously allocated object.
  *
  * \param ctr[in] filled-in construction data.
  *
  * \return pointer to new object or NULL if instantiation failed.
  */
 o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *);
-
-/**
- * Instantiates a new object with eagerly evaluated value.
- *
- * \param ctr[in] filled-in construction data.
- *
- * \return pointer to new object or NULL if instantiation failed.
- */
-o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *);
 
 /**
  * Object condition evaluation function.
