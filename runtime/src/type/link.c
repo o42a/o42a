@@ -16,7 +16,8 @@ static void use_link_val(const o42a_val_t *const from, o42a_val_t *const to) {
 
 	volatile const o42a_val_t *const f = from;
 
-	*to = *f;
+	to->flags = from->flags;
+	to->value = from->value;
 	O42A(o42a_obj_start_val_use(to));
 
 	O42A_RETURN;
