@@ -31,7 +31,6 @@ public final class Val implements Content<ValType> {
 
 	public static final int VAL_CONDITION = 0x01;
 	public static final int VAL_INDEFINITE = 0x02;
-	public static final int VAL_EAGER = 0x04;
 	public static final int VAL_ALIGNMENT_MASK = 0x700;
 	public static final int VAL_EXTERNAL = 0x800;
 	public static final int VAL_STATIC = 0x1000;

@@ -22,7 +22,6 @@ package org.o42a.core.ir.object;
 import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 import static org.o42a.core.ir.value.Val.FALSE_VAL;
 import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
-import static org.o42a.core.ir.value.Val.VAL_EAGER;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -102,12 +101,8 @@ public final class ObjectDataIR implements Content<ObjectIRData> {
 		if (initialValue == null) {
 			return this.initialValue = INDEFINITE_VAL;
 		}
-		if (!eager) {
-			return this.initialValue = initialValue;
-		}
 
-		return this.initialValue =
-				initialValue.setFlags(initialValue.getFlags() | VAL_EAGER);
+		return this.initialValue = initialValue;
 	}
 
 	@Override
