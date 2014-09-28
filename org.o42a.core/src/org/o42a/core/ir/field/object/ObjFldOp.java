@@ -86,7 +86,7 @@ public class ObjFldOp
 		final CtrOp.Op ptr = ctr.ptr(code);
 
 		ctr.fillOwner(code, host());
-		ptr.ancestor(code).store(code, code.nullDataPtr());
+		ptr.object(code).store(code, code.nullDataPtr());
 
 		return constructor.call(code, vmtc, ctr);
 	}

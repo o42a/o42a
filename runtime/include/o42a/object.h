@@ -284,6 +284,13 @@ typedef struct o42a_obj_ctr {
 	O42A_HEADER
 
 	/**
+	 * Pointer to object to construct.
+	 *
+	 * This should be an object allocated with o42a_obj_alloc function.
+	 */
+	o42a_obj_t *object;
+
+	/**
 	 * Pointer to enclosing object.
 	 *
 	 * May be NULL when constructing object is exactly known.
@@ -294,14 +301,6 @@ typedef struct o42a_obj_ctr {
 	 * Pointer to ancestor object.
 	 */
 	const o42a_obj_t *ancestor;
-
-	/**
-	 * Pointer to sample type descriptor.
-	 *
-	 * May be NULL when constructing an eager object. In this case the new
-	 * object will be a clone of ancestor.
-	 */
-	const o42a_obj_desc_t *sample_desc;
 
 	/**
 	 * Object value calculator function.
@@ -319,8 +318,6 @@ typedef struct o42a_obj_ctr {
 	 * from VMT the given VMT and ancestor. Otherwise, this VMT chain will be
 	 * used.
 	 *
-	 * Ignored when sample not specified.
-	 *
 	 * This should be either VMT chain from existing object, or the one
 	 * allocated with o42a_obj_vmtc_alloc function.
 	 *
@@ -332,9 +329,6 @@ typedef struct o42a_obj_ctr {
 
 	/**
 	 * Eagerly evaluated object value.
-	 *
-	 * An O42A_VAL_INDEFINITE bit should be set if the value is not eagerly
-	 * evaluated.
 	 *
 	 * Ignored when constructing a non-eager object.
 	 */
@@ -355,8 +349,6 @@ typedef struct o42a_obj_ctable {
 	o42a_obj_t *owner;
 
 	const o42a_obj_t *const ancestor;
-
-	const o42a_obj_desc_t *const sample_desc;
 
 	const o42a_obj_t *from;
 
@@ -393,7 +385,7 @@ extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctr {
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctable {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[9];
+	o42a_dbg_field_info_t fields[8];
 } _O42A_DEBUG_TYPE_o42a_obj_ctable;
 
 #endif /* NDEBUG */
@@ -487,11 +479,20 @@ const o42a_obj_vmtc_t *o42a_obj_vmtc_alloc(
 void o42a_obj_vmtc_free(const o42a_obj_vmtc_t *);
 
 /**
+ * Allocates new object.
+ *
+ * \param desc[in] object descriptor pointer.
+ *
+ * \return allocated object, or NULL is allocation failed.
+ */
+o42a_obj_t *o42a_obj_alloc(const o42a_obj_desc_t *);
+
+/**
  * Instantiates a new object.
  *
  * \param ctr[in] filled-in construction data.
  *
- * \return pointer to object construction data.
+ * \return pointer to new object or NULL if instantiation failed.
  */
 o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *);
 
@@ -500,7 +501,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *);
  *
  * \param ctr[in] filled-in construction data.
  *
- * \return pointer to object construction data.
+ * \return pointer to new object or NULL if instantiation failed.
  */
 o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *);
 

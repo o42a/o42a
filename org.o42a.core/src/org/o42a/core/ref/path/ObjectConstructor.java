@@ -285,9 +285,13 @@ public abstract class ObjectConstructor
 			final Block code = subDirs.code();
 			final ObjectOp result =
 					allocateCtr(subDirs)
+					.sample(getConstructed())
 					.fillOwner(code, host)
-					.fillAscendants(subDirs, getConstructed())
+					.evalAncestor(subDirs)
+					.allocateObject(subDirs)
+					.fillAncestor(code)
 					.fillVmtc(code)
+					.fillValue(subDirs)
 					.newObject(subDirs, holder);
 
 			subDirs.done();

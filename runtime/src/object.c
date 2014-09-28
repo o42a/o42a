@@ -173,6 +173,11 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_ctr _O42A_DEBUG_TYPE_o42a_obj_ctr = {
 	.fields = {
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_ctr_t, object),
+			.name = "object",
+		},
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
 			.offset = offsetof(o42a_obj_ctr_t, owner),
 			.name = "owner",
 		},
@@ -180,13 +185,6 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_ctr _O42A_DEBUG_TYPE_o42a_obj_ctr = {
 			.data_type = O42A_TYPE_DATA_PTR,
 			.offset = offsetof(o42a_obj_ctr_t, ancestor),
 			.name = "ancestor",
-		},
-		{
-			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_obj_ctr_t, sample_desc),
-			.name = "sample_desc",
-			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_desc,
 		},
 		{
 			.data_type = O42A_TYPE_FUNC_PTR,
@@ -212,7 +210,7 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_ctr _O42A_DEBUG_TYPE_o42a_obj_ctr = {
 const struct _O42A_DEBUG_TYPE_o42a_obj_ctable
 _O42A_DEBUG_TYPE_o42a_obj_ctable = {
 	.type_code = 0x042a0122,
-	.field_num = 9,
+	.field_num = 8,
 	.name = "o42a_obj_ctable_t",
 	.fields = {
 		{
@@ -224,13 +222,6 @@ _O42A_DEBUG_TYPE_o42a_obj_ctable = {
 			.data_type = O42A_TYPE_DATA_PTR,
 			.offset = offsetof(o42a_obj_ctable_t, ancestor),
 			.name = "ancestor",
-		},
-		{
-			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_obj_ctable_t, sample_desc),
-			.name = "sample_desc",
-			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_desc,
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
@@ -743,83 +734,46 @@ static void derive_ancestor_bodies(
 	O42A_RETURN;
 }
 
-
-static o42a_obj_t *new_obj(const o42a_obj_ctr_t *const ctr) {
+o42a_obj_t *o42a_obj_alloc(const o42a_obj_desc_t *const desc) {
 	O42A_ENTER(return NULL);
 
-	const o42a_obj_t *const ancestor = ctr->ancestor;
-	const o42a_obj_data_t *const adata = &ancestor->object_data;
+	o42a_obj_t *const object =
+			O42A(o42a_gc_alloc(&o42a_obj_gc_desc, desc->object_size));
 
-	assert(ancestor && "Ancestor is missing");
-
-	if (adata->desc == &o42a_obj_none_desc) {
+	if (!object) {
 		O42A_RETURN NULL;
 	}
-
-	const o42a_obj_desc_t *const sdesc = ctr->sample_desc;
-
-	assert(sdesc && "Sample is missing");
-
-	const size_t num_ascendants = sdesc->ascendants.size;
-	const size_t adiff = num_ascendants - adata->desc->ascendants.size;
-
-	assert((adiff == 0 || adiff == 1) && "Inheritance is impossible");
-
-	const size_t consumed_ascendants = adiff ? 0 : 1;
-	o42a_obj_t *const object =
-			O42A(o42a_gc_alloc(&o42a_obj_gc_desc, sdesc->object_size));
 
 #ifndef NDEBUG
 
 	o42a_dbg_header_t *const header = &object->__o42a_dbg_header__;
 
-	O42A(o42a_dbg_fill_header(sdesc->type_info, header, NULL));
+	O42A(o42a_dbg_fill_header(desc->type_info, header, NULL));
 	header->name = "New object";
 
 #endif /* NDEBUG */
 
 	o42a_obj_data_t *const data = &object->object_data;
 
-	// Fill object data without value and VMT.
-	data->desc = sdesc;
+	data->desc = desc;
 	data->fld_ctrs = NULL;
 
 	O42A(obj_mutex_init(data));
 
-	// propagate sample and inherit ancestor
-	o42a_obj_ctable_t ctable = {
-		.owner = ctr->owner,
-		.ancestor = ancestor,
-		.sample_desc = sdesc,
-		.from = ancestor,
-		.to = object,
-	};
-
-#ifndef NDEBUG
-	O42A(o42a_dbg_fill_header(
-			(const o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_ctable,
-			&ctable.__o42a_dbg_header__,
-			NULL));
-#endif /* NDEBUG */
-
-	derive_ancestor_bodies(&ctable, consumed_ascendants);
-
-	ctable.body_desc = sdesc;
-	ctable.from = NULL;
-	O42A(derive_object_body(&ctable, O42A_TRUE));
-
 	O42A_RETURN object;
 }
 
-o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
+
+static o42a_obj_t *new_obj(const o42a_obj_ctr_t *const ctr) {
 	O42A_ENTER(return NULL);
 
-	const o42a_obj_data_t *const adata = &ctr->ancestor->object_data;
+	o42a_obj_t *const object = ctr->object;
+	const o42a_obj_t *const ancestor = ctr->ancestor;
+	const o42a_obj_data_t *const adata = &ancestor->object_data;
 
-	o42a_obj_t *const object = O42A(new_obj(ctr));
+	assert(ancestor && "Ancestor is missing");
 
-	if (!object) {
-		O42A(o42a_obj_vmtc_free(ctr->vmtc));
+	if (adata->desc == &o42a_obj_none_desc) {
 		O42A_RETURN NULL;
 	}
 
@@ -840,6 +794,52 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	o42a_obj_data_t *const data = &object->object_data;
 
 	data->vmtc = vmtc;
+
+	const o42a_obj_desc_t *const desc = data->desc;
+	const size_t num_ascendants = desc->ascendants.size;
+	const size_t adiff = num_ascendants - adata->desc->ascendants.size;
+
+	assert((adiff == 0 || adiff == 1) && "Inheritance is impossible");
+
+	const size_t consumed_ascendants = adiff ? 0 : 1;
+
+	// propagate sample and inherit ancestor
+	o42a_obj_ctable_t ctable = {
+		.owner = ctr->owner,
+		.ancestor = ancestor,
+		.from = ancestor,
+		.to = object,
+	};
+
+#ifndef NDEBUG
+	O42A(o42a_dbg_fill_header(
+			(const o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_ctable,
+			&ctable.__o42a_dbg_header__,
+			NULL));
+#endif /* NDEBUG */
+
+	derive_ancestor_bodies(&ctable, consumed_ascendants);
+
+	ctable.body_desc = desc;
+	ctable.from = NULL;
+	O42A(derive_object_body(&ctable, O42A_TRUE));
+
+	O42A_RETURN object;
+}
+
+o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
+	O42A_ENTER(return NULL);
+
+	o42a_obj_t *const object = O42A(new_obj(ctr));
+
+	if (!object) {
+		O42A(o42a_obj_vmtc_free(ctr->vmtc));
+		O42A_RETURN NULL;
+	}
+
+	const o42a_obj_data_t *const adata = &ctr->ancestor->object_data;
+	o42a_obj_data_t *const data = &object->object_data;
+
 	data->value.flags = O42A_VAL_INDEFINITE;
 	data->value_f = ctr->value_f ? ctr->value_f : adata->value_f;
 
@@ -857,41 +857,15 @@ o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
 
 	const o42a_obj_t *const ancestor = ctr->ancestor;
 	const o42a_obj_data_t *const adata = &ancestor->object_data;
-	const o42a_obj_desc_t *const sdesc = ctr->sample_desc;
-
-	if (!sdesc) {
-		ctr->sample_desc = adata->desc;
-		ctr->value_f = adata->value_f;
-	}
-
 	o42a_obj_t *const object = O42A(new_obj(ctr));
 
 	if (!object) {
-		if (ctr->vmtc) {
-			O42A(o42a_obj_vmtc_free(ctr->vmtc));
-		}
+		O42A(o42a_obj_vmtc_free(ctr->vmtc));
 		O42A_RETURN NULL;
 	}
 
-	const o42a_obj_vmtc_t *vmtc;
-
-	if (!sdesc) {
-		vmtc = adata->vmtc;
-	} else if (ctr->vmtc->prev) {
-		vmtc = ctr->vmtc;
-	} else {
-		vmtc = O42A(o42a_obj_vmtc_alloc(ctr->vmtc->vmt, adata->vmtc));
-		if (!vmtc) {
-			O42A(o42a_gc_free(o42a_gc_blockof(object)));
-			O42A_RETURN NULL;
-		}
-	}
-
-	O42A(vmtc_use(vmtc));
-
 	o42a_obj_data_t *const data = &object->object_data;
 
-	data->vmtc = vmtc;
 	data->value_f = o42a_obj_value_eager;
 	O42A(adata->desc->value_type->copy(&ctr->value, &data->value));
 
