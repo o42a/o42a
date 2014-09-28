@@ -486,7 +486,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *);
  *
  * \param ctr[in] filled-in object construction data.
  */
-void o42a_obj_dispose(o42a_obj_ctr_t *);
+void o42a_obj_dispose(const o42a_obj_ctr_t *);
 
 /**
  * Object condition evaluation function.
