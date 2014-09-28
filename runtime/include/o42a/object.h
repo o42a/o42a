@@ -303,15 +303,6 @@ typedef struct o42a_obj_ctr {
 	const o42a_obj_t *ancestor;
 
 	/**
-	 * Object value calculator function.
-	 *
-	 * When constructing an eager object, this function will be ignored,
-	 * and o42a_obj_value_eager function will be used instead.
-	 * Otherwise, if not specified an ancestor value function will be used.
-	 */
-	o42a_obj_value_ft *value_f;
-
-	/**
 	 * VMT chain to use.
 	 *
 	 * If points to VMT chain terminator, then VMT chain will be constructed
@@ -380,7 +371,7 @@ extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_field;
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctr {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[6];
+	o42a_dbg_field_info_t fields[5];
 } _O42A_DEBUG_TYPE_o42a_obj_ctr;
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctable {

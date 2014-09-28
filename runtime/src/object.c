@@ -168,7 +168,7 @@ const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_vmtc = {
 
 const struct _O42A_DEBUG_TYPE_o42a_obj_ctr _O42A_DEBUG_TYPE_o42a_obj_ctr = {
 	.type_code = 0x042a0120,
-	.field_num = 6,
+	.field_num = 5,
 	.name = "o42a_obj_ctr_t",
 	.fields = {
 		{
@@ -185,11 +185,6 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_ctr _O42A_DEBUG_TYPE_o42a_obj_ctr = {
 			.data_type = O42A_TYPE_DATA_PTR,
 			.offset = offsetof(o42a_obj_ctr_t, ancestor),
 			.name = "ancestor",
-		},
-		{
-			.data_type = O42A_TYPE_FUNC_PTR,
-			.offset = offsetof(o42a_obj_ctr_t, value_f),
-			.name = "value_f",
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
@@ -841,7 +836,6 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	o42a_obj_data_t *const data = &object->object_data;
 
 	data->value.flags = O42A_VAL_INDEFINITE;
-	data->value_f = ctr->value_f ? ctr->value_f : adata->value_f;
 
 	o42a_debug_dump_mem("Object: ", object, 3);
 
