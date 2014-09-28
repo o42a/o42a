@@ -123,6 +123,15 @@ struct o42a_obj_desc {
 	 */
 	const o42a_val_type_t *value_type;
 
+#ifndef NDEBUG
+
+	/**
+	 * Pointer to run-time debug type info.
+	 */
+	const o42a_dbg_type_info_t *type_info;
+
+#endif /* NDEBUG */
+
 	/**
 	 * Relative pointer to the list of field descriptors.
 	 */
@@ -294,17 +303,6 @@ typedef struct o42a_obj_ctr {
 	 */
 	const o42a_obj_desc_t *sample_desc;
 
-#ifndef NDEBUG
-
-	/**
-	 * Pointer to sample run-time debug type info.
-	 *
-	 * Ignored when sample not specified.
-	 */
-	const o42a_dbg_type_info_t *sample_type_info;
-
-#endif /* NDEBUG */
-
 	/**
 	 * Object value calculator function.
 	 *
@@ -382,7 +380,7 @@ extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
 	o42a_dbg_field_info_t fields[7];
 } _O42A_DEBUG_TYPE_o42a_obj_data;
 
-extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
+extern const o42a_dbg_type_info5f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
 
 extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_obj_ascendant;
 
@@ -390,7 +388,7 @@ extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_field;
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctr {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[7];
+	o42a_dbg_field_info_t fields[6];
 } _O42A_DEBUG_TYPE_o42a_obj_ctr;
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctable {
