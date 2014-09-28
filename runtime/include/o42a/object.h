@@ -471,11 +471,22 @@ o42a_obj_t *o42a_obj_alloc(const o42a_obj_desc_t *);
 /**
  * Constructs previously allocated object.
  *
- * \param ctr[in] filled-in construction data.
+ * \param ctr[in] filled-in object construction data.
  *
  * \return pointer to new object or NULL if instantiation failed.
  */
 o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *);
+
+/**
+ * Disposes object construction.
+ *
+ * This method frees memory allocated by o42a_obj_alloc and frees the VMT chain.
+ *
+ * Call this method instead of o42a_obj_new if object construction failed.
+ *
+ * \param ctr[in] filled-in object construction data.
+ */
+void o42a_obj_dispose(o42a_obj_ctr_t *);
 
 /**
  * Object condition evaluation function.
