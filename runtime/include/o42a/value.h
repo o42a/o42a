@@ -130,14 +130,6 @@ typedef struct o42a_val_type {
 	const char *name;
 
 	/**
-	 * Value copy function pointer.
-	 *
-	 * \param from[in] value to copy contents from. Never false.
-	 * \param to value to copy contents to.
-	 */
-	void (* copy) (const o42a_val_t *, o42a_val_t *);
-
-	/**
 	 * Value use function pointer.
 	 *
 	 * It should copy the value in a thread-safe manner and mark it used.
@@ -191,9 +183,8 @@ typedef struct o42a_val_type {
  * \param _mark mark function pointer.
  * \param _sweep sweep function pointer.
  */
-#define O42A_VAL_TYPE(_name, _copy, _use, _discard, _mark, _sweep) { \
+#define O42A_VAL_TYPE(_name, _use, _discard, _mark, _sweep) { \
 	.name = _name, \
-	.copy = _copy, \
 	.use = _use, \
 	.discard = _discard, \
 	.mark = _mark, \
@@ -202,7 +193,7 @@ typedef struct o42a_val_type {
 
 #else /* NDEBUG */
 
-#define O42A_VAL_TYPE(_name, _copy, _use, _discard, _mark, _sweep) { \
+#define O42A_VAL_TYPE(_name, _use, _discard, _mark, _sweep) { \
 	.__o42a_dbg_header__ = { \
 		.type_code = 0x042a0003, \
 		.enclosing = 0, \
@@ -210,7 +201,6 @@ typedef struct o42a_val_type {
 		.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_val_type, \
 	}, \
 	.name = _name, \
-	.copy = _copy, \
 	.use = _use, \
 	.discard = _discard, \
 	.mark = _mark, \
@@ -221,7 +211,7 @@ extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_val;
 
 extern const struct _O42A_DEBUG_TYPE_o42a_val_type {
 	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[6];
+	o42a_dbg_field_info_t fields[5];
 } _O42A_DEBUG_TYPE_o42a_val_type;
 
 #endif /* NDEBUG */

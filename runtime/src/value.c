@@ -80,7 +80,6 @@ void o42a_val_gc_none(o42a_obj_t *const object __attribute__((unused))) {
 const o42a_val_type_t o42a_val_type_void = O42A_VAL_TYPE(
 		"void",
 		o42a_val_copy_as_is,
-		o42a_val_copy_as_is,
 		o42a_val_discard_none,
 		o42a_val_gc_none,
 		o42a_val_gc_none);
@@ -88,14 +87,12 @@ const o42a_val_type_t o42a_val_type_void = O42A_VAL_TYPE(
 const o42a_val_type_t o42a_val_type_directive = O42A_VAL_TYPE(
 		"directive",
 		o42a_val_copy_as_is,
-		o42a_val_copy_as_is,
 		o42a_val_discard_none,
 		o42a_val_gc_none,
 		o42a_val_gc_none);
 
 const o42a_val_type_t o42a_val_type_macro = O42A_VAL_TYPE(
 		"macro",
-		o42a_val_copy_as_is,
 		o42a_val_copy_as_is,
 		o42a_val_discard_none,
 		o42a_val_gc_none,
@@ -128,18 +125,13 @@ const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_val = {
 
 const struct _O42A_DEBUG_TYPE_o42a_val_type _O42A_DEBUG_TYPE_o42a_val_type = {
 	.type_code = 0x042a0003,
-	.field_num = 6,
+	.field_num = 5,
 	.name = "o42a_val_type_t",
 	.fields = {
 		{
 			.data_type = O42A_TYPE_PTR,
 			.offset = offsetof(o42a_val_type_t, name),
 			.name = "name",
-		},
-		{
-			.data_type = O42A_TYPE_FUNC_PTR,
-			.offset = offsetof(o42a_val_type_t, copy),
-			.name = "copy",
 		},
 		{
 			.data_type = O42A_TYPE_FUNC_PTR,
