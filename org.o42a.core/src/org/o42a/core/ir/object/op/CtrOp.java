@@ -22,7 +22,7 @@ package org.o42a.core.ir.object.op;
 import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.ObjectOp.objectAncestor;
-import static org.o42a.core.ir.object.desc.ObjectIRDesc.OBJECT_DESC_TYPE;
+import static org.o42a.core.ir.object.op.AllocateObjectFn.ALLOCATE_OBJECT;
 import static org.o42a.core.ir.object.op.NewObjectFn.NEW_OBJECT;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.object.vmt.VmtIRChain.VMT_IR_CHAIN_TYPE;
@@ -43,7 +43,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.ObjectValueIR;
-import org.o42a.core.ir.object.desc.ObjectIRDescOp;
+import org.o42a.core.ir.object.desc.ObjectDescIR;
 import org.o42a.core.ir.object.vmt.VmtIR;
 import org.o42a.core.ir.object.vmt.VmtIRChain;
 import org.o42a.core.ir.op.*;
@@ -74,6 +74,7 @@ public class CtrOp extends IROp {
 	private final Function<Code, Op> ptr;
 	private Obj sample;
 	private ObjectOp host;
+	private ObjectOp ancestor;
 
 	public CtrOp(CodeBuilder builder, Function<Code, Op> ptr) {
 		super(builder);
@@ -82,6 +83,28 @@ public class CtrOp extends IROp {
 
 	public final Obj getSample() {
 		return this.sample;
+	}
+
+	public final CtrOp sample(Obj sample) {
+		this.sample = sample;
+		return this;
+	}
+
+	public final ObjectOp getAncestor() {
+		return this.ancestor;
+	}
+
+	public final CtrOp ancestor(ObjectOp ancestor) {
+		this.ancestor = ancestor;
+		return this;
+	}
+
+	public final CtrOp evalAncestor(CodeDirs dirs) {
+		return ancestor(objectAncestor(
+				dirs,
+				host(),
+				getSample(),
+				tempObjHolder(dirs.getAllocator())));
 	}
 
 	public final boolean isEager() {
@@ -134,31 +157,19 @@ public class CtrOp extends IROp {
 		return this;
 	}
 
-	public final CtrOp fillAscendants(CodeDirs dirs, Obj sample) {
-
-		final ObjectOp ancestor = objectAncestor(
-				dirs,
-				host(),
-				sample,
-				tempObjHolder(dirs.getAllocator()));
-
-		return fillAscendants(dirs, ancestor, sample);
+	public final CtrOp fillAncestor(Code code) {
+		ptr(code).ancestor(code).store(code, getAncestor().toData(null, code));
+		return this;
 	}
 
-	public final CtrOp fillAscendants(
-			CodeDirs dirs,
-			ObjectOp ancestor,
-			Obj sample) {
-		this.sample = sample;
+	public final CtrOp fillValue(CodeDirs dirs) {
 
+		final ObjectOp ancestor = getAncestor();
+		final Obj sample = getSample();
 		final Block code = dirs.code();
 		final Op ptr = ptr(code);
 
-		ptr.ancestor(code).store(code, ancestor.toData(null, code));
-
 		if (isExplicitEager()) {
-			ptr.sampleDesc(code)
-			.store(code, code.nullPtr(OBJECT_DESC_TYPE));
 			if (code.isDebug()) {
 				// Not meaningful for eager objects.
 				// NULL required here only for making memory dumps.
@@ -169,9 +180,6 @@ public class CtrOp extends IROp {
 			final ObjectIR sampleIR = sample.ir(getGenerator());
 			final ObjectValueIR valueIR = sampleIR.getObjectValueIR();
 
-			ptr.sampleDesc(code).store(
-					code,
-					sampleIR.getDescIR().ptr().op(null, code));
 			if (sample.value().getDefinitions().areInherited()) {
 				ptr.valueFunc(code).store(code, code.nullPtr(OBJECT_VALUE));
 			} else {
@@ -204,15 +212,33 @@ public class CtrOp extends IROp {
 		final StructRecOp<VmtIRChain.Op> vmtcRec = ptr(code).vmtc(code);
 		final VmtIR vmtIR = getSample().ir(getGenerator()).getVmtIR();
 
-		if (!isExplicitEager()) {
+		if (isExplicitEager()) {
+			vmtcRec.store(
+					code,
+					getAncestor().objectData(code)
+					.ptr()
+					.vmtc(code)
+					.load(null, code));
+		} else {
 			vmtcRec.store(
 					code,
 					vmtIR.terminator().pointer(getGenerator()).op(null, code));
-		} else if (code.isDebug()) {
-			// Not meaningful for eager objects.
-			// NULLs required here only for making memory dumps.
-			vmtcRec.store(code, code.nullPtr(VMT_IR_CHAIN_TYPE));
 		}
+
+		return this;
+	}
+
+	public final CtrOp allocateObject(CodeDirs dirs) {
+
+		final ObjectDescIR descIR = getSample().ir(getGenerator()).getDescIR();
+		final Block code = dirs.code();
+
+		final DataOp allocated =
+				allocFunc().op(null, code).allocateObject(code, descIR);
+
+		allocated.isNull(null, code).go(code, dirs.falseDir());
+
+		ptr(code).object(code).store(code, allocated);
 
 		return this;
 	}
@@ -242,6 +268,13 @@ public class CtrOp extends IROp {
 		return holder.holdVolatile(code, newObject);
 	}
 
+	private FuncPtr<AllocateObjectFn> allocFunc() {
+		return getGenerator()
+				.externalFunction()
+				.noSideEffects()
+				.link("o42a_obj_alloc", ALLOCATE_OBJECT);
+	}
+
 	private FuncPtr<NewObjectFn> newFunc() {
 		return getGenerator()
 				.externalFunction()
@@ -267,16 +300,16 @@ public class CtrOp extends IROp {
 			return (Type) super.getType();
 		}
 
+		public final DataRecOp object(Code code) {
+			return ptr(null, code, getType().object());
+		}
+
 		public final DataRecOp owner(Code code) {
 			return ptr(null, code, getType().owner());
 		}
 
 		public final DataRecOp ancestor(Code code) {
 			return ptr(null, code, getType().ancestor());
-		}
-
-		public final StructRecOp<ObjectIRDescOp> sampleDesc(Code code) {
-			return ptr(null, code, getType().sample());
 		}
 
 		public final FuncOp<ObjectValueFn> valueFunc(Code code) {
@@ -299,9 +332,9 @@ public class CtrOp extends IROp {
 
 	public static final class Type extends org.o42a.codegen.data.Type<Op> {
 
+		private DataRec object;
 		private DataRec owner;
 		private DataRec ancestor;
-		private StructRec<ObjectIRDescOp> sampleDesc;
 		private FuncRec<ObjectValueFn> valueFunc;
 		private StructRec<VmtIRChain.Op> vmtc;
 		private ValType value;
@@ -315,20 +348,16 @@ public class CtrOp extends IROp {
 			return new Op(writer);
 		}
 
+		public final DataRec object() {
+			return this.object;
+		}
+
 		public final DataRec owner() {
 			return this.owner;
 		}
 
 		public final DataRec ancestor() {
 			return this.ancestor;
-		}
-
-		public final StructRec<ObjectIRDescOp> sample() {
-			return this.sampleDesc;
-		}
-
-		public final StructRec<ObjectIRDescOp> sampleDesc() {
-			return this.sampleDesc;
 		}
 
 		public final FuncRec<ObjectValueFn> valueFunc() {
@@ -345,9 +374,9 @@ public class CtrOp extends IROp {
 
 		@Override
 		protected void allocate(SubData<Op> data) {
+			this.object = data.addDataPtr("object");
 			this.owner = data.addDataPtr("owner");
 			this.ancestor = data.addDataPtr("ancestor");
-			this.sampleDesc = data.addPtr("sample_desc", OBJECT_DESC_TYPE);
 			this.valueFunc = data.addFuncPtr("value_f", OBJECT_VALUE);
 			this.vmtc = data.addPtr("vmtc", VMT_IR_CHAIN_TYPE);
 			this.value = data.addNewInstance(ID.rawId("value"), VAL_TYPE);

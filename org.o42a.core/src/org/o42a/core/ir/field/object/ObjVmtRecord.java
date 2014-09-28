@@ -30,7 +30,9 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.object.type.DerivationUsage.DERIVATION_USAGE;
 import static org.o42a.util.fn.Init.init;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.CondBlock;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.StructRecOp;
@@ -104,18 +106,18 @@ final class ObjVmtRecord
 		final VmtIRChain.Op vmtc =
 				builder.getFunction()
 				.arg(code, getConstructorSignature().vmtc());
-		final DataOp ancestorArg = ctr.ancestor(code).load(null, code);
+		final DataOp objectArg = ctr.object(code).load(null, code);
 		final ObjFldOp fld =
 				(ObjFldOp) host.field(dirs, fld().getKey());
 
 		// Ancestor is not specified for the first method in VMT chain.
-		final BoolOp noAncestor = ancestorArg.isNull(null, code);
+		final BoolOp notAllocated = objectArg.isNull(null, code);
 
 		// Initialize field construction in first method.
 		final FldCtrOp fctr =
 				code.allocate(FLD_CTR_ID, ALLOCATABLE_FLD_CTR).get(code);
 
-		final CondBlock start = noAncestor.branch(code, "start", "cont");
+		final CondBlock start = notAllocated.branch(code, "start", "cont");
 
 		final Block constructed = start.addBlock("constructed");
 
@@ -127,14 +129,14 @@ final class ObjVmtRecord
 		.toData(null, constructed)
 		.returnValue(constructed);
 
-		final ObjectOp evalAncestor = ancestor(dirs.sub(start));
-		final DataOp evalAncestorPtr = initCtr(ctr, start, evalAncestor);
+		final CodeDirs startDirs = dirs.sub(start);
+		final ObjectOp evalAncestor = ancestor(startDirs);
+		final DataOp evalAncestorPtr = allocate(startDirs, ctr, evalAncestor);
 
 		start.go(code.tail());
 
 		final Block cont = start.otherwise();
-
-		final DataOp suppliedAncestorPtr = cont.phi(null, ancestorArg);
+		final DataOp suppliedAncestorPtr = ctr.ancestor(cont).load(null, cont);
 
 		cont.go(code.tail());
 
@@ -152,7 +154,7 @@ final class ObjVmtRecord
 			// Explicit eager object can be constructed without delegation.
 			final Block eager = code.addBlock("eager");
 
-			noAncestor.go(code, eager.head());
+			notAllocated.go(code, eager.head());
 
 			final DataOp result =
 					construct(
@@ -176,7 +178,7 @@ final class ObjVmtRecord
 
 		final Block dontConstruct = code.addBlock("dont_construct");
 
-		noAncestor.goUnless(code, dontConstruct.head());
+		notAllocated.goUnless(code, dontConstruct.head());
 		if (dontConstruct.exists()) {
 			// Not a first method in VMT chain. Just return NULL.
 			dontConstruct.nullDataPtr().returnValue(dontConstruct);
@@ -204,11 +206,17 @@ final class ObjVmtRecord
 				.link("o42a_obj_constructor_stub", getConstructorSignature());
 	}
 
-	private DataOp initCtr(CtrOp.Op ctr, Code code, ObjectOp ancestor) {
+	private DataOp allocate(CodeDirs dirs, CtrOp.Op ctr, ObjectOp ancestor) {
 
+		final Block code = dirs.code();
 		final DataOp ancestorPtr = ancestor.toData(null, code);
 
+		ctr.op(dirs.getBuilder())
+		.sample(fld().getTarget())
+		.allocateObject(dirs);
+
 		ctr.ancestor(code).store(code, ancestorPtr);
+
 		ctr.vmtc(code).store(
 				code,
 				ancestor.objectData(code)
@@ -216,13 +224,13 @@ final class ObjVmtRecord
 				.vmtc(code)
 				.load(null, code));
 
-		return ancestorPtr;
+		return code.phi(null, ancestorPtr);
 	}
 
 	private ObjectOp ancestor(CodeDirs dirs) {
 		return objectAncestor(
 				dirs,
-				fld().getField().toObject(),
+				fld().getTarget(),
 				tempObjHolder(dirs.getAllocator()));
 	}
 
@@ -260,8 +268,7 @@ final class ObjVmtRecord
 				getGenerator().externalFunction().link(
 						"o42a_obj_vmtc_alloc",
 						VMT_CHAIN_ALLOC);
-		final VmtIR vmtIR =
-				fld().getField().toObject().ir(getGenerator()).getVmtIR();
+		final VmtIR vmtIR = fld().getTarget().ir(getGenerator()).getVmtIR();
 		final StructRecOp<VmtIRChain.Op> vmtcRec = ctr.vmtc(code);
 		final VmtIRChain.Op newVmtc =
 				allocFn.op(null, code)
@@ -278,7 +285,9 @@ final class ObjVmtRecord
 
 		return ctr.op(builder)
 		.host(builder.host())
-		.fillAscendants(dirs, ancestor, fld().getField().toObject())
+		.sample(fld().getTarget())
+		.ancestor(ancestor)
+		.fillValue(dirs)
 		.newObject(dirs, objTrap());
 	}
 
