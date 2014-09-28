@@ -68,9 +68,9 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 	},
 };
 
-const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_desc = {
+const o42a_dbg_type_info5f_t _O42A_DEBUG_TYPE_o42a_obj_desc = {
 	.type_code = 0x042a0101,
-	.field_num = 4,
+	.field_num = 5,
 	.name = "o42a_obj_desc_t",
 	.fields = {
 		{
@@ -79,6 +79,11 @@ const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_desc = {
 			.name = "value_type",
 			.type_info =
 					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_val_type,
+		},
+		{
+			.data_type = O42A_TYPE_PTR,
+			.offset = offsetof(o42a_obj_desc_t, type_info),
+			.name = "type_info",
 		},
 		{
 			.data_type = O42A_TYPE_STRUCT,
@@ -163,7 +168,7 @@ const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_vmtc = {
 
 const struct _O42A_DEBUG_TYPE_o42a_obj_ctr _O42A_DEBUG_TYPE_o42a_obj_ctr = {
 	.type_code = 0x042a0120,
-	.field_num = 7,
+	.field_num = 6,
 	.name = "o42a_obj_ctr_t",
 	.fields = {
 		{
@@ -182,11 +187,6 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_ctr _O42A_DEBUG_TYPE_o42a_obj_ctr = {
 			.name = "sample_desc",
 			.type_info =
 					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_desc,
-		},
-		{
-			.data_type = O42A_TYPE_PTR,
-			.offset = offsetof(o42a_obj_ctr_t, sample_type_info),
-			.name = "sample_type_info",
 		},
 		{
 			.data_type = O42A_TYPE_FUNC_PTR,
@@ -773,7 +773,7 @@ static o42a_obj_t *new_obj(const o42a_obj_ctr_t *const ctr) {
 
 	o42a_dbg_header_t *const header = &object->__o42a_dbg_header__;
 
-	O42A(o42a_dbg_fill_header(ctr->sample_type_info, header, NULL));
+	O42A(o42a_dbg_fill_header(sdesc->type_info, header, NULL));
 	header->name = "New object";
 
 #endif /* NDEBUG */
@@ -861,9 +861,6 @@ o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
 
 	if (!sdesc) {
 		ctr->sample_desc = adata->desc;
-#ifndef NDEBUG
-		ctr->sample_type_info = O42A(o42a_dbg_header(ctr->ancestor))->type_info;
-#endif /* NDEBUG */
 		ctr->value_f = adata->value_f;
 	}
 

@@ -161,8 +161,7 @@ public class CtrOp extends IROp {
 			.store(code, code.nullPtr(OBJECT_DESC_TYPE));
 			if (code.isDebug()) {
 				// Not meaningful for eager objects.
-				// NULLs required here only for making memory dumps.
-				ptr.sampleTypeInfo(code).store(code, code.nullPtr());
+				// NULL required here only for making memory dumps.
 				ptr.valueFunc(code).store(code, code.nullPtr(OBJECT_VALUE));
 			}
 		} else {
@@ -173,15 +172,6 @@ public class CtrOp extends IROp {
 			ptr.sampleDesc(code).store(
 					code,
 					sampleIR.getDescIR().ptr().op(null, code));
-			if (code.isDebug()) {
-				ptr.sampleTypeInfo(code).store(
-						code,
-						sampleIR.getType()
-						.allocate()
-						.getTypeInfo()
-						.getPointer()
-						.op(null, code));
-			}
 			if (sample.value().getDefinitions().areInherited()) {
 				ptr.valueFunc(code).store(code, code.nullPtr(OBJECT_VALUE));
 			} else {
@@ -289,10 +279,6 @@ public class CtrOp extends IROp {
 			return ptr(null, code, getType().sample());
 		}
 
-		public final AnyRecOp sampleTypeInfo(Code code) {
-			return ptr(null, code, getType().sampleTypeInfo());
-		}
-
 		public final FuncOp<ObjectValueFn> valueFunc(Code code) {
 			return func(null, code, getType().valueFunc());
 		}
@@ -316,7 +302,6 @@ public class CtrOp extends IROp {
 		private DataRec owner;
 		private DataRec ancestor;
 		private StructRec<ObjectIRDescOp> sampleDesc;
-		private AnyRec sampleTypeInfo;
 		private FuncRec<ObjectValueFn> valueFunc;
 		private StructRec<VmtIRChain.Op> vmtc;
 		private ValType value;
@@ -346,10 +331,6 @@ public class CtrOp extends IROp {
 			return this.sampleDesc;
 		}
 
-		public final AnyRec sampleTypeInfo() {
-			return this.sampleTypeInfo;
-		}
-
 		public final FuncRec<ObjectValueFn> valueFunc() {
 			return this.valueFunc;
 		}
@@ -367,9 +348,6 @@ public class CtrOp extends IROp {
 			this.owner = data.addDataPtr("owner");
 			this.ancestor = data.addDataPtr("ancestor");
 			this.sampleDesc = data.addPtr("sample_desc", OBJECT_DESC_TYPE);
-			if (data.getGenerator().isDebug()) {
-				this.sampleTypeInfo = data.addPtr("sample_type_info");
-			}
 			this.valueFunc = data.addFuncPtr("value_f", OBJECT_VALUE);
 			this.vmtc = data.addPtr("vmtc", VMT_IR_CHAIN_TYPE);
 			this.value = data.addNewInstance(ID.rawId("value"), VAL_TYPE);

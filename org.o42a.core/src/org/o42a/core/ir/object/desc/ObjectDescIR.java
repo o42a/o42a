@@ -159,6 +159,17 @@ public class ObjectDescIR {
 					.getValueTypeIR()
 					.getValueTypeDesc());
 
+			if (generator.isDebug()) {
+				desc.typeInfo()
+				.setConstant(true)
+				.setValue(
+						getObjectIR()
+						.getType()
+						.allocate()
+						.getTypeInfo()
+						.getPointer());
+			}
+
 			desc.objectSize()
 			.setConstant(true)
 			.setLowLevel(true)

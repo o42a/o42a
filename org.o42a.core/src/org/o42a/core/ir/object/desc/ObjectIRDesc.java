@@ -34,6 +34,7 @@ public class ObjectIRDesc extends Type<ObjectIRDescOp> {
 	public static final ObjectIRDesc OBJECT_DESC_TYPE = new ObjectIRDesc();
 
 	private StructRec<ValueTypeDescOp> valueType;
+	private AnyRec typeInfo;
 	private RelList<FieldDescIR> fields;
 	private RelList<ObjectIRBody> ascendants;
 	private Int32rec objectSize;
@@ -44,6 +45,10 @@ public class ObjectIRDesc extends Type<ObjectIRDescOp> {
 
 	public final StructRec<ValueTypeDescOp> valueType() {
 		return this.valueType;
+	}
+
+	public final AnyRec typeInfo() {
+		return this.typeInfo;
 	}
 
 	public final RelList<FieldDescIR> fields() {
@@ -66,6 +71,9 @@ public class ObjectIRDesc extends Type<ObjectIRDescOp> {
 	@Override
 	protected void allocate(SubData<ObjectIRDescOp> data) {
 		this.valueType = data.addPtr("value_type", VALUE_TYPE_DESC_TYPE);
+		if (data.getGenerator().isDebug()) {
+			this.typeInfo = data.addPtr("type_info");
+		}
 		this.fields = new ObjectIRFields().allocate(data, "fields");
 		this.ascendants = new ObjectIRAscendants().allocate(data, "ascendants");
 		this.objectSize = data.addInt32("object_size");
