@@ -35,13 +35,6 @@ enum o42a_val_flags {
 	O42A_VAL_INDEFINITE = 2,
 
 	/**
-	 * Eagerly evaluated value bit.
-	 *
-	 * This is set when object's value is eagerly evaluated.
-	 */
-	O42A_VAL_EAGER = 4,
-
-	/**
 	 * Value alignment mask.
 	 *
 	 * This is a number of bits to shift the 1 left to gain alignment in bytes.

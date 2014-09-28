@@ -815,9 +815,6 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	O42A_ENTER(return NULL);
 
 	const o42a_obj_data_t *const adata = &ctr->ancestor->object_data;
-	assert(
-			!(adata->value.flags & O42A_VAL_EAGER)
-			&& "Ancestor value is eagerly evaluated");
 
 	o42a_obj_t *const object = O42A(new_obj(ctr));
 
@@ -900,7 +897,6 @@ o42a_obj_t *o42a_obj_eager(o42a_obj_ctr_t *const ctr) {
 	data->vmtc = vmtc;
 	data->value_f = o42a_obj_value_eager;
 	O42A(adata->desc->value_type->copy(&ctr->value, &data->value));
-	data->value.flags |= O42A_VAL_EAGER;
 
 	o42a_debug_dump_mem("Eager object: ", object, 3);
 
