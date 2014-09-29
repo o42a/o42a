@@ -22,12 +22,15 @@ package org.o42a.core.ref.path;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.PathIR.pathOp;
+import static org.o42a.core.ref.path.PathKind.ABSOLUTE_PATH;
 import static org.o42a.core.ref.path.PathNormalizer.pathNormalizer;
 import static org.o42a.core.ref.path.PathResolution.noPathResolutionError;
 import static org.o42a.core.ref.path.PathResolution.pathResolution;
 import static org.o42a.core.ref.path.PathResolution.pathResolutionError;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
+import static org.o42a.core.ref.path.impl.StaticPathStart.staticPathStart;
+import static org.o42a.util.fn.Init.init;
 
 import java.util.function.Function;
 
@@ -63,6 +66,7 @@ import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.LocalRegistry;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 
 
@@ -72,11 +76,9 @@ public class BoundPath extends RefPath {
 	private final Path rawPath;
 	private final PathNormalizationDoubt doubt =
 			new PathNormalizationDoubt(this);
-	private Path path;
-
-	private Scope startObjectScope;
-	private Obj startObject;
-	private int startIndex;
+	private final Init<Path> path = init(this::rebuildPath);
+	private final Init<StaticPathStart> staticStart =
+			init(() -> staticPathStart(this));
 	private boolean rebuilding;
 
 	BoundPath(LocationInfo location, Scope origin, Path rawPath) {
@@ -89,7 +91,7 @@ public class BoundPath extends RefPath {
 		super(location);
 		this.origin = prototype.origin;
 		this.rawPath = prototype.rawPath;
-		this.path = prototype.path;
+		this.path.set(prototype.path.getKnown());
 	}
 
 	public final Scope getOrigin() {
@@ -117,16 +119,17 @@ public class BoundPath extends RefPath {
 	}
 
 	public final Path getPath() {
-		if (this.path != null) {
-			return this.path;
-		}
-		return this.path = rebuildPath();
+		return this.path.get();
 	}
 
 	public final Path getRawPath() {
-		if (this.path != null) {
-			return this.path;
+
+		final Path rebuilt = this.path.getKnown();
+
+		if (rebuilt != null) {
+			return rebuilt;
 		}
+
 		return this.rawPath;
 	}
 
@@ -480,24 +483,15 @@ public class BoundPath extends RefPath {
 	}
 
 	final int startIndex() {
-		if (this.startObject == null) {
-			findStart();
-		}
-		return this.startIndex;
+		return this.staticStart.get().startIndex();
 	}
 
 	final Scope startObjectScope() {
-		if (this.startObjectScope == null) {
-			findStart();
-		}
-		return this.startObjectScope;
+		return this.staticStart.get().startObjectScope();
 	}
 
 	final Obj startObject() {
-		if (this.startObject == null) {
-			findStart();
-		}
-		return this.startObject;
+		return this.staticStart.get().startObject();
 	}
 
 	private final Step[] getRawSteps() {
@@ -515,7 +509,7 @@ public class BoundPath extends RefPath {
 			boolean expand) {
 		assert !expand || path.isTemplate() || path.getTemplate() == null :
 			"The template should be expanded instead of templated path";
-		this.path = path;
+		this.path.set(path);
 
 		final PathResolver resolver =
 				this.doubt.wrapResolutionUser(originalResolver);
@@ -573,7 +567,7 @@ public class BoundPath extends RefPath {
 	private PathResolution walkFrom(Scope start, PathTracker tracker) {
 
 		final StepResolver resolver = new StepResolver(tracker);
-		Step[] steps = this.path.getSteps();
+		Step[] steps = this.path.getKnown().getSteps();
 		Container result = start.getContainer();
 		Scope prev = start;
 		int i = 0;
@@ -596,11 +590,14 @@ public class BoundPath extends RefPath {
 							i,
 							steps.length,
 							new Step[] {ErrorStep.ERROR_STEP});
-					this.path = new Path(
-							this.path.getKind(),
-							this.path.isStatic(),
-							this.path.getTemplate(),
-							steps);
+
+					final Path path = this.path.getKnown();
+
+					this.path.set(new Path(
+							path.getKind(),
+							path.isStatic(),
+							path.getTemplate(),
+							steps));
 					tracker.abortedAt(prev, step);
 					return noResolution(tracker, null, null);
 				}
@@ -611,11 +608,11 @@ public class BoundPath extends RefPath {
 					templateReached = true;
 					// Do not expand the template fragment
 					// for the template path.
-					template = this.path.getTemplate();
+					template = this.path.getKnown().getTemplate();
 				} else if (templateReached) {
 					// Template expansion resulted to another path fragment.
 					// The template should remain intact.
-					template = this.path.getTemplate();
+					template = this.path.getKnown().getTemplate();
 				} else {
 					template = replacementTemplate(steps, i, replacement);
 				}
@@ -630,11 +627,8 @@ public class BoundPath extends RefPath {
 							0,
 							i + 1,
 							replacementSteps);
-					this.path = new Path(
-							PathKind.ABSOLUTE_PATH,
-							true,
-							template,
-							steps);
+					this.path.set(
+							new Path(ABSOLUTE_PATH, true, template, steps));
 					// Continue from the ROOT.
 					prev = root();
 					i = 0;
@@ -649,11 +643,14 @@ public class BoundPath extends RefPath {
 							i,
 							i + 1,
 							replacementSteps);
-					this.path = new Path(
-							this.path.getKind(),
-							this.path.isStatic() || replacement.isStatic(),
+
+					final Path path = this.path.getKnown();
+
+					this.path.set(new Path(
+							path.getKind(),
+							path.isStatic() || replacement.isStatic(),
 							template,
-							steps);
+							steps));
 				}
 				// Do not change the current index.
 				continue;
@@ -684,13 +681,16 @@ public class BoundPath extends RefPath {
 			Step[] steps,
 			int stepIndex,
 			Path replacement) {
-		if (this.path.isTemplate()) {
+
+		final Path path = this.path.getKnown();
+
+		if (path.isTemplate()) {
 			// The path is template by itself.
 			// No additional template needed.
 			return null;
 		}
 
-		assert this.path.getTemplate() == null :
+		assert path.getTemplate() == null :
 			"Template lost";
 
 		final Path template = replacement.getTemplate();
@@ -724,8 +724,8 @@ public class BoundPath extends RefPath {
 				replacementSteps);
 
 		return new Path(
-				this.path.getKind(),
-				this.path.isStatic() || template.isStatic(),
+				path.getKind(),
+				path.isStatic() || template.isStatic(),
 				null,
 				templateSteps);
 	}
@@ -741,17 +741,6 @@ public class BoundPath extends RefPath {
 			return pathResolutionError(this);
 		}
 		return noPathResolutionError(this);
-	}
-
-	private void findStart() {
-
-		final StaticPathStartFinder walker = new StaticPathStartFinder();
-
-		walk(pathResolver(getOrigin(), dummyUser()), walker);
-
-		this.startObjectScope = walker.getStartObjectScope();
-		this.startObject = walker.getStartObject();
-		this.startIndex = walker.getStartIndex();
 	}
 
 	private Path rebuildPath() {
@@ -776,7 +765,7 @@ public class BoundPath extends RefPath {
 		final Path path = oldTemplate != null ? oldTemplate : rawPath;
 
 		if (path.getSteps().length == 0) {
-			this.path = path;
+			this.path.set(path);
 			return;
 		}
 
@@ -796,11 +785,11 @@ public class BoundPath extends RefPath {
 			return;
 		}
 
-		this.path = new Path(
+		this.path.set(new Path(
 				getKind(),
 				isStatic(),
 				removeOddFragmentsFromTemplate(remover, oldTemplate),
-				newSteps);
+				newSteps));
 	}
 
 	private static Path removeOddFragmentsFromTemplate(

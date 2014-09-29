@@ -35,22 +35,22 @@ import org.o42a.core.st.sentence.Local;
 import org.o42a.core.value.link.Link;
 
 
-public final class StaticPathStartFinder implements PathWalker {
+final class StaticPathStartFinder implements PathWalker {
 
 	private int index;
 	private Scope startObjectScope;
 	private Obj startObject;
 	private int startIndex;
 
-	public final Scope getStartObjectScope() {
+	public final Scope startObjectScope() {
 		return this.startObjectScope;
 	}
 
-	public final Obj getStartObject() {
+	public final Obj startObject() {
 		return this.startObject;
 	}
 
-	public final int getStartIndex() {
+	public final int startIndex() {
 		return this.startIndex;
 	}
 
