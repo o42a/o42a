@@ -155,14 +155,14 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 
 	public void fillDeps(CodeDirs dirs, HostOp host, Obj sample) {
 
-		final Collection<DepIR> deps =
+		final Collection<DepIR> depsIRs =
 				sample.ir(getGenerator())
 				.typeBodies()
 				.getMainBodyIR()
 				.getDeps();
 
-		for (DepIR dep : deps) {
-			fillDep(dirs, host, dep.getDep());
+		for (DepIR depIR : depsIRs) {
+			dep(dirs, depIR.getDep()).fill(dirs, host);
 		}
 	}
 
@@ -264,15 +264,6 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 		out.append(ptr());
 
 		return out.toString();
-	}
-
-	private final void fillDep(CodeDirs dirs, HostOp host, Dep dep) {
-
-		final CodeDirs depDirs = dirs.begin(getId(), "Fill " + dep);
-
-		dep(depDirs, dep).fill(depDirs, host);
-
-		depDirs.done();
 	}
 
 	private static final class ObjectStoreOp extends AbstractObjectStoreOp {
