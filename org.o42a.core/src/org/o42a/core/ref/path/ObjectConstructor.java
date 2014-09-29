@@ -278,7 +278,6 @@ public abstract class ObjectConstructor
 			final ObjectOp host = host().target().materialize(
 					dirs,
 					tempObjHolder(dirs.getAllocator()));
-
 			final CodeDirs subDirs = dirs.begin(
 					NEW_OBJECT_ID,
 					"New object: sample=`" + getConstructed() + "`");
