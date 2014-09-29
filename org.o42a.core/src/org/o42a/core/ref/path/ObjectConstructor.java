@@ -291,7 +291,7 @@ public abstract class ObjectConstructor
 					.allocateObject(subDirs)
 					.fillAncestor(code)
 					.fillVmtc(code)
-					.fillValue(subDirs)
+					.fillObject(subDirs)
 					.newObject(subDirs, holder);
 
 			subDirs.done();

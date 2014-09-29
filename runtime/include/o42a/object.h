@@ -471,9 +471,11 @@ o42a_obj_t *o42a_obj_alloc(const o42a_obj_desc_t *);
 /**
  * Constructs previously allocated object.
  *
+ * Disposes object construction if construction failed.
+ *
  * \param ctr[in] filled-in object construction data.
  *
- * \return pointer to new object or NULL if instantiation failed.
+ * \return pointer to new object or NULL if construction failed.
  */
 o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *);
 
