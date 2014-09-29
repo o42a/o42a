@@ -20,8 +20,8 @@
 package org.o42a.core.ir.object.op;
 
 import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
-import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.ObjectOp.objectAncestor;
+import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.op.AllocateObjectFn.ALLOCATE_OBJECT;
 import static org.o42a.core.ir.object.op.DisposeObjectFn.DISPOSE_OBJECT;
 import static org.o42a.core.ir.object.op.NewObjectFn.NEW_OBJECT;
@@ -41,9 +41,7 @@ import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.ObjectValueIR;
+import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.desc.ObjectDescIR;
 import org.o42a.core.ir.object.vmt.VmtIR;
 import org.o42a.core.ir.object.vmt.VmtIRChain;
@@ -132,11 +130,12 @@ public class CtrOp extends IROp {
 		if (this.objectPtr == null) {
 			this.objectPtr = ptr(code).object(code).load(null, code);
 		}
-		return anonymousObject(
-				getBuilder(),
-				code,
-				this.objectPtr,
-				getSample());
+
+		final ObjectIRStruct sampleType =
+				getSample().ir(getGenerator()).getType();
+
+		return this.objectPtr.to(null, code, sampleType)
+				.op(getBuilder(), getSample(), COMPATIBLE);
 	}
 
 	public final ValOp objectValue(
@@ -151,6 +150,19 @@ public class CtrOp extends IROp {
 				code -> object(code).objectData(code).ptr().value(code),
 				valueType,
 				holderFactory);
+	}
+
+	public final CtrOp allocateObject(CodeDirs dirs) {
+
+		final ObjectDescIR descIR = getSample().ir(getGenerator()).getDescIR();
+		final Block code = dirs.code();
+
+		this.objectPtr =
+				allocFunc().op(null, code).allocateObject(code, descIR);
+		this.objectPtr.isNull(null, code).go(code, dirs.falseDir());
+		ptr(code).object(code).store(code, this.objectPtr);
+
+		return this;
 	}
 
 	public final CtrOp host(ObjectOp host) {
@@ -177,7 +189,79 @@ public class CtrOp extends IROp {
 		return this;
 	}
 
-	public final CtrOp fillValue(CodeDirs dirs) {
+	public final CtrOp fillVmtc(Code code) {
+
+		final StructRecOp<VmtIRChain.Op> vmtcRec = ptr(code).vmtc(code);
+		final VmtIR vmtIR = getSample().ir(getGenerator()).getVmtIR();
+
+		if (isExplicitEager()) {
+			vmtcRec.store(
+					code,
+					getAncestor().objectData(code)
+					.ptr()
+					.vmtc(code)
+					.load(null, code));
+		} else {
+			vmtcRec.store(
+					code,
+					vmtIR.terminator().pointer(getGenerator()).op(null, code));
+		}
+
+		return this;
+	}
+
+	public final CtrOp fillObject(CodeDirs dirs) {
+
+		final Block dispose = dirs.addBlock("dispose");
+		final CodeDirs fillDirs = dirs.setFalseDir(dispose.head());
+
+		fillValue(dirs);
+		fillDeps(dirs);
+
+		fillDirs.done();
+
+		if (dispose.exists()) {
+			getGenerator()
+			.externalFunction()
+			.link("o42a_obj_dispose", DISPOSE_OBJECT)
+			.op(null, dispose)
+			.dispose(dispose, this);
+
+			dispose.go(dirs.falseDir());
+		}
+
+		return this;
+	}
+
+	public final ObjectOp newObject(CodeDirs dirs, ObjHolder holder) {
+
+		final Block code = dirs.code();
+
+		code.dump("Constructing: ", this);
+
+		this.objectPtr = newFunc().op(null, code).newObject(code, this);
+		this.objectPtr.isNull(null, code).go(code, dirs.falseDir());
+
+		final ObjectOp newObject = object(dirs.code());
+
+		return holder.holdVolatile(code, newObject);
+	}
+
+	private FuncPtr<AllocateObjectFn> allocFunc() {
+		return getGenerator()
+				.externalFunction()
+				.noSideEffects()
+				.link("o42a_obj_alloc", ALLOCATE_OBJECT);
+	}
+
+	private FuncPtr<NewObjectFn> newFunc() {
+		return getGenerator()
+				.externalFunction()
+				.noSideEffects()
+				.link("o42a_obj_new", NEW_OBJECT);
+	}
+
+	private void fillValue(CodeDirs dirs) {
 
 		final ObjectOp ancestor = getAncestor();
 		final Obj sample = getSample();
@@ -212,24 +296,11 @@ public class CtrOp extends IROp {
 					sample.type().getValueType(),
 					VAL_TRAP);
 
-			final Block dispose = code.addBlock("dispose");
-			final ValDirs eagerDirs =
-					dirs.setFalseDir(dispose.head()).value(value);
+			final ValDirs eagerDirs = dirs.nested().value(value);
 			final ValOp result = ancestor.value().writeValue(eagerDirs);
 
 			value.store(dirs.code(), result);
-
 			eagerDirs.done();
-
-			if (dispose.exists()) {
-				getGenerator()
-				.externalFunction()
-				.link("o42a_obj_dispose", DISPOSE_OBJECT)
-				.op(null, dispose)
-				.dispose(dispose, this);
-
-				dispose.go(dirs.falseDir());
-			}
 		}
 
 		object(code)
@@ -237,75 +308,12 @@ public class CtrOp extends IROp {
 		.ptr()
 		.valueFunc(code)
 		.store(code, valueFn);
-
-		return this;
 	}
 
-	public final CtrOp fillVmtc(Code code) {
-
-		final StructRecOp<VmtIRChain.Op> vmtcRec = ptr(code).vmtc(code);
-		final VmtIR vmtIR = getSample().ir(getGenerator()).getVmtIR();
-
-		if (isExplicitEager()) {
-			vmtcRec.store(
-					code,
-					getAncestor().objectData(code)
-					.ptr()
-					.vmtc(code)
-					.load(null, code));
-		} else {
-			vmtcRec.store(
-					code,
-					vmtIR.terminator().pointer(getGenerator()).op(null, code));
-		}
-
-		return this;
-	}
-
-	public final CtrOp allocateObject(CodeDirs dirs) {
-
-		final ObjectDescIR descIR = getSample().ir(getGenerator()).getDescIR();
-		final Block code = dirs.code();
-
-		this.objectPtr =
-				allocFunc().op(null, code).allocateObject(code, descIR);
-		this.objectPtr.isNull(null, code).go(code, dirs.falseDir());
-		ptr(code).object(code).store(code, this.objectPtr);
-
-		return this;
-	}
-
-	public ObjectOp newObject(CodeDirs dirs, ObjHolder holder) {
-
-		final Block code = dirs.code();
-
-		code.dump("Constructing: ", this);
-
-		final DataOp result = newFunc().op(null, code).newObject(code, this);
-
-		result.isNull(null, code).go(code, dirs.falseDir());
-
-		final ObjectOp newObject = anonymousObject(dirs, result, getSample());
-
+	private void fillDeps(CodeDirs dirs) {
 		if (!isExplicitEager()) {
-			newObject.fillDeps(dirs, host(), getSample());
+			object(dirs.code()).fillDeps(dirs, host(), getSample());
 		}
-
-		return holder.holdVolatile(code, newObject);
-	}
-
-	private FuncPtr<AllocateObjectFn> allocFunc() {
-		return getGenerator()
-				.externalFunction()
-				.noSideEffects()
-				.link("o42a_obj_alloc", ALLOCATE_OBJECT);
-	}
-
-	private FuncPtr<NewObjectFn> newFunc() {
-		return getGenerator()
-				.externalFunction()
-				.noSideEffects()
-				.link("o42a_obj_new", NEW_OBJECT);
 	}
 
 	public static final class Op extends StructOp<Op> {

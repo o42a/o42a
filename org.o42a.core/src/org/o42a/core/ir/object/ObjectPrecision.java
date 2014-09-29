@@ -23,17 +23,17 @@ package org.o42a.core.ir.object;
 public enum ObjectPrecision {
 
 	/**
-	 * Object type is static and known at compile time.
+	 * The object type is exactly known at compile time.
 	 */
 	EXACT,
 
 	/**
-	 * Object pointer points to body corresponding to required type.
+	 * The object type is compatible with the required type.
 	 */
 	COMPATIBLE,
 
 	/**
-	 * Object can be cast to required type.
+	 * The object can be cast to the required type. But the cast may fail.
 	 */
 	DERIVED;
 

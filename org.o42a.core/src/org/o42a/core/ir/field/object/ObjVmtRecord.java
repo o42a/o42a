@@ -287,7 +287,7 @@ final class ObjVmtRecord
 		.host(builder.host())
 		.sample(fld().getTarget())
 		.ancestor(ancestor)
-		.fillValue(dirs)
+		.fillObject(dirs)
 		.newObject(dirs, objTrap());
 	}
 

@@ -56,6 +56,11 @@ static void fld_ptr_reset(o42a_obj_ctable_t *const ctable) {
 	O42A_RETURN;
 }
 
+static void fld_skip(o42a_obj_ctable_t *const ctable __attribute__((unused))) {
+	O42A_ENTER(return);
+	O42A_RETURN;
+}
+
 static void fld_ptr_copy(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
 	ctable->to_fld->obj.object = ctable->from_fld->obj.object;
@@ -123,7 +128,7 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 	},
 	[O42A_FLD_DEP] = {// Run time dependency field.
 		.inherit = fld_ptr_copy,
-		.propagate = fld_ptr_reset,
+		.propagate = fld_skip,
 		.mark = fld_ptr_mark,
 		.sweep = fld_sweep_none,
 		.is_init = NULL,// Eagerly constructed.
