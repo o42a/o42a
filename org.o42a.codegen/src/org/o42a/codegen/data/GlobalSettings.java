@@ -49,7 +49,7 @@ public final class GlobalSettings
 
 	public final <
 			S extends StructOp<S>,
-			T extends Type<S>> Allocated<S, Global<S, T>> allocate(
+			T extends Type<S>> AllocatedStruct<S, Global<S, T>> allocate(
 					ID id,
 					T type) {
 
@@ -58,7 +58,7 @@ public final class GlobalSettings
 
 		instanceData.startAllocation(globals().dataAllocator());
 
-		return new Allocated.AllocatedGlobal<>(
+		return new AllocatedStruct.StaticGlobal<>(
 				global,
 				type,
 				instanceData,
@@ -66,14 +66,14 @@ public final class GlobalSettings
 	}
 
 	public final <S extends StructOp<S>, T extends Type<S>>
-	Allocated<S, Global<S, T>> allocateStruct(T struct) {
+	AllocatedStruct<S, Global<S, T>> allocateStruct(T struct) {
 
 		final Global<S, T> global = new Global<>(this, struct);
 		final SubData<S> instanceData = struct.setGlobal(global);
 
 		instanceData.startAllocation(globals().dataAllocator());
 
-		return new Allocated.AllocatedGlobal<>(
+		return new AllocatedStruct.StaticGlobal<>(
 				global,
 				struct,
 				instanceData,

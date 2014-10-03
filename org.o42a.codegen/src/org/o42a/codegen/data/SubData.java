@@ -205,7 +205,7 @@ public abstract class SubData<S extends StructOp<S>>
 
 	public final <
 			SS extends StructOp<SS>,
-			T extends Type<SS>> Allocated<SS, T> allocate(
+			T extends Type<SS>> AllocatedStruct<SS, T> allocate(
 					ID name,
 					T type) {
 
@@ -216,11 +216,11 @@ public abstract class SubData<S extends StructOp<S>>
 		instanceData.startAllocation(
 				getGenerator().getGlobals().dataAllocator());
 
-		return new Allocated<>(instance, type, instanceData);
+		return new AllocatedStruct<>(instance, type, instanceData);
 	}
 
 	public final <SS extends StructOp<SS>, T extends Type<SS>>
-	Allocated<SS, T> allocateStruct(ID name, T struct) {
+	AllocatedStruct<SS, T> allocateStruct(ID name, T struct) {
 
 		final SubData<SS> instanceData =
 				add(struct.setStruct(this, name), false);
@@ -228,7 +228,7 @@ public abstract class SubData<S extends StructOp<S>>
 		instanceData.startAllocation(
 				getGenerator().getGlobals().dataAllocator());
 
-		return new Allocated<>(struct, struct, instanceData);
+		return new AllocatedStruct<>(struct, struct, instanceData);
 	}
 
 	public final int size() {

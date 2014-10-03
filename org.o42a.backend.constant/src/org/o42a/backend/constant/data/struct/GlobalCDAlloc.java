@@ -64,7 +64,7 @@ public class GlobalCDAlloc<S extends StructOp<S>>
 	}
 
 	@Override
-	protected Allocated<S, ?> startUnderlyingAllocation(
+	protected AllocatedStruct<S, ?> startUnderlyingAllocation(
 			SubData<?> container) {
 
 		final GlobalSettings globalSettings =
