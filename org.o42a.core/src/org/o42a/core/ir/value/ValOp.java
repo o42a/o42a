@@ -41,7 +41,7 @@ import org.o42a.util.DataAlignment;
 import org.o42a.util.string.ID;
 
 
-public abstract class ValOp extends IROp {
+public abstract class ValOp extends IROp<ValType.Op> {
 
 	public static final ID VALUE_ID = ID.id("value");
 

@@ -30,7 +30,7 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.util.string.ID;
 
 
-public abstract class IROp implements Dumpable {
+public abstract class IROp<P extends DumpablePtrOp<P>> implements Dumpable {
 
 	private final CodeBuilder builder;
 
@@ -50,7 +50,7 @@ public abstract class IROp implements Dumpable {
 		return this.builder;
 	}
 
-	public abstract DumpablePtrOp<?> ptr(Code code);
+	public abstract P ptr(Code code);
 
 	@Override
 	public final DataOp toData(ID id, Code code) {

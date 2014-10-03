@@ -25,7 +25,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.util.string.ID;
 
 
-public abstract class DefiniteIROp extends IROp {
+public abstract class DefiniteIROp<P extends DumpablePtrOp<P>> extends IROp<P> {
 
 	public DefiniteIROp(CodeBuilder builder) {
 		super(builder);
@@ -36,10 +36,10 @@ public abstract class DefiniteIROp extends IROp {
 	}
 
 	@Override
-	public DumpablePtrOp<?> ptr(Code code) {
+	public final P ptr(Code code) {
 		return ptr();
 	}
 
-	public abstract DumpablePtrOp<?> ptr();
+	public abstract P ptr();
 
 }

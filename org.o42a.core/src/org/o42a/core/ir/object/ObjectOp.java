@@ -50,7 +50,8 @@ import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.string.ID;
 
 
-public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
+public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
+		implements TargetOp {
 
 	public static final ID ANCESTOR_ID = ID.rawId("ancestor");
 	public static final ID NEW_OBJECT_ID = ID.rawId("new_object");
@@ -140,11 +141,6 @@ public abstract class ObjectOp extends DefiniteIROp implements TargetOp {
 	@Override
 	public final ObjectIROp ptr() {
 		return this.ptr;
-	}
-
-	@Override
-	public final ObjectIROp ptr(Code code) {
-		return ptr();
 	}
 
 	public abstract Obj getWellKnownType();
