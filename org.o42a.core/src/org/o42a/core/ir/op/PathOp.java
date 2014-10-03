@@ -21,7 +21,6 @@ package org.o42a.core.ir.op;
 
 import java.util.function.Function;
 
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FldOp;
@@ -30,7 +29,6 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.source.CompilerContext;
 import org.o42a.util.string.ID;
 
 
@@ -47,18 +45,8 @@ public abstract class PathOp implements HostOp {
 	}
 
 	@Override
-	public final Generator getGenerator() {
-		return host().getGenerator();
-	}
-
-	@Override
 	public final CodeBuilder getBuilder() {
 		return host().getBuilder();
-	}
-
-	@Override
-	public final CompilerContext getContext() {
-		return host().getContext();
 	}
 
 	public abstract HostOp pathTarget(CodeDirs dirs);

@@ -27,13 +27,17 @@ import org.o42a.util.string.ID;
 
 public interface HostOp {
 
-	ID HOST_ID = ID.id("host");
+	ID HOST_ID = ID.rawId("host");
 
-	Generator getGenerator();
+	default CompilerContext getContext() {
+		return getBuilder().getContext();
+	}
+
+	default Generator getGenerator() {
+		return getBuilder().getGenerator();
+	}
 
 	CodeBuilder getBuilder();
-
-	CompilerContext getContext();
 
 	HostValueOp value();
 
