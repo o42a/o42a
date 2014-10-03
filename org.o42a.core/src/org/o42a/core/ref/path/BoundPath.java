@@ -35,7 +35,6 @@ import static org.o42a.util.fn.Init.init;
 import java.util.function.Function;
 
 import org.o42a.analysis.Analyzer;
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
@@ -59,7 +58,6 @@ import org.o42a.core.ref.path.impl.*;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRefParameters;
-import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
@@ -882,18 +880,8 @@ public class BoundPath extends RefPath {
 		}
 
 		@Override
-		public final Generator getGenerator() {
-			return this.start.getGenerator();
-		}
-
-		@Override
 		public final CodeBuilder getBuilder() {
 			return this.start.getBuilder();
-		}
-
-		@Override
-		public final CompilerContext getContext() {
-			return this.start.getContext();
 		}
 
 		@Override

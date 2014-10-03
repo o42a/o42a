@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.op;
 
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataPtrOp;
 import org.o42a.util.string.ID;
 
@@ -27,7 +28,7 @@ public interface TargetOp extends HostOp, HostTargetOp {
 
 	ID getId();
 
-	DataPtrOp<?> ptr();
+	DataPtrOp<?> ptr(Code code);
 
 	@Override
 	default HostTargetOp target() {
