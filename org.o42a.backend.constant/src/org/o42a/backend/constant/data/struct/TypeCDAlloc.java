@@ -22,7 +22,7 @@ package org.o42a.backend.constant.data.struct;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.backend.constant.data.TopLevelCDAlloc;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.Allocated;
+import org.o42a.codegen.data.AllocatedStruct;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.data.Type;
 
@@ -51,7 +51,7 @@ public class TypeCDAlloc<S extends StructOp<S>> extends TopLevelCDAlloc<S> {
 	}
 
 	@Override
-	protected Allocated<S, ?> startUnderlyingAllocation(SubData<?> container) {
+	protected AllocatedStruct<S, ?> startUnderlyingAllocation(SubData<?> container) {
 		return getBackend().getUnderlyingGenerator().getGlobals().allocateType(
 				this.underlyingType);
 	}

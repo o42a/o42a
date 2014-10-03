@@ -22,13 +22,13 @@ package org.o42a.codegen.data;
 import org.o42a.codegen.code.op.StructOp;
 
 
-public class Allocated<S extends StructOp<S>, C> {
+public class AllocatedStruct<S extends StructOp<S>, C> {
 
 	private final C container;
 	private final Type<S> type;
 	private final SubData<S> data;
 
-	Allocated(C container, Type<S> type, SubData<S> data) {
+	AllocatedStruct(C container, Type<S> type, SubData<S> data) {
 		this.container = container;
 		this.type = type;
 		this.data = data;
@@ -50,13 +50,13 @@ public class Allocated<S extends StructOp<S>, C> {
 		this.data.endAllocation();
 	}
 
-	static final class AllocatedGlobal<
+	static final class StaticGlobal<
 			S extends StructOp<S>,
-			T extends Type<S>> extends Allocated<S, Global<S, T>> {
+			T extends Type<S>> extends AllocatedStruct<S, Global<S, T>> {
 
 		private final boolean reportAllocation;
 
-		public AllocatedGlobal(
+		public StaticGlobal(
 				Global<S, T> global,
 				Type<S> type,
 				SubData<S> data,

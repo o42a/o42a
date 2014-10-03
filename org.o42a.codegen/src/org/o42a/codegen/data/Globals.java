@@ -103,7 +103,7 @@ public abstract class Globals {
 
 	public final <
 			S extends StructOp<S>,
-			T extends Type<S>> Allocated<S, T> allocateType(
+			T extends Type<S>> AllocatedStruct<S, T> allocateType(
 					T type) {
 
 		final SubData<S> data = type.createTypeData(getGenerator());
@@ -112,7 +112,7 @@ public abstract class Globals {
 			"Failed to allocate type " + type;
 		data.startAllocation(dataAllocator());
 
-		return new Allocated<>(type, type, type.getInstanceData());
+		return new AllocatedStruct<>(type, type, type.getInstanceData());
 	}
 
 	public final GlobalSettings newGlobal() {

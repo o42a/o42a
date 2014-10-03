@@ -42,7 +42,7 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 
 	private final ArrayList<DCDAlloc<?, ?>> nested = new ArrayList<>();
 	private final CType<S> underlyingStruct;
-	private Allocated<S, ?> underlyingAllocated;
+	private AllocatedStruct<S, ?> underlyingAllocated;
 	private final Init<ContainerCDAlloc<S>> declaringType =
 			init(this::determineDeclaringType);
 	private boolean containerAllocated;
@@ -81,7 +81,7 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 		return this.containerAllocated;
 	}
 
-	public final Allocated<S, ?> getUnderlyingAllocated() {
+	public final AllocatedStruct<S, ?> getUnderlyingAllocated() {
 		getUnderlying();
 		return this.underlyingAllocated;
 	}
@@ -155,7 +155,7 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 		}
 	}
 
-	protected abstract Allocated<S, ?> startUnderlyingAllocation(
+	protected abstract AllocatedStruct<S, ?> startUnderlyingAllocation(
 			SubData<?> container);
 
 	final int nest(DCDAlloc<?, ?> nested) {

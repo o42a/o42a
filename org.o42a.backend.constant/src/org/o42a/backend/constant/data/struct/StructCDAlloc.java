@@ -21,7 +21,7 @@ package org.o42a.backend.constant.data.struct;
 
 import org.o42a.backend.constant.data.*;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.Allocated;
+import org.o42a.codegen.data.AllocatedStruct;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.SubData;
 
@@ -72,7 +72,7 @@ public class StructCDAlloc<S extends StructOp<S>> extends ContainerCDAlloc<S> {
 	}
 
 	@Override
-	protected Allocated<S, ?> startUnderlyingAllocation(SubData<?> container) {
+	protected AllocatedStruct<S, ?> startUnderlyingAllocation(SubData<?> container) {
 		if (isStruct()) {
 			return container.allocateStruct(
 					getData().getId().getLocal(),
