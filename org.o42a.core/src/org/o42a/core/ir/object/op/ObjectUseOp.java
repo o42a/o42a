@@ -35,7 +35,7 @@ import org.o42a.core.ir.op.IROp;
 import org.o42a.util.string.ID;
 
 
-public final class ObjectUseOp extends IROp {
+public final class ObjectUseOp extends IROp<ObjectUseOp.Op> {
 
 	public static final Type OBJECT_USE_TYPE = new Type();
 	private static final AllocatableObjectUse ALLOCATABLE_OBJECT_USE =

@@ -36,7 +36,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
 
-public final class ObjectDataOp extends DefiniteIROp {
+public final class ObjectDataOp extends DefiniteIROp<ObjectIRDataOp> {
 
 	private static final ID START_OFFSET_ID = ID.rawId("start_offset");
 
@@ -52,11 +52,6 @@ public final class ObjectDataOp extends DefiniteIROp {
 	@Override
 	public final ObjectIRDataOp ptr() {
 		return this.ptr;
-	}
-
-	@Override
-	public final ObjectIRDataOp ptr(Code code) {
-		return ptr();
 	}
 
 	public final ObjectIRDescOp loadDesc(Code code) {

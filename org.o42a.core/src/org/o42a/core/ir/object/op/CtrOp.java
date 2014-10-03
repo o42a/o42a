@@ -54,7 +54,7 @@ import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
 
-public class CtrOp extends IROp {
+public class CtrOp extends IROp<CtrOp.Op> {
 
 	public static final Type CTR_TYPE = new Type();
 	public static final Allocatable<Op> ALLOCATABLE_CTR =

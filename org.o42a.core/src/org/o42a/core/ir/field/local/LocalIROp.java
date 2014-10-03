@@ -19,13 +19,12 @@
 */
 package org.o42a.core.ir.field.local;
 
-import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.field.local.LocalIR.Op;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.DefiniteIROp;
 
 
-public final class LocalIROp extends DefiniteIROp {
+public final class LocalIROp extends DefiniteIROp<Op> {
 
 	private final ObjectOp host;
 	private final Op ptr;
@@ -39,11 +38,6 @@ public final class LocalIROp extends DefiniteIROp {
 	@Override
 	public final Op ptr() {
 		return this.ptr;
-	}
-
-	@Override
-	public final Op ptr(Code code) {
-		return ptr();
 	}
 
 	public final ObjectOp host() {

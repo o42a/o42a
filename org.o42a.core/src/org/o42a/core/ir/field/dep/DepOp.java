@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.field.dep;
 
+import static org.o42a.codegen.code.op.DumpPtrOp.dumpPtrOp;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import java.util.function.Function;
@@ -26,7 +27,7 @@ import java.util.function.Function;
 import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.DumpablePtrOp;
+import org.o42a.codegen.code.op.DumpPtrOp;
 import org.o42a.core.ir.field.ByOwnerStoreOp;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.local.LocalIROp;
@@ -41,13 +42,14 @@ import org.o42a.core.object.state.Dep;
 import org.o42a.util.string.ID;
 
 
-public class DepOp extends DefiniteIROp implements TargetOp, HostValueOp {
+public final class DepOp extends DefiniteIROp<DumpPtrOp>
+		implements TargetOp, HostValueOp {
 
 	public static final ID DEP_ID = ID.id("dep");
 
 	private final ObjectOp host;
 	private final DepIR depIR;
-	private final DumpablePtrOp<?> ptr;
+	private final DumpPtrOp ptr;
 	private final DepIR.Op op;
 	private final RefIROp ref;
 
@@ -56,17 +58,17 @@ public class DepOp extends DefiniteIROp implements TargetOp, HostValueOp {
 		this.host = host;
 		this.depIR = depIR;
 		if (depIR.isOmitted()) {
-			this.ptr = host.ptr(code);
 			this.op = null;
+			this.ptr = dumpPtrOp(host.ptr());
 		} else {
-			this.ptr = this.op =
-					host.ptr(code).field(code, depIR.getTypeInstance());
+			this.op = host.ptr().field(code, depIR.getTypeInstance());
+			this.ptr = dumpPtrOp(this.op);
 		}
 		this.ref = depIR.refIR().op(code, this);
 	}
 
 	@Override
-	public DumpablePtrOp<?> ptr() {
+	public final DumpPtrOp ptr() {
 		return this.ptr;
 	}
 
@@ -74,11 +76,6 @@ public class DepOp extends DefiniteIROp implements TargetOp, HostValueOp {
 		assert this.op != null :
 			this + " is omitted";
 		return this.op;
-	}
-
-	@Override
-	public ID getId() {
-		return ptr().getId();
 	}
 
 	public final Dep getDep() {
