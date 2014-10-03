@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.code;
 
+import java.util.function.Supplier;
+
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
@@ -119,6 +121,23 @@ public abstract class Code extends DebugCodeBase {
 		updateAssets(new CodeAssets(inset, "inset", inset));
 
 		return inset;
+	}
+
+	public final <T> Supplier<T> inset(
+			java.util.function.Function<Code, T> get) {
+		return inset((ID) null, get);
+	}
+
+	public final <T> Supplier<T> inset(
+			String name,
+			java.util.function.Function<Code, T> get) {
+		return inset(ID.id(name), get);
+	}
+
+	public final <T> Supplier<T> inset(
+			ID name,
+			java.util.function.Function<Code, T> get) {
+		return new InsetBuilder<>(inset(name), get);
 	}
 
 	public final Block addBlock(String name) {
@@ -259,6 +278,34 @@ public abstract class Code extends DebugCodeBase {
 
 	protected void removeAllAssets() {
 		updateAssets(new CodeAssets(this, "clean"));
+	}
+
+	private static final class InsetBuilder<T> implements Supplier<T> {
+
+		private final Code inset;
+		private final java.util.function.Function<Code, T> get;
+		private T result;
+
+		InsetBuilder(Code inset, java.util.function.Function<Code, T> get) {
+			this.inset = inset;
+			this.get = get;
+		}
+
+		@Override
+		public T get() {
+			if (this.result != null) {
+				return this.result;
+			}
+			return this.result = this.get.apply(this.inset);
+		}
+
+		@Override
+		public String toString() {
+			if (this.inset == null) {
+				return super.toString();
+			}
+			return this.inset.toString();
+		}
 	}
 
 }
