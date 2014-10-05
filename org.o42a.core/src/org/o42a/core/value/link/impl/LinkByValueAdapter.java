@@ -147,9 +147,9 @@ public class LinkByValueAdapter extends ValueAdapter {
 
 			final Block code = dirs.code();
 			final ObjectOp target =
-					getRef().op(host)
+					getRef()
+					.op(host)
 					.path()
-					.target()
 					.materialize(
 							dirs.dirs(),
 							tempObjHolder(dirs.getAllocator()));

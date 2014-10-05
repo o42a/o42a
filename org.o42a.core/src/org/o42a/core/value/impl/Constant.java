@@ -155,11 +155,6 @@ public final class Constant<T> extends ObjectConstructor {
 		}
 
 		@Override
-		public HostTargetOp target() {
-			return pathTargetOp();
-		}
-
-		@Override
 		public void writeCond(CodeDirs dirs) {
 		}
 
@@ -194,12 +189,12 @@ public final class Constant<T> extends ObjectConstructor {
 		}
 
 		@Override
-		protected TargetStoreOp allocateStore(ID id, Code code) {
+		public TargetStoreOp allocateStore(ID id, Code code) {
 			return new ConstantStoreOp(id, code, this.constant);
 		}
 
 		@Override
-		protected TargetStoreOp localStore(
+		public TargetStoreOp localStore(
 				ID id,
 				Function<CodeDirs, LocalIROp> getLocal) {
 			return new ConstantStoreOp(id, getLocal, this.constant);

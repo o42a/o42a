@@ -869,7 +869,7 @@ public class BoundPath extends RefPath {
 	}
 
 	private static final class StaticHostOp
-			implements HostOp, HostTargetOp, HostValueOp {
+			implements HostOp, HostValueOp {
 
 		private final HostOp start;
 		private final ObjectIR objectIR;
@@ -890,11 +890,6 @@ public class BoundPath extends RefPath {
 		}
 
 		@Override
-		public final HostTargetOp target() {
-			return this;
-		}
-
-		@Override
 		public void writeCond(CodeDirs dirs) {
 			object(dirs).value().writeCond(dirs);
 		}
@@ -911,7 +906,7 @@ public class BoundPath extends RefPath {
 
 		@Override
 		public FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey) {
-			return object(dirs).target().field(dirs, memberKey);
+			return object(dirs).field(dirs, memberKey);
 		}
 
 		@Override

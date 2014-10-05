@@ -404,11 +404,6 @@ public final class Dep extends Step implements SubID {
 		}
 
 		@Override
-		public HostTargetOp target() {
-			return pathTargetOp();
-		}
-
-		@Override
 		public DepOp pathTarget(CodeDirs dirs) {
 
 			final ObjHolder holder = tempObjHolder(dirs.getAllocator());
@@ -417,7 +412,7 @@ public final class Dep extends Step implements SubID {
 		}
 
 		@Override
-		protected TargetStoreOp allocateStore(ID id, Code code) {
+		public TargetStoreOp allocateStore(ID id, Code code) {
 
 			final Code alloc = code.inset(id);
 
@@ -428,7 +423,7 @@ public final class Dep extends Step implements SubID {
 		}
 
 		@Override
-		protected TargetStoreOp localStore(
+		public TargetStoreOp localStore(
 				ID id,
 				Function<CodeDirs, LocalIROp> getLocal) {
 			return indirectTargetStore(
@@ -438,10 +433,7 @@ public final class Dep extends Step implements SubID {
 		}
 
 		private DepOp dep(CodeDirs dirs, ObjHolder holder) {
-			return host()
-					.target()
-					.materialize(dirs, holder)
-					.dep(dirs, getStep());
+			return host().materialize(dirs, holder).dep(dirs, getStep());
 		}
 
 	}
@@ -461,13 +453,20 @@ public final class Dep extends Step implements SubID {
 		}
 
 		@Override
-		public HostTargetOp target() {
-			return pathTargetOp();
+		public HostOp pathTarget(CodeDirs dirs) {
+			return path();
 		}
 
 		@Override
-		public HostOp pathTarget(CodeDirs dirs) {
-			return path();
+		public TargetStoreOp allocateStore(ID id, Code code) {
+			return path().allocateStore(id, code);
+		}
+
+		@Override
+		public TargetStoreOp localStore(
+				ID id,
+				Function<CodeDirs, LocalIROp> getLocal) {
+			return path().localStore(id, getLocal);
 		}
 
 		private HostOp path() {
@@ -479,18 +478,6 @@ public final class Dep extends Step implements SubID {
 					.op(host());
 
 			return this.dep.ref().op(enclosing).path();
-		}
-
-		@Override
-		protected TargetStoreOp allocateStore(ID id, Code code) {
-			return path().target().allocateStore(id, code);
-		}
-
-		@Override
-		protected TargetStoreOp localStore(
-				ID id,
-				Function<CodeDirs, LocalIROp> getLocal) {
-			return path().target().localStore(id, getLocal);
 		}
 
 	}

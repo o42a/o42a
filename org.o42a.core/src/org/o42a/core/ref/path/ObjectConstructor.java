@@ -221,30 +221,25 @@ public abstract class ObjectConstructor
 		}
 
 		@Override
-		public HostTargetOp target() {
-			return pathTargetOp();
-		}
-
-		@Override
 		public ObjectOp pathTarget(CodeDirs dirs) {
 			return createObject(dirs, tempObjHolder(dirs.getAllocator()));
 		}
 
 		@Override
-		public String toString() {
-			return String.valueOf(ObjectConstructor.this);
-		}
-
-		@Override
-		protected TargetStoreOp allocateStore(ID id, Code code) {
+		public TargetStoreOp allocateStore(ID id, Code code) {
 			return new NewObjectStoreOp(id, code, this);
 		}
 
 		@Override
-		protected TargetStoreOp localStore(
+		public TargetStoreOp localStore(
 				ID id,
 				Function<CodeDirs, LocalIROp> getLocal) {
 			return new NewObjectStoreOp(id, getLocal, this);
+		}
+
+		@Override
+		public String toString() {
+			return String.valueOf(ObjectConstructor.this);
 		}
 
 		private boolean isExact() {
@@ -275,7 +270,7 @@ public abstract class ObjectConstructor
 
 		private ObjectOp newObject(CodeDirs dirs, ObjHolder holder) {
 
-			final ObjectOp host = host().target().materialize(
+			final ObjectOp host = host().materialize(
 					dirs,
 					tempObjHolder(dirs.getAllocator()));
 			final CodeDirs subDirs = dirs.begin(

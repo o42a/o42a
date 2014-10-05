@@ -168,11 +168,6 @@ public class VoidStep extends Step {
 		}
 
 		@Override
-		public HostTargetOp target() {
-			return pathTargetOp();
-		}
-
-		@Override
 		public void writeCond(CodeDirs dirs) {
 		}
 
@@ -193,12 +188,12 @@ public class VoidStep extends Step {
 		}
 
 		@Override
-		protected TargetStoreOp allocateStore(ID id, Code code) {
+		public TargetStoreOp allocateStore(ID id, Code code) {
 			return voidIR().exactTargetStore(id);
 		}
 
 		@Override
-		protected TargetStoreOp localStore(
+		public TargetStoreOp localStore(
 				ID id,
 				Function<CodeDirs, LocalIROp> getLocal) {
 			return voidIR().exactTargetStore(id);

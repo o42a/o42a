@@ -157,17 +157,12 @@ public abstract class AbstractMemberStep extends Step {
 		}
 
 		@Override
-		public HostTargetOp target() {
-			return pathTargetOp();
-		}
-
-		@Override
 		public FldOp<?, ?> pathTarget(CodeDirs dirs) {
-			return host().target().field(dirs, getStep().getMemberKey());
+			return host().field(dirs, getStep().getMemberKey());
 		}
 
 		@Override
-		protected TargetStoreOp allocateStore(ID id, Code code) {
+		public TargetStoreOp allocateStore(ID id, Code code) {
 
 			final Code alloc = code.inset(id);
 
@@ -177,7 +172,7 @@ public abstract class AbstractMemberStep extends Step {
 		}
 
 		@Override
-		protected TargetStoreOp localStore(
+		public TargetStoreOp localStore(
 				ID id,
 				Function<CodeDirs, LocalIROp> getLocal) {
 			return new MemberStoreOp(

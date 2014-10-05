@@ -215,11 +215,6 @@ final class LocalStep extends Step {
 		}
 
 		@Override
-		public HostTargetOp target() {
-			return pathTargetOp();
-		}
-
-		@Override
 		public void writeCond(CodeDirs dirs) {
 			op(dirs).writeCond(dirs);
 		}
@@ -240,7 +235,7 @@ final class LocalStep extends Step {
 		}
 
 		@Override
-		protected TargetStoreOp allocateStore(ID id, Code code) {
+		public TargetStoreOp allocateStore(ID id, Code code) {
 
 			final LocalOp op =
 					getBuilder()
@@ -251,7 +246,7 @@ final class LocalStep extends Step {
 		}
 
 		@Override
-		protected TargetStoreOp localStore(
+		public TargetStoreOp localStore(
 				ID id,
 				Function<CodeDirs, LocalIROp> getLocal) {
 			return new LocalStoreOp(

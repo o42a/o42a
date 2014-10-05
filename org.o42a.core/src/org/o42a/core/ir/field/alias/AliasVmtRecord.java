@@ -77,7 +77,6 @@ final class AliasVmtRecord
 		return field.getRef()
 				.op(builder.host())
 				.path()
-				.target()
 				.materialize(dirs, tempObjHolder(dirs.getAllocator()));
 	}
 

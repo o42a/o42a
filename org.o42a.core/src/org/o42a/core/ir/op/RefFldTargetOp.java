@@ -60,7 +60,7 @@ public abstract class RefFldTargetOp implements RefTargetOp {
 		final CodeDirs depDirs =
 				dirs.getBuilder().dirs(dirs.code(), noDep.head());
 
-		final ObjectOp object = host.target().materialize(
+		final ObjectOp object = host.materialize(
 				depDirs,
 				tempObjHolder(depDirs.getAllocator()));
 		final Block code = depDirs.code();

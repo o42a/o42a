@@ -172,22 +172,17 @@ public final class ModuleStep extends Step {
 		}
 
 		@Override
-		public HostTargetOp target() {
-			return pathTargetOp();
-		}
-
-		@Override
 		public ObjOp pathTarget(CodeDirs dirs) {
 			return moduleIR().op(getBuilder(), dirs.code());
 		}
 
 		@Override
-		protected TargetStoreOp allocateStore(ID id, Code code) {
+		public TargetStoreOp allocateStore(ID id, Code code) {
 			return moduleIR().exactTargetStore(id);
 		}
 
 		@Override
-		protected TargetStoreOp localStore(
+		public TargetStoreOp localStore(
 				ID id,
 				Function<CodeDirs, LocalIROp> getLocal) {
 			return moduleIR().exactTargetStore(id);

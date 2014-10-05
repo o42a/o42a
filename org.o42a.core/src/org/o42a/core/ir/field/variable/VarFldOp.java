@@ -96,8 +96,7 @@ public final class VarFldOp
 		tempObjHolder(code.getAllocator()).holdVolatile(code, host());
 
 		final ObjectOp valueObject =
-				value.target()
-				.materialize(dirs, tempObjHolder(code.getAllocator()));
+				value.materialize(dirs, tempObjHolder(code.getAllocator()));
 
 		ptr().object(null, code).store(
 				code,

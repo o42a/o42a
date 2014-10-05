@@ -192,11 +192,6 @@ public class NoneStep extends Step {
 		}
 
 		@Override
-		public HostTargetOp target() {
-			return pathTargetOp();
-		}
-
-		@Override
 		public void writeCond(CodeDirs dirs) {
 			dirs.code().go(dirs.falseDir());
 		}
@@ -228,12 +223,12 @@ public class NoneStep extends Step {
 		}
 
 		@Override
-		protected TargetStoreOp allocateStore(ID id, Code code) {
+		public TargetStoreOp allocateStore(ID id, Code code) {
 			return NONE_STORE;
 		}
 
 		@Override
-		protected TargetStoreOp localStore(
+		public TargetStoreOp localStore(
 				ID id,
 				Function<CodeDirs, LocalIROp> getLocal) {
 			return NONE_STORE;

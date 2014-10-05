@@ -101,7 +101,7 @@ final class DefaultRefTargetIR implements RefTargetIR {
 
 			final Block code = dirs.code();
 			final ObjectOp object =
-					store.loadTarget(dirs).target().materialize(
+					store.loadTarget(dirs).materialize(
 							dirs,
 							tempObjHolder(dirs.getAllocator()));
 
@@ -128,10 +128,8 @@ final class DefaultRefTargetIR implements RefTargetIR {
 		}
 
 		private DataOp createObject(CodeDirs dirs, HostOp host) {
-
-			final HostTargetOp target = this.ir.step.op(host).target();
-
-			return target.materialize(dirs, tempObjHolder(dirs.getAllocator()))
+			return this.ir.step.op(host)
+					.materialize(dirs, tempObjHolder(dirs.getAllocator()))
 					.toData(null, dirs.code());
 		}
 

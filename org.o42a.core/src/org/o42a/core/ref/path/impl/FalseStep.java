@@ -183,11 +183,6 @@ public class FalseStep extends Step {
 		}
 
 		@Override
-		public HostTargetOp target() {
-			return pathTargetOp();
-		}
-
-		@Override
 		public void writeCond(CodeDirs dirs) {
 			dirs.code().go(dirs.falseDir());
 		}
@@ -218,12 +213,12 @@ public class FalseStep extends Step {
 		}
 
 		@Override
-		protected TargetStoreOp allocateStore(ID id, Code code) {
+		public TargetStoreOp allocateStore(ID id, Code code) {
 			return falseIR().exactTargetStore(id);
 		}
 
 		@Override
-		protected TargetStoreOp localStore(
+		public TargetStoreOp localStore(
 				ID id,
 				Function<CodeDirs, LocalIROp> getLocal) {
 			return falseIR().exactTargetStore(id);

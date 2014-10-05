@@ -89,8 +89,7 @@ public abstract class ValueOp implements HostValueOp {
 	public final void assign(CodeDirs dirs, HostOp value) {
 		state().assign(
 				dirs,
-				value.target()
-				.materialize(dirs, tempObjHolder(dirs.getAllocator())));
+				value.materialize(dirs, tempObjHolder(dirs.getAllocator())));
 	}
 
 	public abstract StateOp state();
