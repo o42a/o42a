@@ -150,7 +150,7 @@ public class OpNames {
 				localName = local.sub(name);
 			}
 
-			return code().getEnclosing().getOpNames().nestedId(localName);
+			return code().getEnclosing().opNames().nestedId(localName);
 		}
 
 	}

@@ -42,7 +42,7 @@ public final class RelLLOp extends LLOp<RelOp> implements RelOp {
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final ID resultId = code.getOpNames().offsetId(id, from, this);
+		final ID resultId = code.opNames().offsetId(id, from, this);
 
 		return new AnyLLOp(
 				resultId,
@@ -60,7 +60,7 @@ public final class RelLLOp extends LLOp<RelOp> implements RelOp {
 	@Override
 	public Int32llOp toInt32(ID id, Code code) {
 		return new Int32llOp(
-				code.getOpNames().castId(id, INT32_ID, this),
+				code.opNames().castId(id, INT32_ID, this),
 				getBlockPtr(),
 				getNativePtr());
 	}

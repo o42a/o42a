@@ -50,7 +50,7 @@ public abstract class PtrLLOp<P extends PtrOp<P>>
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final ID resultId = code.getOpNames().unaryId(id, IS_NULL_ID, this);
+		final ID resultId = code.opNames().unaryId(id, IS_NULL_ID, this);
 
 		return new BoolLLOp(
 				resultId,
@@ -69,7 +69,7 @@ public abstract class PtrLLOp<P extends PtrOp<P>>
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final ID resultId = code.getOpNames().binaryId(id, EQ_ID, this, other);
+		final ID resultId = code.opNames().binaryId(id, EQ_ID, this, other);
 
 		return new BoolLLOp(
 				resultId,
@@ -89,7 +89,7 @@ public abstract class PtrLLOp<P extends PtrOp<P>>
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final ID resultId = code.getOpNames().binaryId(id, NE_ID, this, other);
+		final ID resultId = code.opNames().binaryId(id, NE_ID, this, other);
 
 		return new BoolLLOp(
 				resultId,

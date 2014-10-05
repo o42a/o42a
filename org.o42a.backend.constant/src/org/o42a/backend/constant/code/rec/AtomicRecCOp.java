@@ -50,7 +50,7 @@ public abstract class AtomicRecCOp<
 	public O testAndSet(ID id, Code code, O expected, O value) {
 
 		final ID resultId =
-				code.getOpNames().binaryId(id, TEST_AND_SET_ID, this, value);
+				code.opNames().binaryId(id, TEST_AND_SET_ID, this, value);
 		final CCode<?> ccode = cast(code);
 		final COp<O, ?> cExpected = cast(expected);
 		final COp<O, ?> cValue = cast(value);

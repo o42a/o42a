@@ -36,7 +36,7 @@ public final class Int16llOp extends IntLLOp<Int16op, Int16llOp>
 	@Override
 	public Int16op comp(ID id, Code code) {
 		return xor(
-				code.getOpNames().unaryId(id, COMP_ID, this),
+				code.opNames().unaryId(id, COMP_ID, this),
 				code,
 				code.int16((short) -1));
 	}

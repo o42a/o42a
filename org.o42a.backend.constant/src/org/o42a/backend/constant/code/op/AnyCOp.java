@@ -49,7 +49,7 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 	@Override
 	public final AnyRecCOp toRec(ID id, Code code) {
 
-		final ID castId = code.getOpNames().castId(id, ANY_ID, this);
+		final ID castId = code.opNames().castId(id, ANY_ID, this);
 
 		return new AnyRecCOp(
 				new OpBE<AnyRecOp>(castId, cast(code)) {
@@ -70,7 +70,7 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 	@Override
 	public DataRecOp toDataRec(ID id, Code code) {
 
-		final ID castId = code.getOpNames().castId(id, DATA_ID, this);
+		final ID castId = code.opNames().castId(id, DATA_ID, this);
 
 		return new DataRecCOp(
 				new OpBE<DataRecOp>(castId, cast(code)) {
@@ -91,7 +91,7 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 	@Override
 	public final Int8recCOp toInt8(ID id, Code code) {
 
-		final ID castId = code.getOpNames().castId(id, INT8_ID, this);
+		final ID castId = code.opNames().castId(id, INT8_ID, this);
 
 		return new Int8recCOp(
 				new OpBE<Int8recOp>(castId, cast(code)) {
@@ -112,7 +112,7 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 	@Override
 	public final Int16recCOp toInt16(ID id, Code code) {
 
-		final ID castId = code.getOpNames().castId(id, INT16_ID, this);
+		final ID castId = code.opNames().castId(id, INT16_ID, this);
 
 		return new Int16recCOp(
 				new OpBE<Int16recOp>(castId, cast(code)) {
@@ -133,7 +133,7 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 	@Override
 	public final Int32recCOp toInt32(ID id, Code code) {
 
-		final ID castId = code.getOpNames().castId(id, INT32_ID, this);
+		final ID castId = code.opNames().castId(id, INT32_ID, this);
 
 		return new Int32recCOp(
 				new OpBE<Int32recOp>(castId, cast(code)) {
@@ -154,7 +154,7 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 	@Override
 	public final Int64recCOp toInt64(ID id, Code code) {
 
-		final ID castId = code.getOpNames().castId(id, INT64_ID, this);
+		final ID castId = code.opNames().castId(id, INT64_ID, this);
 
 		return new Int64recCOp(
 				new OpBE<Int64recOp>(castId, cast(code)) {
@@ -175,7 +175,7 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 	@Override
 	public final Fp32recCOp toFp32(ID id, Code code) {
 
-		final ID castId = code.getOpNames().castId(id, FP32_ID, this);
+		final ID castId = code.opNames().castId(id, FP32_ID, this);
 
 		return new Fp32recCOp(
 				new OpBE<Fp32recOp>(castId, cast(code)) {
@@ -196,7 +196,7 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 	@Override
 	public final Fp64recOp toFp64(ID id, Code code) {
 
-		final ID castId = code.getOpNames().castId(id, FP64_ID, this);
+		final ID castId = code.opNames().castId(id, FP64_ID, this);
 
 		return new Fp64recCOp(
 				new OpBE<Fp64recOp>(castId, cast(code)) {
@@ -217,7 +217,7 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 	@Override
 	public final RelRecCOp toRel(ID id, Code code) {
 
-		final ID castId = code.getOpNames().castId(id, REL_ID, this);
+		final ID castId = code.opNames().castId(id, REL_ID, this);
 
 		return new RelRecCOp(
 				new OpBE<RelRecOp>(castId, cast(code)) {
@@ -238,7 +238,7 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 	@Override
 	public DataCOp toData(ID id, Code code) {
 
-		final ID castId = code.getOpNames().castId(id, DATA_ID, this);
+		final ID castId = code.opNames().castId(id, DATA_ID, this);
 
 		return new DataCOp(
 				new OpBE<DataOp>(castId, cast(code)) {
@@ -259,7 +259,7 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 	@Override
 	public CodeCOp toCode(ID id, Code code) {
 
-		final ID castId = code.getOpNames().castId(id, CODE_ID, this);
+		final ID castId = code.opNames().castId(id, CODE_ID, this);
 
 		return new CodeCOp(new OpBE<CodeOp>(castId, cast(code)) {
 			@Override
@@ -281,7 +281,7 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 			final Code code,
 			final Type<S> type) {
 
-		final ID castId = code.getOpNames().castId(id, type.getId(), this);
+		final ID castId = code.opNames().castId(id, type.getId(), this);
 
 		type.pointer(getBackend().getGenerator());
 
@@ -309,7 +309,7 @@ public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 			Code code,
 			final Type<S> type) {
 
-		final ID castId = code.getOpNames().castId(id, type.getId(), this);
+		final ID castId = code.opNames().castId(id, type.getId(), this);
 
 		return new StructRecCOp<>(
 				new OpBE<StructRecOp<S>>(castId, cast(code)) {

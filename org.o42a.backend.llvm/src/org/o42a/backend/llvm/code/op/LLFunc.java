@@ -60,7 +60,7 @@ public class LLFunc<F extends Fn<F>> extends PtrLLOp<F>
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final ID castId = code.getOpNames().castId(id, ANY_ID, this);
+		final ID castId = code.opNames().castId(id, ANY_ID, this);
 
 		return new AnyLLOp(
 				castId,

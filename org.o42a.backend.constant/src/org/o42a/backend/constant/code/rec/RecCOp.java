@@ -91,7 +91,7 @@ public abstract class RecCOp<R extends RecOp<R, O>, O extends Op, T>
 			final Atomicity atomicity) {
 		assert getAllocPlace().ensureAccessibleFrom(code);
 
-		final ID derefId = code.getOpNames().derefId(id, this);
+		final ID derefId = code.opNames().derefId(id, this);
 		final CCode<?> ccode = cast(code);
 		final T constant = getConstantValue();
 

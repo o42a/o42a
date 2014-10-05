@@ -62,7 +62,7 @@ public abstract class DataPtrLLOp<P extends DataPtrOp<P>>
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final ID offsetId = code.getOpNames().indexId(id, this, index);
+		final ID offsetId = code.opNames().indexId(id, this, index);
 
 		return create(
 				offsetId,
@@ -82,7 +82,7 @@ public abstract class DataPtrLLOp<P extends DataPtrOp<P>>
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final ID castId = code.getOpNames().castId(id, ANY_ID, this);
+		final ID castId = code.opNames().castId(id, ANY_ID, this);
 
 		return new AnyLLOp(
 				castId,
@@ -101,7 +101,7 @@ public abstract class DataPtrLLOp<P extends DataPtrOp<P>>
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final ID castId = code.getOpNames().castId(id, DATA_ID, this);
+		final ID castId = code.opNames().castId(id, DATA_ID, this);
 
 		return new DataLLOp(
 				castId,
@@ -123,7 +123,7 @@ public abstract class DataPtrLLOp<P extends DataPtrOp<P>>
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final ID castId = code.getOpNames().castId(id, type.getId(), this);
+		final ID castId = code.opNames().castId(id, type.getId(), this);
 
 		return type.op(new LLStruct<>(
 				castId,

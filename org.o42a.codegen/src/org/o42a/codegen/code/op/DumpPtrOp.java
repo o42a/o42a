@@ -19,8 +19,6 @@
 */
 package org.o42a.codegen.code.op;
 
-import java.util.Objects;
-
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.AllocPlace;
@@ -29,13 +27,13 @@ import org.o42a.util.string.ID;
 
 public final class DumpPtrOp implements DumpablePtrOp<DumpPtrOp> {
 
-	public static DumpPtrOp dumpPtrOp(DumpablePtrOp<?> ptr) {
+	public static DumpPtrOp dumpPtrOp(OpMeans<? extends DumpablePtrOp<?>> ptr) {
 		return new DumpPtrOp(ptr);
 	}
 
-	private final DumpablePtrOp<?> ptr;
+	private final OpMeans<? extends DumpablePtrOp<?>> ptr;
 
-	DumpPtrOp(DumpablePtrOp<?> ptr) {
+	DumpPtrOp(OpMeans<? extends DumpablePtrOp<?>> ptr) {
 		this.ptr = ptr;
 	}
 
@@ -44,19 +42,23 @@ public final class DumpPtrOp implements DumpablePtrOp<DumpPtrOp> {
 		return this.ptr.getId();
 	}
 
+	public final DumpablePtrOp<?> ptr() {
+		return this.ptr.op();
+	}
+
 	@Override
 	public AllocPlace getAllocPlace() {
-		return this.ptr.getAllocPlace();
+		return ptr().getAllocPlace();
 	}
 
 	@Override
 	public BoolOp isNull(ID id, Code code) {
-		return this.ptr.isNull(id, code);
+		return ptr().isNull(id, code);
 	}
 
 	@Override
 	public BoolOp eq(ID id, Code code, DumpPtrOp other) {
-		return eq(id, code, this.ptr, other.ptr);
+		return eq(id, code, ptr(), other.ptr());
 	}
 
 	@Override
@@ -66,15 +68,16 @@ public final class DumpPtrOp implements DumpablePtrOp<DumpPtrOp> {
 
 	@Override
 	public void returnValue(Block code, boolean dispose) {
-		this.ptr.returnValue(code, dispose);
+		ptr().returnValue(code, dispose);
 	}
 
 	@Override
 	public DumpPtrOp offset(ID id, Code code, IntOp<?> index) {
 
-		final DumpablePtrOp<?> result = this.ptr.offset(id, code, index);
+		final DumpablePtrOp<?> ptr = ptr();
+		final DumpablePtrOp<?> result = ptr.offset(id, code, index);
 
-		if (result == this.ptr) {
+		if (result == ptr) {
 			return this;
 		}
 
@@ -83,17 +86,20 @@ public final class DumpPtrOp implements DumpablePtrOp<DumpPtrOp> {
 
 	@Override
 	public AnyOp toAny(ID id, Code code) {
-		return this.ptr.toAny(id, code);
+		return ptr().toAny(id, code);
 	}
 
 	@Override
 	public DataOp toData(ID id, Code code) {
-		return this.ptr.toData(id, code);
+		return ptr().toData(id, code);
 	}
 
 	@Override
 	public String toString() {
-		return Objects.toString(this.ptr);
+		if (this.ptr == null) {
+			return super.toString();
+		}
+		return getId().toString();
 	}
 
 	@SuppressWarnings("unchecked")

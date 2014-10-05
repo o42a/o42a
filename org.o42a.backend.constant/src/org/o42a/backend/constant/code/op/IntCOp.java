@@ -49,7 +49,7 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 
 		final CCode<?> ccode = cast(code);
 		final ID resultId =
-				code.getOpNames().binaryId(id, SHL_ID, this, numBits);
+				code.opNames().binaryId(id, SHL_ID, this, numBits);
 		@SuppressWarnings("unchecked")
 		final IntCOp<U, T> nb = (IntCOp<U, T>) numBits;
 
@@ -83,7 +83,7 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 
 		final CCode<?> ccode = cast(code);
 		final ID resultId =
-				code.getOpNames().binaryId(id, SHL_ID, this, numBits);
+				code.opNames().binaryId(id, SHL_ID, this, numBits);
 
 		if (isConstant()) {
 
@@ -114,7 +114,7 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 
 		final CCode<?> ccode = cast(code);
 		final ID resultId =
-				code.getOpNames().binaryId(id, LSHR_ID, this, numBits);
+				code.opNames().binaryId(id, LSHR_ID, this, numBits);
 		@SuppressWarnings("unchecked")
 		final IntCOp<U, T> nb = (IntCOp<U, T>) numBits;
 
@@ -148,7 +148,7 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 
 		final CCode<?> ccode = cast(code);
 		final ID resultId =
-				code.getOpNames().binaryId(id, LSHR_ID, this, numBits);
+				code.opNames().binaryId(id, LSHR_ID, this, numBits);
 
 		if (isConstant()) {
 
@@ -179,7 +179,7 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 
 		final CCode<?> ccode = cast(code);
 		final ID resultId =
-				code.getOpNames().binaryId(id, ASHR_ID, this, numBits);
+				code.opNames().binaryId(id, ASHR_ID, this, numBits);
 		@SuppressWarnings("unchecked")
 		final IntCOp<U, T> nb = (IntCOp<U, T>) numBits;
 
@@ -213,7 +213,7 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 
 		final CCode<?> ccode = cast(code);
 		final ID resultId =
-				code.getOpNames().binaryId(id, ASHR_ID, this, numBits);
+				code.opNames().binaryId(id, ASHR_ID, this, numBits);
 
 		if (isConstant()) {
 
@@ -244,7 +244,7 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 
 		final CCode<?> ccode = cast(code);
 		final ID resultId =
-				code.getOpNames().binaryId(id, AND_ID, this, operand);
+				code.opNames().binaryId(id, AND_ID, this, operand);
 		@SuppressWarnings("unchecked")
 		final IntCOp<U, T> op = (IntCOp<U, T>) operand;
 
@@ -278,7 +278,7 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 
 		final CCode<?> ccode = cast(code);
 		final ID resultId =
-				code.getOpNames().binaryId(id, OR_ID, this, operand);
+				code.opNames().binaryId(id, OR_ID, this, operand);
 		@SuppressWarnings("unchecked")
 		final IntCOp<U, T> op = (IntCOp<U, T>) operand;
 
@@ -312,7 +312,7 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 
 		final CCode<?> ccode = cast(code);
 		final ID resultId =
-				code.getOpNames().binaryId(id, XOR_ID, this, operand);
+				code.opNames().binaryId(id, XOR_ID, this, operand);
 		@SuppressWarnings("unchecked")
 		final IntCOp<U, T> op = (IntCOp<U, T>) operand;
 
@@ -345,7 +345,7 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 	public final U comp(final ID id, final Code code) {
 
 		final CCode<?> ccode = cast(code);
-		final ID resultId = code.getOpNames().unaryId(id, COMP_ID, this);
+		final ID resultId = code.opNames().unaryId(id, COMP_ID, this);
 
 		if (isConstant()) {
 
@@ -374,7 +374,7 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 	public final BoolOp lowestBit(final ID id, final Code code) {
 
 		final CCode<?> ccode = cast(code);
-		final ID resultId = code.getOpNames().castId(id, BOOL_ID, this);
+		final ID resultId = code.opNames().castId(id, BOOL_ID, this);
 
 		if (isConstant()) {
 

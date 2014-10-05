@@ -351,7 +351,7 @@ public final class CFunc<F extends Fn<F>>
 	@Override
 	public AnyCOp toAny(ID id, Code code) {
 
-		final ID resultId = code.getOpNames().castId(id, ANY_ID, this);
+		final ID resultId = code.opNames().castId(id, ANY_ID, this);
 
 		return new AnyCOp(
 				new OpBE<AnyOp>(resultId, cast(code)) {

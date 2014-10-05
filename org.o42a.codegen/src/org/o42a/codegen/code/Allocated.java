@@ -25,7 +25,7 @@ import static org.o42a.codegen.code.AllocAsset.deallocatedAsset;
 import org.o42a.util.string.ID;
 
 
-public class Allocated<T> implements Comparable<Allocated<T>> {
+public final class Allocated<T> implements Comparable<Allocated<T>> {
 
 	private final Allocator allocator;
 	private final ID id;

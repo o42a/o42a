@@ -74,7 +74,7 @@ public abstract class DataPtrCOp<P extends DataPtrOp<P>>
 	@Override
 	public AnyCOp toAny(ID id, Code code) {
 
-		final ID resultId = code.getOpNames().castId(id, ANY_ID, this);
+		final ID resultId = code.opNames().castId(id, ANY_ID, this);
 
 		return new AnyCOp(
 				new OpBE<AnyOp>(resultId, cast(code)) {
@@ -96,7 +96,7 @@ public abstract class DataPtrCOp<P extends DataPtrOp<P>>
 	public final P offset(ID id, Code code, IntOp<?> index) {
 
 		final CCode<?> ccode = cast(code);
-		final ID resultId = code.getOpNames().indexId(id, this, index);
+		final ID resultId = code.opNames().indexId(id, this, index);
 		final IntCOp<?, ?> idx = (IntCOp<?, ?>) index;
 
 		if (idx.isConstant() && idx.getConstant().intValue() == 0) {
