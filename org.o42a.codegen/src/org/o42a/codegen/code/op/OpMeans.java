@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2010-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,33 +19,13 @@
 */
 package org.o42a.codegen.code.op;
 
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
 import org.o42a.util.string.ID;
 
 
-public interface PtrOp<P extends PtrOp<P>> extends Op, OpMeans<P> {
+public interface OpMeans<O> {
 
-	ID IS_NULL_ID = ID.rawId("is_null");
+	ID getId();
 
-	BoolOp isNull(ID id, Code code);
-
-	BoolOp eq(ID id, Code code, P other);
-
-	BoolOp ne(ID id, Code code, P other);
-
-	AnyOp toAny(ID id, Code code);
-
-	@Override
-	@SuppressWarnings("unchecked")
-	default P op() {
-		return (P) this;
-	}
-
-	default void returnValue(Block code) {
-		returnValue(code, true);
-	}
-
-	void returnValue(Block code, boolean dispose);
+	O op();
 
 }

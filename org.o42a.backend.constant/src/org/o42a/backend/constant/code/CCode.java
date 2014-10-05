@@ -110,43 +110,43 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 
 	@Override
 	public final Int8cOp int8(byte value) {
-		return new Int8cOp(code().getOpNames().opId(null), this, value);
+		return new Int8cOp(code().opNames().opId(null), this, value);
 	}
 
 	@Override
 	public final Int16cOp int16(short value) {
-		return new Int16cOp(code().getOpNames().opId(null), this, value);
+		return new Int16cOp(code().opNames().opId(null), this, value);
 	}
 
 	@Override
 	public final Int32cOp int32(int value) {
-		return new Int32cOp(code().getOpNames().opId(null), this, value);
+		return new Int32cOp(code().opNames().opId(null), this, value);
 	}
 
 	@Override
 	public final Int64cOp int64(long value) {
-		return new Int64cOp(code().getOpNames().opId(null), this, value);
+		return new Int64cOp(code().opNames().opId(null), this, value);
 	}
 
 	@Override
 	public final Fp32cOp fp32(float value) {
-		return new Fp32cOp(code().getOpNames().opId(null), this, value);
+		return new Fp32cOp(code().opNames().opId(null), this, value);
 	}
 
 	@Override
 	public final Fp64cOp fp64(double value) {
-		return new Fp64cOp(code().getOpNames().opId(null), this, value);
+		return new Fp64cOp(code().opNames().opId(null), this, value);
 	}
 
 	@Override
 	public final BoolCOp bool(boolean value) {
-		return new BoolCOp(code().getOpNames().opId(null), this, value);
+		return new BoolCOp(code().opNames().opId(null), this, value);
 	}
 
 	@Override
 	public final RelCOp nullRelPtr() {
 		return new RelCOp(
-				new OpBE<RelOp>(code().getOpNames().opId(null), this) {
+				new OpBE<RelOp>(code().opNames().opId(null), this) {
 					@Override
 					public void prepare() {
 					}
@@ -160,7 +160,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	@Override
 	public final AnyCOp nullPtr() {
 		return new AnyCOp(
-				new OpBE<AnyOp>(code().getOpNames().opId(null), this) {
+				new OpBE<AnyOp>(code().opNames().opId(null), this) {
 					@Override
 					public void prepare() {
 					}
@@ -176,7 +176,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	@Override
 	public final DataCOp nullDataPtr() {
 		return new DataCOp(
-				new OpBE<DataOp>(code().getOpNames().opId(null), this) {
+				new OpBE<DataOp>(code().opNames().opId(null), this) {
 					@Override
 					public void prepare() {
 					}
@@ -196,7 +196,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		final Type<S> originalType = typeAlloc.getType();
 
 		return originalType.op(new CStruct<>(
-				new OpBE<S>(code().getOpNames().opId(null), this) {
+				new OpBE<S>(code().opNames().opId(null), this) {
 					@Override
 					public void prepare() {
 					}
@@ -219,7 +219,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	public final <F extends Fn<F>> CFunc<F> nullPtr(
 			final Signature<F> signature) {
 		return new CFunc<>(
-				new OpBE<F>(code().getOpNames().opId(null), this) {
+				new OpBE<F>(code().opNames().opId(null), this) {
 					@Override
 					public void prepare() {
 					}
@@ -347,7 +347,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		}
 
 		final ID resultId =
-				code().getOpNames().binaryId(id, PHI_ID, op1, op2);
+				code().opNames().binaryId(id, PHI_ID, op1, op2);
 
 		return cop1.create(
 				new OpBE<O>(resultId, this) {
@@ -370,7 +370,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	@Override
 	public <O extends Op> O phi(ID id, final O[] ops) {
 
-		final ID resultId = code().getOpNames().opId(id);
+		final ID resultId = code().opNames().opId(id);
 		@SuppressWarnings("unchecked")
 		final COp<O, ?>[] cops = new COp[ops.length];
 

@@ -47,7 +47,7 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 	public final BoolCOp isNull(ID id, Code code) {
 
 		final CCode<?> ccode = cast(code);
-		final ID resultId = code.getOpNames().unaryId(id, IS_NULL_ID, this);
+		final ID resultId = code.opNames().unaryId(id, IS_NULL_ID, this);
 
 		if (isConstant()) {
 			return new BoolCOp(resultId, ccode, getConstant().isNull());
@@ -72,7 +72,7 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 
 		final CCode<?> ccode = cast(code);
 		final ID resultId =
-				code.getOpNames().binaryId(id, EQ_ID, this, other);
+				code.opNames().binaryId(id, EQ_ID, this, other);
 		final COp<P, ?> o = cast(other);
 
 		if (isConstant() && o.isConstant()) {
@@ -103,7 +103,7 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 
 		final CCode<?> ccode = cast(code);
 		final ID resultId =
-				code.getOpNames().binaryId(id, NE_ID, this, other);
+				code.opNames().binaryId(id, NE_ID, this, other);
 		final COp<P, ?> o = cast(other);
 
 		if (isConstant() && o.isConstant()) {

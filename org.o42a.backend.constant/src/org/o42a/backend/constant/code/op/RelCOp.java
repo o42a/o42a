@@ -47,7 +47,7 @@ public final class RelCOp extends COp<RelOp, RelPtr> implements RelOp {
 			final DataPtrOp<?> from) {
 
 		final CCode<?> ccode = cast(code);
-		final ID resultId = code.getOpNames().offsetId(id, from, this);
+		final ID resultId = code.opNames().offsetId(id, from, this);
 
 		if (isConstant() && from.equals(getConstant().getRelativeTo())) {
 
@@ -95,7 +95,7 @@ public final class RelCOp extends COp<RelOp, RelPtr> implements RelOp {
 	@Override
 	public final Int32cOp toInt32(ID id, Code code) {
 
-		final ID resultId = code.getOpNames().castId(id, INT32_ID, this);
+		final ID resultId = code.opNames().castId(id, INT32_ID, this);
 
 		return new Int32cOp(new OpBE<Int32op>(resultId, cast(code)) {
 			@Override

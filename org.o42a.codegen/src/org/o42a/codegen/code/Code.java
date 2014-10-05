@@ -19,8 +19,6 @@
 */
 package org.o42a.codegen.code;
 
-import java.util.function.Supplier;
-
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
@@ -35,7 +33,7 @@ public abstract class Code extends DebugCodeBase {
 
 	public Code(Code enclosing, ID name) {
 		super(enclosing);
-		this.id = enclosing.getOpNames().nestedId(name);
+		this.id = enclosing.opNames().nestedId(name);
 	}
 
 	public Code(Generator generator, ID id) {
@@ -97,7 +95,7 @@ public abstract class Code extends DebugCodeBase {
 		return assets();
 	}
 
-	public final OpNames getOpNames() {
+	public final OpNames opNames() {
 		return this.opNames;
 	}
 
@@ -123,21 +121,24 @@ public abstract class Code extends DebugCodeBase {
 		return inset;
 	}
 
-	public final <T> Supplier<T> inset(
-			java.util.function.Function<Code, T> get) {
-		return inset((ID) null, get);
+	public final <O> OpMeans<O> means(
+			java.util.function.Function<Code, O> createOp) {
+		return means((ID) null, createOp);
 	}
 
-	public final <T> Supplier<T> inset(
-			String name,
-			java.util.function.Function<Code, T> get) {
-		return inset(ID.id(name), get);
+	public final <O> OpMeans<O> means(
+			String id,
+			java.util.function.Function<Code, O> createOp) {
+		return means(ID.id(id), createOp);
 	}
 
-	public final <T> Supplier<T> inset(
-			ID name,
-			java.util.function.Function<Code, T> get) {
-		return new InsetBuilder<>(inset(name), get);
+	public final <O> OpMeans<O> means(
+			ID id,
+			java.util.function.Function<Code, O> createOp) {
+		return new InsetOpMeans<>(
+				opId(id),
+				inset(id),
+				createOp);
 	}
 
 	public final Block addBlock(String name) {
@@ -215,7 +216,7 @@ public abstract class Code extends DebugCodeBase {
 		assert assertIncomplete();
 
 		final Allocated<T> allocated = getAllocator().addAllocation(
-				getOpNames().nestedId(id),
+				opNames().nestedId(id),
 				allocatable);
 
 		allocated.init(this);
@@ -266,7 +267,7 @@ public abstract class Code extends DebugCodeBase {
 	}
 
 	public final ID opId(ID id) {
-		return getOpNames().opId(id);
+		return opNames().opId(id);
 	}
 
 	@Override
@@ -280,23 +281,33 @@ public abstract class Code extends DebugCodeBase {
 		updateAssets(new CodeAssets(this, "clean"));
 	}
 
-	private static final class InsetBuilder<T> implements Supplier<T> {
+	private static final class InsetOpMeans<O> implements OpMeans<O> {
 
+		private final ID id;
 		private final Code inset;
-		private final java.util.function.Function<Code, T> get;
-		private T result;
+		private final java.util.function.Function<Code, O> createOp;
+		private O op;
 
-		InsetBuilder(Code inset, java.util.function.Function<Code, T> get) {
+		InsetOpMeans(
+				ID id,
+				Code inset,
+				java.util.function.Function<Code, O> createOp) {
+			this.id = id;
 			this.inset = inset;
-			this.get = get;
+			this.createOp = createOp;
 		}
 
 		@Override
-		public T get() {
-			if (this.result != null) {
-				return this.result;
+		public ID getId() {
+			return this.id;
+		}
+
+		@Override
+		public O op() {
+			if (this.op != null) {
+				return this.op;
 			}
-			return this.result = this.get.apply(this.inset);
+			return this.op = this.createOp.apply(this.inset);
 		}
 
 		@Override
@@ -306,6 +317,7 @@ public abstract class Code extends DebugCodeBase {
 			}
 			return this.inset.toString();
 		}
+
 	}
 
 }

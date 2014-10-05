@@ -51,7 +51,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	public final U neg(ID id, Code code) {
 
 		final CCode<?> ccode = cast(code);
-		final ID resultId = code.getOpNames().unaryId(id, NEG_ID, this);
+		final ID resultId = code.opNames().unaryId(id, NEG_ID, this);
 
 		if (isConstant()) {
 
@@ -79,7 +79,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		final CCode<?> ccode = cast(code);
 		final ID resultId =
-				code.getOpNames().binaryId(id, ADD_ID, this, summand);
+				code.opNames().binaryId(id, ADD_ID, this, summand);
 		@SuppressWarnings("unchecked")
 		final NumCOp<U, T> s = (NumCOp<U, T>) summand;
 
@@ -111,7 +111,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		final CCode<?> ccode = cast(code);
 		final ID resultId =
-				code.getOpNames().binaryId(id, SUB_ID, this, subtrahend);
+				code.opNames().binaryId(id, SUB_ID, this, subtrahend);
 		@SuppressWarnings("unchecked")
 		final NumCOp<U, T> s = (NumCOp<U, T>) subtrahend;
 
@@ -143,7 +143,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		final CCode<?> ccode = cast(code);
 		final ID resultId =
-				code.getOpNames().binaryId(id, MUL_ID, this, multiplier);
+				code.opNames().binaryId(id, MUL_ID, this, multiplier);
 		@SuppressWarnings("unchecked")
 		final NumCOp<U, T> m = (NumCOp<U, T>) multiplier;
 
@@ -175,7 +175,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		final CCode<?> ccode = cast(code);
 		final ID resultId =
-				code.getOpNames().binaryId(id, DIV_ID, this, divisor);
+				code.opNames().binaryId(id, DIV_ID, this, divisor);
 		@SuppressWarnings("unchecked")
 		final NumCOp<U, T> d = (NumCOp<U, T>) divisor;
 
@@ -207,7 +207,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		final CCode<?> ccode = cast(code);
 		final ID resultId =
-				code.getOpNames().binaryId(id, REM_ID, this, divisor);
+				code.opNames().binaryId(id, REM_ID, this, divisor);
 		@SuppressWarnings("unchecked")
 		final NumCOp<U, T> d = (NumCOp<U, T>) divisor;
 
@@ -239,7 +239,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		final CCode<?> ccode = cast(code);
 		final ID resultId =
-				code.getOpNames().binaryId(id, EQ_ID, this, other);
+				code.opNames().binaryId(id, EQ_ID, this, other);
 		@SuppressWarnings("unchecked")
 		final NumCOp<U, T> o = (NumCOp<U, T>) other;
 
@@ -271,7 +271,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		final CCode<?> ccode = cast(code);
 		final ID resultId =
-				code.getOpNames().binaryId(id, NE_ID, this, other);
+				code.opNames().binaryId(id, NE_ID, this, other);
 		@SuppressWarnings("unchecked")
 		final NumCOp<U, T> o = (NumCOp<U, T>) other;
 
@@ -303,7 +303,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		final CCode<?> ccode = cast(code);
 		final ID resultId =
-				code.getOpNames().binaryId(id, GT_ID, this, other);
+				code.opNames().binaryId(id, GT_ID, this, other);
 		@SuppressWarnings("unchecked")
 		final NumCOp<U, T> o = (NumCOp<U, T>) other;
 
@@ -335,7 +335,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		final CCode<?> ccode = cast(code);
 		final ID resultId =
-				code.getOpNames().binaryId(id, GE_ID, this, other);
+				code.opNames().binaryId(id, GE_ID, this, other);
 		@SuppressWarnings("unchecked")
 		final NumCOp<U, T> o = (NumCOp<U, T>) other;
 
@@ -367,7 +367,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		final CCode<?> ccode = cast(code);
 		final ID resultId =
-				code.getOpNames().binaryId(id, LT_ID, this, other);
+				code.opNames().binaryId(id, LT_ID, this, other);
 		@SuppressWarnings("unchecked")
 		final NumCOp<U, T> o = (NumCOp<U, T>) other;
 
@@ -399,7 +399,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		final CCode<?> ccode = cast(code);
 		final ID resultId =
-				code.getOpNames().binaryId(id, LE_ID, this, other);
+				code.opNames().binaryId(id, LE_ID, this, other);
 		@SuppressWarnings("unchecked")
 		final NumCOp<U, T> o = (NumCOp<U, T>) other;
 
@@ -430,7 +430,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	public final Int8op toInt8(ID id, Code code) {
 
 		final CCode<?> ccode = cast(code);
-		final ID resultId = code.getOpNames().castId(id, INT8_ID, this);
+		final ID resultId = code.opNames().castId(id, INT8_ID, this);
 
 		if (isConstant()) {
 			return new Int8cOp(resultId, ccode, getConstant().byteValue());
@@ -454,7 +454,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	public final Int16op toInt16(ID id, Code code) {
 
 		final CCode<?> ccode = cast(code);
-		final ID resultId = code.getOpNames().castId(id, INT16_ID, this);
+		final ID resultId = code.opNames().castId(id, INT16_ID, this);
 
 		if (isConstant()) {
 			return new Int16cOp(resultId, ccode, getConstant().shortValue());
@@ -478,7 +478,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	public final Int32op toInt32(ID id, Code code) {
 
 		final CCode<?> ccode = cast(code);
-		final ID resultId = code.getOpNames().castId(id, INT32_ID, this);
+		final ID resultId = code.opNames().castId(id, INT32_ID, this);
 
 		if (isConstant()) {
 			return new Int32cOp(resultId, ccode, getConstant().intValue());
@@ -502,7 +502,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	public final Int64op toInt64(ID id, Code code) {
 
 		final CCode<?> ccode = cast(code);
-		final ID resultId = code.getOpNames().castId(id, INT64_ID, this);
+		final ID resultId = code.opNames().castId(id, INT64_ID, this);
 
 		if (isConstant()) {
 			return new Int64cOp(resultId, ccode, getConstant().longValue());
@@ -526,7 +526,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	public final Fp32op toFp32(ID id, Code code) {
 
 		final CCode<?> ccode = cast(code);
-		final ID resultId = code.getOpNames().castId(id, FP32_ID, this);
+		final ID resultId = code.opNames().castId(id, FP32_ID, this);
 
 		if (isConstant()) {
 			return new Fp32cOp(resultId, ccode, getConstant().floatValue());
@@ -550,7 +550,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	public final Fp64op toFp64(ID id, Code code) {
 
 		final CCode<?> ccode = cast(code);
-		final ID resultId = code.getOpNames().castId(id, FP64_ID, this);
+		final ID resultId = code.opNames().castId(id, FP64_ID, this);
 
 		if (isConstant()) {
 			return new Fp64cOp(resultId, ccode, getConstant().doubleValue());

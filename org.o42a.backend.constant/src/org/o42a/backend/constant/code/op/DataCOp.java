@@ -58,7 +58,7 @@ public final class DataCOp extends DataPtrCOp<DataOp> implements DataOp {
 			final Type<S> type) {
 
 		final CCode<?> ccode = cast(code);
-		final ID castId = code.getOpNames().castId(id, type.getId(), this);
+		final ID castId = code.opNames().castId(id, type.getId(), this);
 
 		return type.op(new CStruct<>(
 				new OpBE<S>(castId, ccode) {

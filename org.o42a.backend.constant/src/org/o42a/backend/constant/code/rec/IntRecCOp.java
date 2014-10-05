@@ -57,7 +57,7 @@ public abstract class IntRecCOp<
 
 		final CCode<?> ccode = cast(code);
 		final ID resultId =
-				code.getOpNames().binaryId(id, kind.getId(), this, operand);
+				code.opNames().binaryId(id, kind.getId(), this, operand);
 		@SuppressWarnings("unchecked")
 		final COp<O, T> cOperand = (IntCOp<O, T>) operand;
 

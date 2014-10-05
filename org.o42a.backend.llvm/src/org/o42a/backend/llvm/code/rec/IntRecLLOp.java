@@ -50,7 +50,7 @@ public abstract class IntRecLLOp<R extends IntRecOp<R, O>, O extends IntOp<O>>
 		final LLCode llvm = llvm(code);
 		final long nextPtr = llvm.nextPtr();
 		final NativeBuffer ids = llvm.getModule().ids();
-		final ID resultId = code.getOpNames().binaryId(
+		final ID resultId = code.opNames().binaryId(
 				id,
 				kind.getId(),
 				this,

@@ -49,7 +49,7 @@ public abstract class AtomicRecLLOp<R extends AtomicRecOp<R, O>, O extends Op>
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final ID resultId = code.getOpNames().binaryId(
+		final ID resultId = code.opNames().binaryId(
 				id,
 				TEST_AND_SET_ID,
 				expected,
