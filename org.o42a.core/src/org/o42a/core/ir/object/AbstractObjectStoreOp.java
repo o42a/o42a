@@ -31,6 +31,7 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.ir.op.TargetStoreOp;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
@@ -84,7 +85,7 @@ public abstract class AbstractObjectStoreOp
 	}
 
 	@Override
-	public ObjectOp loadTarget(CodeDirs dirs) {
+	public HostOp loadTarget(CodeDirs dirs) {
 
 		final Block code = dirs.code();
 		final DataOp objectPtr =

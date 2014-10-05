@@ -32,8 +32,6 @@ import org.o42a.util.string.ID;
 
 public interface HostTargetOp {
 
-	TargetOp op(CodeDirs dirs);
-
 	FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey);
 
 	ObjectOp materialize(CodeDirs dirs, ObjHolder holder);

@@ -249,7 +249,7 @@ public class NoneStep extends Step {
 		}
 
 		@Override
-		public TargetOp loadTarget(CodeDirs dirs) {
+		public HostOp loadTarget(CodeDirs dirs) {
 			dirs.code().go(dirs.falseDir());
 			return noneObject(dirs);
 		}

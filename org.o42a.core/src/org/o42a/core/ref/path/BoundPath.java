@@ -910,11 +910,6 @@ public class BoundPath extends RefPath {
 		}
 
 		@Override
-		public TargetOp op(CodeDirs dirs) {
-			return object(dirs).target().op(dirs);
-		}
-
-		@Override
 		public FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey) {
 			return object(dirs).target().field(dirs, memberKey);
 		}

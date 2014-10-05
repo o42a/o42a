@@ -88,7 +88,7 @@ public final class LocalOp {
 		target(dirs).value().writeCond(dirs);
 	}
 
-	public final TargetOp target(CodeDirs dirs) {
+	public final HostOp target(CodeDirs dirs) {
 		return this.targetStore.loadTarget(dirs);
 	}
 

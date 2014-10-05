@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.field.inst;
 
+import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Type;
 import org.o42a.core.ir.field.FldIR;
@@ -29,7 +30,7 @@ import org.o42a.core.ir.object.ObjOp;
 public abstract class InstFldOp<F extends StructOp<F>, T extends Type<F>>
 		extends FldIROp<F, T> {
 
-	public InstFldOp(ObjOp host, FldIR<F, T> fld, F ptr) {
+	public InstFldOp(ObjOp host, FldIR<F, T> fld, OpMeans<F> ptr) {
 		super(host, fld, ptr);
 	}
 

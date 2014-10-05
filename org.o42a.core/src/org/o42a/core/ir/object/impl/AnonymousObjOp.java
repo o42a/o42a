@@ -178,7 +178,7 @@ public final class AnonymousObjOp extends ObjectOp {
 		final ObjOp result = ascendantIR.op(
 				getBuilder(),
 				code.means(
-						c -> ptr(c)
+						c -> ptr()
 						.toData(null, c)
 						.to(id, c, ascendantIR.getType())),
 				COMPATIBLE);

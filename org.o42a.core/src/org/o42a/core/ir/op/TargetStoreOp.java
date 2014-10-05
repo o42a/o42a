@@ -34,6 +34,6 @@ public interface TargetStoreOp {
 
 	void storeTarget(CodeDirs dirs);
 
-	TargetOp loadTarget(CodeDirs dirs);
+	HostOp loadTarget(CodeDirs dirs);
 
 }

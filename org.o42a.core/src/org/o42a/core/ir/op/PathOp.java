@@ -74,11 +74,6 @@ public abstract class PathOp implements HostOp {
 		}
 
 		@Override
-		public TargetOp op(CodeDirs dirs) {
-			return target(dirs).op(dirs);
-		}
-
-		@Override
 		public FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey) {
 			return target(dirs).field(dirs, memberKey);
 		}
