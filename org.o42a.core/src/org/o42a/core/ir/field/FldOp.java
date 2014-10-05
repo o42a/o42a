@@ -37,7 +37,7 @@ import org.o42a.util.string.ID;
 
 public abstract class FldOp<F extends Fld.Op<F>, T extends Fld.Type<F>>
 		extends FldIROp<F, T>
-		implements TargetOp {
+		implements HostOp, HostTargetOp {
 
 	public FldOp(ObjOp host, Fld<F, T> fld, OpMeans<F> ptr) {
 		super(host, fld, ptr);
@@ -49,6 +49,11 @@ public abstract class FldOp<F extends Fld.Op<F>, T extends Fld.Type<F>>
 
 	public final boolean isStateless() {
 		return fld().isStateless();
+	}
+
+	@Override
+	public final FldOp<F, T> target() {
+		return this;
 	}
 
 	@Override
@@ -158,7 +163,7 @@ public abstract class FldOp<F extends Fld.Op<F>, T extends Fld.Type<F>>
 		}
 
 		@Override
-		protected TargetOp op(CodeDirs dirs, ObjOp owner) {
+		protected FldOp<F, T> op(CodeDirs dirs, ObjOp owner) {
 			return this.fld.fld().op(dirs.code(), owner);
 		}
 

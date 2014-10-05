@@ -30,6 +30,6 @@ public interface RefTargetOp {
 
 	void copyTarget(CodeDirs dirs, TargetStoreOp store);
 
-	TargetOp loadTarget(CodeDirs dirs);
+	HostOp loadTarget(CodeDirs dirs);
 
 }

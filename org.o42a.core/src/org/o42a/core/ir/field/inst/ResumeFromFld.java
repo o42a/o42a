@@ -54,7 +54,7 @@ public final class ResumeFromFld
 		return new ResumeFromOp(
 				host,
 				this,
-				host.ptr(code).field(code, getTypeInstance()));
+				code.means(c -> host.ptr().field(c, getTypeInstance())));
 	}
 
 	@Override

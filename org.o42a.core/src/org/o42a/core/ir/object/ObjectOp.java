@@ -52,7 +52,7 @@ import org.o42a.util.string.ID;
 
 
 public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
-		implements TargetOp {
+		implements HostOp, HostTargetOp {
 
 	public static final ID ANCESTOR_ID = ID.rawId("ancestor");
 	public static final ID NEW_OBJECT_ID = ID.rawId("new_object");
@@ -165,10 +165,15 @@ public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
 	@Override
 	public abstract ValueOp value();
 
+	@Override
+	public final ObjectOp target() {
+		return this;
+	}
+
 	public abstract ObjectOp phi(Code code, DataOp ptr);
 
 	public final ObjectDataOp objectData(Code code) {
-		return ptr(code).objectData(code).op(getBuilder());
+		return ptr().objectData(code).op(getBuilder());
 	}
 
 	public final ResumeFromOp resumeFrom(CodeDirs dirs) {

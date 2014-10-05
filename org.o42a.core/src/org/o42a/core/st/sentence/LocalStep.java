@@ -285,7 +285,7 @@ final class LocalStep extends Step {
 		}
 
 		@Override
-		public TargetOp loadTarget(CodeDirs dirs) {
+		public HostOp loadTarget(CodeDirs dirs) {
 			return local(dirs).target(dirs);
 		}
 
@@ -376,7 +376,7 @@ final class LocalStep extends Step {
 		}
 
 		@Override
-		public TargetOp loadTarget(CodeDirs dirs) {
+		public HostOp loadTarget(CodeDirs dirs) {
 			return this.target.loadTarget(dirs);
 		}
 

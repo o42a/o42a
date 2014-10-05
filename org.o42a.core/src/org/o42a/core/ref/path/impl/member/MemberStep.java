@@ -332,7 +332,7 @@ final class MemberStep extends AbstractMemberStep {
 		}
 
 		@Override
-		protected TargetOp fldOf(CodeDirs dirs, ObjectOp owner) {
+		protected FldOp<?, ?> fldOf(CodeDirs dirs, ObjectOp owner) {
 			return owner.field(dirs, this.member.getMemberKey());
 		}
 

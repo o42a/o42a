@@ -25,6 +25,7 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.DumpablePtrOp;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.dep.DepOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
@@ -92,7 +93,7 @@ public abstract class RefFldTargetOp implements RefTargetOp {
 	}
 
 	@Override
-	public final TargetOp loadTarget(CodeDirs dirs) {
+	public final FldOp<?, ?> loadTarget(CodeDirs dirs) {
 
 		final Block code = dirs.code();
 		final ObjectOp owner = anonymousObject(
@@ -111,7 +112,7 @@ public abstract class RefFldTargetOp implements RefTargetOp {
 		return this.dep.toString();
 	}
 
-	protected abstract TargetOp fldOf(CodeDirs dirs, ObjectOp owner);
+	protected abstract FldOp<?, ?> fldOf(CodeDirs dirs, ObjectOp owner);
 
 	protected abstract ObjectOp loadOwner(CodeDirs dirs, TargetStoreOp store);
 

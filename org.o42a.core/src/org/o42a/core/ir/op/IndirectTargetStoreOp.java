@@ -47,7 +47,7 @@ public class IndirectTargetStoreOp<S extends TargetStoreOp>
 	}
 
 	@Override
-	public TargetOp loadTarget(CodeDirs dirs) {
+	public HostOp loadTarget(CodeDirs dirs) {
 		return this.store.loadTarget(dirs);
 	}
 

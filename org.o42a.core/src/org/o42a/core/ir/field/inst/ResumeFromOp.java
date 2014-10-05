@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.field.inst;
 
+import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.core.ir.field.FldIR;
 import org.o42a.core.ir.field.inst.ResumeFromFld.Op;
 import org.o42a.core.ir.field.inst.ResumeFromFld.Type;
@@ -27,7 +28,10 @@ import org.o42a.core.ir.object.ObjOp;
 
 public class ResumeFromOp extends InstFldOp<Op, Type> {
 
-	ResumeFromOp(ObjOp host, FldIR<Op, Type> fld, ResumeFromFld.Op ptr) {
+	ResumeFromOp(
+			ObjOp host,
+			FldIR<Op, Type> fld,
+			OpMeans<ResumeFromFld.Op> ptr) {
 		super(host, fld, ptr);
 	}
 

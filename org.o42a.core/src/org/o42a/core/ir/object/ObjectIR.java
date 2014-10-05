@@ -202,7 +202,7 @@ public class ObjectIR implements Codegen {
 		}
 
 		@Override
-		public TargetOp loadTarget(CodeDirs dirs) {
+		public HostOp loadTarget(CodeDirs dirs) {
 			return this.objectIR.op(dirs);
 		}
 

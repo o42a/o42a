@@ -269,7 +269,7 @@ public class DereferenceStep extends Step {
 		}
 
 		@Override
-		public TargetOp pathTarget(CodeDirs dirs) {
+		public ObjectOp pathTarget(CodeDirs dirs) {
 
 			final ObjHolder holder = tempObjHolder(dirs.getAllocator());
 

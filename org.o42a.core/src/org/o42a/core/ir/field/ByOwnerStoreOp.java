@@ -32,7 +32,7 @@ import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.TargetOp;
+import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
@@ -93,7 +93,7 @@ public abstract class ByOwnerStoreOp implements FldStoreOp {
 	}
 
 	@Override
-	public final TargetOp loadTarget(CodeDirs dirs) {
+	public final HostOp loadTarget(CodeDirs dirs) {
 
 		final ObjOp owner = loadOwner(dirs).castToWellKnown(null, dirs);
 
@@ -110,7 +110,7 @@ public abstract class ByOwnerStoreOp implements FldStoreOp {
 
 	protected abstract ObjectOp owner(CodeDirs dirs, Allocator allocator);
 
-	protected abstract TargetOp op(CodeDirs dirs, ObjOp owner);
+	protected abstract HostOp op(CodeDirs dirs, ObjOp owner);
 
 	private final DataRecOp ownerPtr(CodeDirs dirs) {
 		return this.getOwnerPtr.apply(dirs);

@@ -296,7 +296,7 @@ final class ObjVmtRecord
 			ObjFldOp fld,
 			FldCtrOp fctr,
 			DataOp result) {
-		fld.ptr(code).object(null, code).store(code, result, ACQUIRE_RELEASE);
+		fld.ptr().object(null, code).store(code, result, ACQUIRE_RELEASE);
 		fctr.finish(code, fld);
 		result.returnValue(code);
 	}

@@ -136,7 +136,7 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 				host,
 				isStateless()
 				? null
-				: code.means(c -> host.ptr(c).field(c, getTypeInstance())));
+				: code.means(c -> host.ptr().field(c, getTypeInstance())));
 	}
 
 	public final void allocate(SubData<?> data) {
