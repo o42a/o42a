@@ -25,6 +25,7 @@ import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.codegen.code.op.RelOp;
 import org.o42a.codegen.data.RelPtr;
 import org.o42a.core.ir.CodeBuilder;
@@ -42,16 +43,8 @@ public final class ObjectDataOp extends DefiniteIROp<ObjectIRDataOp> {
 
 	private static ObjectStartOffset startOffset;
 
-	private final ObjectIRDataOp ptr;
-
-	ObjectDataOp(CodeBuilder builder, ObjectIRDataOp ptr) {
-		super(builder);
-		this.ptr = ptr;
-	}
-
-	@Override
-	public final ObjectIRDataOp ptr() {
-		return this.ptr;
+	ObjectDataOp(CodeBuilder builder, OpMeans<ObjectIRDataOp> ptr) {
+		super(builder, ptr);
 	}
 
 	public final ObjectIRDescOp loadDesc(Code code) {

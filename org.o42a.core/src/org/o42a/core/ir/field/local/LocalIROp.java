@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.field.local;
 
+import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.core.ir.field.local.LocalIR.Op;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.DefiniteIROp;
@@ -27,17 +28,10 @@ import org.o42a.core.ir.op.DefiniteIROp;
 public final class LocalIROp extends DefiniteIROp<Op> {
 
 	private final ObjectOp host;
-	private final Op ptr;
 
-	LocalIROp(ObjectOp host, Op ptr) {
-		super(host.getBuilder());
+	LocalIROp(ObjectOp host, OpMeans<Op> ptr) {
+		super(host.getBuilder(), ptr);
 		this.host = host;
-		this.ptr = ptr;
-	}
-
-	@Override
-	public final Op ptr() {
-		return this.ptr;
 	}
 
 	public final ObjectOp host() {

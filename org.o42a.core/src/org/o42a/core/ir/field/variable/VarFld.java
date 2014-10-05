@@ -22,6 +22,7 @@ package org.o42a.core.ir.field.variable;
 import static org.o42a.core.object.value.ValueUsage.ALL_VALUE_USAGES;
 
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld.StatefulOp;
 import org.o42a.core.ir.field.RefFld.StatefulType;
@@ -69,7 +70,7 @@ public class VarFld extends AbstractLinkFld<StatefulOp, StatefulType> {
 	}
 
 	@Override
-	protected VarFldOp op(Code code, ObjOp host, StatefulOp ptr) {
+	protected VarFldOp op(Code code, ObjOp host, OpMeans<StatefulOp> ptr) {
 		return new VarFldOp(host, this, ptr);
 	}
 

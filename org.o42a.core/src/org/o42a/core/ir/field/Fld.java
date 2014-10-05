@@ -24,6 +24,7 @@ import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
+import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.SubData;
@@ -135,7 +136,7 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 				host,
 				isStateless()
 				? null
-				: host.ptr(code).field(code, getTypeInstance()));
+				: code.means(c -> host.ptr(c).field(c, getTypeInstance())));
 	}
 
 	public final void allocate(SubData<?> data) {
@@ -167,7 +168,7 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 
 	protected abstract Content<T> dummyContent();
 
-	protected abstract FldOp<F, T> op(Code code, ObjOp host, F ptr);
+	protected abstract FldOp<F, T> op(Code code, ObjOp host, OpMeans<F> ptr);
 
 	public static abstract class Op<F extends Op<F>> extends StructOp<F> {
 

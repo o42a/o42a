@@ -78,7 +78,7 @@ final class DefaultRefTargetIR implements RefTargetIR {
 			final DataOp object = createObject(depDirs, host);
 			final Block code = depDirs.code();
 
-			this.dep.op().object(code).store(code, object);
+			this.dep.dep().object(code).store(code, object);
 
 			if (noDep.exists()) {
 
@@ -87,7 +87,7 @@ final class DefaultRefTargetIR implements RefTargetIR {
 						builder.getContext().getNone().ir(
 								builder.getGenerator());
 
-				this.dep.op().object(noDep).store(
+				this.dep.dep().object(noDep).store(
 						noDep,
 						noneIR.op(builder, noDep).toData(null, noDep));
 				noDep.go(code.tail());
@@ -104,7 +104,7 @@ final class DefaultRefTargetIR implements RefTargetIR {
 					dirs,
 					tempObjHolder(dirs.getAllocator()));
 
-			this.dep.op().object(code).store(code, object.toData(null, code));
+			this.dep.dep().object(code).store(code, object.toData(null, code));
 		}
 
 		@Override
@@ -114,7 +114,7 @@ final class DefaultRefTargetIR implements RefTargetIR {
 
 			return anonymousObject(
 					dirs,
-					this.dep.op().object(code).load(null, code),
+					this.dep.dep().object(code).load(null, code),
 					this.ir.refIR.ref().getResolution().resolveTarget());
 		}
 

@@ -25,6 +25,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
+import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.object.ObjOp;
@@ -130,7 +131,10 @@ public abstract class RefFld<
 	protected abstract RefVmtRecord<F, T, C> createVmtRecord();
 
 	@Override
-	protected abstract RefFldOp<F, T, C> op(Code code, ObjOp host, F ptr);
+	protected abstract RefFldOp<F, T, C> op(
+			Code code,
+			ObjOp host,
+			OpMeans<F> ptr);
 
 	private void fillTarget() {
 		if (getType().isStateless()) {

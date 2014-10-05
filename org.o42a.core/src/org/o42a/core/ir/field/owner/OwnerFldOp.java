@@ -24,6 +24,7 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
@@ -37,7 +38,7 @@ import org.o42a.core.object.Obj;
 
 public class OwnerFldOp extends FldOp<OwnerFld.Op, OwnerFld.Type> {
 
-	OwnerFldOp(ObjOp host, OwnerFld fld, OwnerFld.Op ptr) {
+	OwnerFldOp(ObjOp host, OwnerFld fld, OpMeans<OwnerFld.Op> ptr) {
 		super(host, fld, ptr);
 	}
 

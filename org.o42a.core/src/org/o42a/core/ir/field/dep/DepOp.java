@@ -28,6 +28,7 @@ import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DumpPtrOp;
+import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.core.ir.field.ByOwnerStoreOp;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.local.LocalIROp;
@@ -38,7 +39,6 @@ import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.state.Dep;
 import org.o42a.util.string.ID;
 
 
@@ -49,37 +49,34 @@ public final class DepOp extends DefiniteIROp<DumpPtrOp>
 
 	private final ObjectOp host;
 	private final DepIR depIR;
-	private final DumpPtrOp ptr;
-	private final DepIR.Op op;
+	private final OpMeans<DepIR.Op> dep;
 	private final RefIROp ref;
 
 	DepOp(Code code, ObjectOp host, DepIR depIR) {
-		super(host.getBuilder());
+		this(
+				code,
+				host,
+				depIR,
+				depIR.isOmitted() ? null : code.means(
+						c -> host.ptr().field(c, depIR.getTypeInstance())));
+	}
+
+	private DepOp(
+			Code code,
+			ObjectOp host,
+			DepIR depIR,
+			OpMeans<DepIR.Op> dep) {
+		super(host.getBuilder(), ptr(host, dep));
 		this.host = host;
 		this.depIR = depIR;
-		if (depIR.isOmitted()) {
-			this.op = null;
-			this.ptr = dumpPtrOp(host.ptr());
-		} else {
-			this.op = host.ptr().field(code, depIR.getTypeInstance());
-			this.ptr = dumpPtrOp(this.op);
-		}
+		this.dep = dep;
 		this.ref = depIR.refIR().op(code, this);
 	}
 
-	@Override
-	public final DumpPtrOp ptr() {
-		return this.ptr;
-	}
-
-	public final DepIR.Op op() {
-		assert this.op != null :
+	public final DepIR.Op dep() {
+		assert this.dep != null :
 			this + " is omitted";
-		return this.op;
-	}
-
-	public final Dep getDep() {
-		return depIR().getDep();
+		return this.dep.op();
 	}
 
 	public final ObjectOp host() {
@@ -145,17 +142,24 @@ public final class DepOp extends DefiniteIROp<DumpPtrOp>
 		final Block code = dirs.code();
 
 		this.ref.storeTarget(dirs, host);
-		code.debug("Depends on " + getDep().ref());
-		code.dump(getDep() + " := ", this);
+		code.debug("Depends on " + depIR().getDep().ref());
+		code.dump(depIR().getDep() + " := ", this);
 	}
 
 	@Override
 	public String toString() {
-		return "DepOp[" + getDep() + '@' + host() + ']';
+		return "DepOp[" + depIR().getDep() + '@' + host() + ']';
 	}
 
-	private TargetOp loadDep(CodeDirs dirs) {
+	private final TargetOp loadDep(CodeDirs dirs) {
 		return this.ref.loadTarget(dirs);
+	}
+
+	private static DumpPtrOp ptr(ObjectOp host, OpMeans<DepIR.Op> op){
+		if (op != null) {
+			return dumpPtrOp(op);
+		}
+		return dumpPtrOp(host);
 	}
 
 	private static final class DepByOwnerStoreOp extends ByOwnerStoreOp {

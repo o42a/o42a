@@ -25,6 +25,7 @@ import java.util.function.Function;
 
 import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
@@ -38,7 +39,7 @@ public abstract class FldOp<F extends Fld.Op<F>, T extends Fld.Type<F>>
 		extends FldIROp<F, T>
 		implements TargetOp {
 
-	public FldOp(ObjOp host, Fld<F, T> fld, F ptr) {
+	public FldOp(ObjOp host, Fld<F, T> fld, OpMeans<F> ptr) {
 		super(host, fld, ptr);
 	}
 

@@ -98,7 +98,7 @@ public final class LocalIR implements FldIR<LocalIR.Op, LocalIR.Type> {
 	public final LocalIROp op(Code code, ObjectOp host) {
 		return new LocalIROp(
 				host,
-				host.ptr(code).field(code, getTypeInstance()));
+				code.means(c -> host.ptr(c).field(c, getTypeInstance())));
 	}
 
 	public final void allocate(SubData<?> data) {

@@ -22,6 +22,7 @@ package org.o42a.core.ir.field.owner;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataRecOp;
+import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
@@ -118,7 +119,7 @@ public final class OwnerFld
 	}
 
 	@Override
-	protected OwnerFldOp op(Code code, ObjOp host, Op ptr) {
+	protected OwnerFldOp op(Code code, ObjOp host, OpMeans<Op> ptr) {
 		assert !isDummy() :
 			"Dummy owner field accessd: " + this;
 		return new OwnerFldOp(host, this, ptr);

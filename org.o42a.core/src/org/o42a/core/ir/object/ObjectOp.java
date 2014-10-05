@@ -29,6 +29,7 @@ import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.dep.DepIR;
 import org.o42a.core.ir.field.dep.DepOp;
@@ -63,7 +64,7 @@ public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
 
 	public static ObjectOp anonymousObject(
 			BuilderCode code,
-			DataOp ptr,
+			OpMeans<DataOp> ptr,
 			Obj wellKnownType) {
 		return anonymousObject(
 				code.getBuilder(),
@@ -75,7 +76,7 @@ public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
 	public static ObjectOp anonymousObject(
 			CodeBuilder builder,
 			Code code,
-			DataOp ptr,
+			OpMeans<DataOp> ptr,
 			Obj wellKnownType) {
 
 		final ObjectIR ir = wellKnownType.ir(builder.getGenerator());
@@ -86,13 +87,13 @@ public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
 
 		return anonymousObject(
 				builder,
-				ptr.to(null, code, ir.getType()),
+				code.means(c -> ptr.op().to(null, c, ir.getType())),
 				wellKnownType);
 	}
 
 	public static ObjectOp anonymousObject(
 			CodeBuilder builder,
-			ObjectIROp ptr,
+			OpMeans<ObjectIROp> ptr,
 			Obj wellKnownType) {
 		return new AnonymousObjOp(builder, ptr, wellKnownType);
 	}
@@ -126,21 +127,14 @@ public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
 		return result;
 	}
 
-	private final ObjectIROp ptr;
 	private final ObjectPrecision precision;
 
 	protected ObjectOp(
 			CodeBuilder builder,
-			ObjectIROp ptr,
+			OpMeans<ObjectIROp> ptr,
 			ObjectPrecision precision) {
-		super(builder);
-		this.ptr = ptr;
+		super(builder, ptr);
 		this.precision = precision;
-	}
-
-	@Override
-	public final ObjectIROp ptr() {
-		return this.ptr;
 	}
 
 	public abstract Obj getWellKnownType();

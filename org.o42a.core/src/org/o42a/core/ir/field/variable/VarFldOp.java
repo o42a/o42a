@@ -25,6 +25,7 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.core.ir.field.*;
 import org.o42a.core.ir.field.RefFld.StatefulOp;
 import org.o42a.core.ir.field.RefFld.StatefulType;
@@ -43,7 +44,7 @@ import org.o42a.core.member.MemberKey;
 public final class VarFldOp
 		extends RefFldOp<StatefulOp, StatefulType, ObjectRefFn> {
 
-	VarFldOp(ObjOp host, VarFld fld, StatefulOp ptr) {
+	VarFldOp(ObjOp host, VarFld fld, OpMeans<StatefulOp> ptr) {
 		super(host, fld, ptr);
 	}
 

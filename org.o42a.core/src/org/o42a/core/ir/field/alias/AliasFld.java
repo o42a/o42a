@@ -22,6 +22,7 @@ package org.o42a.core.ir.field.alias;
 import static org.o42a.analysis.use.User.dummyUser;
 
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.core.ir.field.*;
 import org.o42a.core.ir.field.RefFld.StatefulOp;
 import org.o42a.core.ir.field.RefFld.StatefulType;
@@ -65,7 +66,7 @@ public class AliasFld extends RefFld<StatefulOp, StatefulType, ObjectRefFn> {
 	}
 
 	@Override
-	protected AliasFldOp op(Code code, ObjOp host, StatefulOp ptr) {
+	protected AliasFldOp op(Code code, ObjOp host, OpMeans<StatefulOp> ptr) {
 		return new AliasFldOp(host, this, ptr);
 	}
 

@@ -23,6 +23,7 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.core.ir.field.*;
 import org.o42a.core.ir.field.RefFld.StatefulOp;
 import org.o42a.core.ir.field.RefFld.StatefulType;
@@ -38,7 +39,7 @@ import org.o42a.core.member.MemberKey;
 
 final class AliasFldOp extends RefFldOp<StatefulOp, StatefulType, ObjectRefFn> {
 
-	AliasFldOp(ObjOp host, AliasFld fld, StatefulOp ptr) {
+	AliasFldOp(ObjOp host, AliasFld fld, OpMeans<StatefulOp> ptr) {
 		super(host, fld, ptr);
 	}
 
