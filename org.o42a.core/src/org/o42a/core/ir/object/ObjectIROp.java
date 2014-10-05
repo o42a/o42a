@@ -23,7 +23,6 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Type;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.object.Obj;
 
 
@@ -46,25 +45,8 @@ public final class ObjectIROp extends StructOp<ObjectIROp> {
 		return struct(null, code, getType().objectData());
 	}
 
-	public final ObjOp op(
-			CodeBuilder builder,
-			Obj ascendant,
-			ObjectPrecision precision) {
-		assert ascendant.assertDerivedFrom(getType().getObjectIR().getObject());
-		return new ObjOp(
-				builder,
-				ascendant.ir(builder.getGenerator()),
-				this,
-				ascendant,
-				precision);
-	}
-
 	public final <O extends StructOp<O>> O field(Code code, Type<O> instance) {
 		return struct(null, code, instance);
-	}
-
-	final ObjOp op(CodeBuilder builder, ObjectIR objectIR) {
-		return new ObjOp(builder, objectIR, this);
 	}
 
 }

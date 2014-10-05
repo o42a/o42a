@@ -20,6 +20,7 @@
 package org.o42a.core.ir.field.link;
 
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld.StatelessOp;
 import org.o42a.core.ir.field.RefFld.StatelessType;
@@ -61,7 +62,7 @@ public class LinkFld extends AbstractLinkFld<StatelessOp, StatelessType> {
 	}
 
 	@Override
-	protected LinkFldOp op(Code code, ObjOp host, StatelessOp ptr) {
+	protected LinkFldOp op(Code code, ObjOp host, OpMeans<StatelessOp> ptr) {
 		return new LinkFldOp(host, this, ptr);
 	}
 

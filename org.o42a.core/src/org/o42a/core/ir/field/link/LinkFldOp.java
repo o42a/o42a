@@ -22,6 +22,7 @@ package org.o42a.core.ir.field.link;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.core.ir.field.*;
 import org.o42a.core.ir.field.RefFld.StatelessOp;
 import org.o42a.core.ir.field.RefFld.StatelessType;
@@ -39,7 +40,7 @@ import org.o42a.core.member.MemberKey;
 public class LinkFldOp
 		extends RefFldOp<StatelessOp, StatelessType, ObjectRefFn> {
 
-	LinkFldOp(ObjOp host, LinkFld fld, StatelessOp ptr) {
+	LinkFldOp(ObjOp host, LinkFld fld, OpMeans<StatelessOp> ptr) {
 		super(host, fld, ptr);
 	}
 

@@ -27,9 +27,7 @@ import static org.o42a.core.ir.object.vmt.VmtIR.VMT_ID;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CondBlock;
-import org.o42a.codegen.code.op.BoolOp;
-import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.code.op.DataRecOp;
+import org.o42a.codegen.code.op.*;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
@@ -47,7 +45,7 @@ public abstract class RefFldOp<
 		C extends ObjectFn<C>>
 				extends FldOp<F, T> {
 
-	public RefFldOp(ObjOp host, RefFld<F, T, C> fld, F ptr) {
+	public RefFldOp(ObjOp host, RefFld<F, T, C> fld, OpMeans<F> ptr) {
 		super(host, fld, ptr);
 	}
 

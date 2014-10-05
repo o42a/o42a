@@ -64,7 +64,7 @@ public abstract class RefFldTargetOp implements RefTargetOp {
 				tempObjHolder(depDirs.getAllocator()));
 		final Block code = depDirs.code();
 
-		this.dep.op().object(code).store(code, object.toData(null, code));
+		this.dep.dep().object(code).store(code, object.toData(null, code));
 
 		if (noDep.exists()) {
 
@@ -72,7 +72,7 @@ public abstract class RefFldTargetOp implements RefTargetOp {
 			final ObjectIR noneIR =
 					builder.getContext().getNone().ir(builder.getGenerator());
 
-			this.dep.op().object(noDep).store(
+			this.dep.dep().object(noDep).store(
 					noDep,
 					noneIR.op(builder, noDep).toData(null, noDep));
 			noDep.go(code.tail());
@@ -86,7 +86,7 @@ public abstract class RefFldTargetOp implements RefTargetOp {
 
 		final Block code = dirs.code();
 
-		this.dep.op().object(code).store(
+		this.dep.dep().object(code).store(
 				code,
 				loadOwner(dirs, store).toData(null, code));
 	}
@@ -97,7 +97,7 @@ public abstract class RefFldTargetOp implements RefTargetOp {
 		final Block code = dirs.code();
 		final ObjectOp owner = anonymousObject(
 				dirs,
-				this.dep.op().object(code).load(null, code),
+				this.dep.dep().object(code).load(null, code),
 				getWellKnownOwner());
 
 		return fldOf(dirs, owner);

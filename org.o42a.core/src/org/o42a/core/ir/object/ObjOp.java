@@ -28,6 +28,7 @@ import java.util.function.Function;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.field.Fld;
@@ -62,7 +63,7 @@ public final class ObjOp extends ObjectOp {
 	ObjOp(
 			CodeBuilder builder,
 			ObjectIR objectIR,
-			ObjectIROp ptr,
+			OpMeans<ObjectIROp> ptr,
 			Obj ascendant,
 			ObjectPrecision precision) {
 		super(builder, ptr, precision);
@@ -73,8 +74,12 @@ public final class ObjOp extends ObjectOp {
 		assert validPrecision();
 	}
 
-	ObjOp(CodeBuilder builder, ObjectIR objectIR, ObjectIROp ptr) {
-		super(builder, ptr, ObjectPrecision.EXACT);
+	ObjOp(
+			CodeBuilder builder,
+			ObjectIR objectIR,
+			OpMeans<ObjectIROp> ptr,
+			ObjectPrecision precision) {
+		super(builder, ptr, precision);
 		this.ascendant = objectIR.getObject();
 		this.objectIR = objectIR;
 		assert validPrecision();
@@ -132,7 +137,7 @@ public final class ObjOp extends ObjectOp {
 		return new ObjOp(
 				getBuilder(),
 				getObjectIR(),
-				ptr(dirs.code()),
+				this,
 				ascendant,
 				COMPATIBLE);
 	}

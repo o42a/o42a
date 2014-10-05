@@ -20,6 +20,7 @@
 package org.o42a.core.ir.field.link;
 
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld.StatefulOp;
 import org.o42a.core.ir.field.RefFld.StatefulType;
@@ -56,7 +57,10 @@ public class EagerLinkFld extends AbstractLinkFld<StatefulOp, StatefulType> {
 	}
 
 	@Override
-	protected EagerLinkFldOp op(Code code, ObjOp host, StatefulOp ptr) {
+	protected EagerLinkFldOp op(
+			Code code,
+			ObjOp host,
+			OpMeans<StatefulOp> ptr) {
 		return new EagerLinkFldOp(host, this, ptr);
 	}
 

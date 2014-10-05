@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.field;
 
+import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Type;
 import org.o42a.core.ir.object.ObjOp;
@@ -30,13 +31,11 @@ public abstract class FldIROp<F extends StructOp<F>, T extends Type<F>>
 
 	private final ObjOp host;
 	private final FldIR<F, T> fld;
-	private final F ptr;
 
-	public FldIROp(ObjOp host, FldIR<F, T> fld, F ptr) {
-		super(host.getBuilder());
+	public FldIROp(ObjOp host, FldIR<F, T> fld, OpMeans<F> ptr) {
+		super(host.getBuilder(), ptr);
 		this.host = host;
 		this.fld = fld;
-		this.ptr = ptr;
 	}
 
 	public final ObjOp host() {
@@ -45,11 +44,6 @@ public abstract class FldIROp<F extends StructOp<F>, T extends Type<F>>
 
 	public FldIR<F ,T> fld() {
 		return this.fld;
-	}
-
-	@Override
-	public final F ptr() {
-		return this.ptr;
 	}
 
 }

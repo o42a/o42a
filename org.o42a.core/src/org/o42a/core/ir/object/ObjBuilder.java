@@ -62,15 +62,20 @@ public final class ObjBuilder extends CodeBuilder {
 		case EXACT:
 			return hostIR.op(this, code);
 		case COMPATIBLE:
-			return getObjectSignature().object(code, getFunction())
-					.to(null, code, hostIR.getType())
-					.op(this, hostIR.getObject(), hostPrecision);
+			return hostIR.op(
+					this,
+					code.means(
+							c -> getObjectSignature()
+							.object(c, getFunction())
+							.to(null, c, hostIR.getType())),
+					hostPrecision);
 		case DERIVED:
 
 			final ObjectOp host = anonymousObject(
 					this,
 					code,
-					getObjectSignature().object(code, getFunction()),
+					code.means(
+							c -> getObjectSignature().object(c, getFunction())),
 					hostIR.getObject());
 
 			return host.cast(HOST_ID, dirs(code, exit), hostIR.getObject());

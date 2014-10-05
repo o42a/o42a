@@ -21,25 +21,39 @@ package org.o42a.core.ir.op;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DumpablePtrOp;
+import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.util.string.ID;
 
 
-public abstract class DefiniteIROp<P extends DumpablePtrOp<P>> extends IROp<P> {
+public abstract class DefiniteIROp<P extends DumpablePtrOp<P>>
+		extends IROp<P>
+		implements OpMeans<P> {
 
-	public DefiniteIROp(CodeBuilder builder) {
+	private final OpMeans<P> ptr;
+
+	public DefiniteIROp(CodeBuilder builder, OpMeans<P> ptr) {
 		super(builder);
+		this.ptr = ptr;
 	}
 
+	@Override
 	public ID getId() {
 		return ptr().getId();
 	}
 
-	@Override
-	public final P ptr(Code code) {
-		return ptr();
+	public final P ptr() {
+		return op();
 	}
 
-	public abstract P ptr();
+	@Override
+	public final P op() {
+		return this.ptr.op();
+	}
+
+	@Override
+	public final P ptr(Code code) {
+		return op();
+	}
 
 }

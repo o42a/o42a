@@ -27,6 +27,7 @@ import static org.o42a.util.fn.Init.init;
 import org.o42a.codegen.Codegen;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.ScopeIR;
@@ -146,10 +147,35 @@ public class ObjectIR implements Codegen {
 	}
 
 	public final ObjOp op(CodeBuilder builder, Code code) {
-		return getInstance()
-				.pointer(getGenerator())
-				.op(null, code)
-				.op(builder, this);
+		return op(builder, code, ObjectPrecision.EXACT);
+	}
+
+	public final ObjOp op(BuilderCode code, ObjectPrecision precision) {
+		return op(code.getBuilder(), code.code(), precision);
+	}
+
+	public final ObjOp op(
+			CodeBuilder builder,
+			Code code,
+			ObjectPrecision precision) {
+		return op(
+				builder,
+				code.means(
+						c -> getInstance()
+						.pointer(getGenerator())
+						.op(null, c)),
+				precision);
+	}
+
+	public final ObjOp op(
+			CodeBuilder builder,
+			OpMeans<ObjectIROp> ptr,
+			ObjectPrecision precision) {
+		return new ObjOp(
+				builder,
+				this,
+				ptr,
+				precision);
 	}
 
 	public final TargetStoreOp exactTargetStore(ID id) {

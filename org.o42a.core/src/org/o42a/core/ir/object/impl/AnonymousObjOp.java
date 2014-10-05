@@ -28,6 +28,7 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.Int32op;
+import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.dep.DepOp;
@@ -52,7 +53,7 @@ public final class AnonymousObjOp extends ObjectOp {
 
 	public AnonymousObjOp(
 			CodeBuilder builder,
-			ObjectIROp ptr,
+			OpMeans<ObjectIROp> ptr,
 			Obj wellKnownType) {
 		super(builder, ptr, DERIVED);
 		assert wellKnownType != null :
@@ -89,7 +90,7 @@ public final class AnonymousObjOp extends ObjectOp {
 			: "Can not cast " + getWellKnownType() + " to " + ascendant;
 		if (ascendant.is(getContext().getVoid())) {
 			// Everything is compatible with void.
-			return ptr().op(getBuilder(), getWellKnownType(), COMPATIBLE);
+			return getWellKnownType().ir(getGenerator()).op(dirs, COMPATIBLE);
 		}
 		return dynamicCast(id, dirs, ascendant);
 	}
@@ -174,11 +175,13 @@ public final class AnonymousObjOp extends ObjectOp {
 		.ne(null, code, ascendantIR.getDescIR().ptr().op(null, code))
 		.go(code, dirs.falseDir());
 
-		final ObjOp result =
-				ptr(code)
-				.toData(null, code)
-				.to(id, code, ascendantIR.getType())
-				.op(getBuilder(), ascendantIR.getObject(), COMPATIBLE);
+		final ObjOp result = ascendantIR.op(
+				getBuilder(),
+				code.means(
+						c -> ptr(c)
+						.toData(null, c)
+						.to(id, c, ascendantIR.getType())),
+				COMPATIBLE);
 
 		subDirs.done();
 

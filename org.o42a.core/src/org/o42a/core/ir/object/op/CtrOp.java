@@ -41,7 +41,9 @@ import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.ir.object.desc.ObjectDescIR;
 import org.o42a.core.ir.object.vmt.VmtIR;
 import org.o42a.core.ir.object.vmt.VmtIRChain;
@@ -131,11 +133,12 @@ public class CtrOp extends IROp<CtrOp.Op> {
 			this.objectPtr = ptr(code).object(code).load(null, code);
 		}
 
-		final ObjectIRStruct sampleType =
-				getSample().ir(getGenerator()).getType();
+		final ObjectIR ir = getSample().ir(getGenerator());
 
-		return this.objectPtr.to(null, code, sampleType)
-				.op(getBuilder(), getSample(), COMPATIBLE);
+		return ir.op(
+				getBuilder(),
+				code.means(c -> this.objectPtr.to(null, c, ir.getType())),
+				COMPATIBLE);
 	}
 
 	public final ValOp objectValue(
