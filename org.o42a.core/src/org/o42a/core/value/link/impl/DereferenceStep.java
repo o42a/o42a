@@ -264,32 +264,27 @@ public class DereferenceStep extends Step {
 		}
 
 		@Override
-		public HostTargetOp target() {
-			return pathTargetOp();
-		}
-
-		@Override
 		public ObjectOp pathTarget(CodeDirs dirs) {
 
 			final ObjHolder holder = tempObjHolder(dirs.getAllocator());
 
-			return dereference(dirs, holder);
+			return deref(dirs, holder);
 		}
 
 		@Override
-		protected TargetStoreOp allocateStore(ID id, Code code) {
+		public TargetStoreOp allocateStore(ID id, Code code) {
 			return new DereferenceStoreOp(id, code, this);
 		}
 
 		@Override
-		protected TargetStoreOp localStore(
+		public TargetStoreOp localStore(
 				ID id,
 				Function<CodeDirs, LocalIROp> getLocal) {
 			return new DereferenceStoreOp(id, getLocal, this);
 		}
 
-		private ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
-			return host().target().dereference(dirs, holder);
+		private ObjectOp deref(CodeDirs dirs, ObjHolder holder) {
+			return host().dereference(dirs, holder);
 		}
 
 	}
@@ -322,7 +317,7 @@ public class DereferenceStep extends Step {
 			final ObjHolder holder = tempObjHolder(
 					allocator != null ? allocator : dirs.getAllocator());
 
-			return this.op.dereference(dirs, holder);
+			return this.op.deref(dirs, holder);
 		}
 
 	}

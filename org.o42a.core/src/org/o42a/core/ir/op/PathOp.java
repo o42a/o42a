@@ -19,17 +19,12 @@
 */
 package org.o42a.core.ir.op;
 
-import java.util.function.Function;
-
-import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FldOp;
-import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
-import org.o42a.util.string.ID;
 
 
 public abstract class PathOp implements HostOp {
@@ -51,67 +46,23 @@ public abstract class PathOp implements HostOp {
 
 	public abstract HostOp pathTarget(CodeDirs dirs);
 
-	protected final HostTargetOp pathTargetOp() {
-		return new PathTargetOp(this);
+	@Override
+	public FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey) {
+		return pathTarget(dirs).field(dirs, memberKey);
+	}
+
+	@Override
+	public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
+		return pathTarget(dirs).materialize(dirs, holder);
+	}
+
+	@Override
+	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
+		return pathTarget(dirs).dereference(dirs, holder);
 	}
 
 	protected final HostValueOp pathValueOp() {
 		return new PathValueOp(this);
-	}
-
-	protected abstract TargetStoreOp allocateStore(ID id, Code code);
-
-	protected abstract TargetStoreOp localStore(
-			ID id,
-			Function<CodeDirs, LocalIROp> getLocal);
-
-	private static final class PathTargetOp implements HostTargetOp {
-
-		private final PathOp path;
-
-		PathTargetOp(PathOp path) {
-			this.path = path;
-		}
-
-		@Override
-		public FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey) {
-			return target(dirs).field(dirs, memberKey);
-		}
-
-		@Override
-		public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
-			return target(dirs).materialize(dirs, holder);
-		}
-
-		@Override
-		public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
-			return target(dirs).dereference(dirs, holder);
-		}
-
-		@Override
-		public TargetStoreOp allocateStore(ID id, Code code) {
-			return this.path.allocateStore(id, code);
-		}
-
-		@Override
-		public TargetStoreOp localStore(
-				ID id,
-				Function<CodeDirs, LocalIROp> getLocal) {
-			return this.path.localStore(id, getLocal);
-		}
-
-		@Override
-		public String toString() {
-			if (this.path == null) {
-				return super.toString();
-			}
-			return this.path.toString();
-		}
-
-		private HostTargetOp target(CodeDirs dirs) {
-			return this.path.pathTarget(dirs).target();
-		}
-
 	}
 
 	private static final class PathValueOp implements HostValueOp {

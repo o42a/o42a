@@ -43,7 +43,7 @@ import org.o42a.util.string.ID;
 
 
 public final class DepOp extends DefiniteIROp<DumpPtrOp>
-		implements HostOp, HostTargetOp, HostValueOp {
+		implements HostOp, HostValueOp {
 
 	public static final ID DEP_ID = ID.id("dep");
 
@@ -93,11 +93,6 @@ public final class DepOp extends DefiniteIROp<DumpPtrOp>
 	}
 
 	@Override
-	public final DepOp target() {
-		return this;
-	}
-
-	@Override
 	public void writeCond(CodeDirs dirs) {
 		loadDep(dirs).value().writeCond(dirs);
 	}
@@ -109,17 +104,17 @@ public final class DepOp extends DefiniteIROp<DumpPtrOp>
 
 	@Override
 	public FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey) {
-		return loadDep(dirs).target().field(dirs, memberKey);
+		return loadDep(dirs).field(dirs, memberKey);
 	}
 
 	@Override
 	public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
-		return loadDep(dirs).target().materialize(dirs, holder);
+		return loadDep(dirs).materialize(dirs, holder);
 	}
 
 	@Override
 	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
-		return loadDep(dirs).target().dereference(dirs, holder);
+		return loadDep(dirs).dereference(dirs, holder);
 	}
 
 	@Override

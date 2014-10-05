@@ -162,7 +162,6 @@ final class ArrayConstantDef extends Def {
 			final ObjectOp array =
 					this.array.getPrefix()
 					.write(host)
-					.target()
 					.materialize(
 							dirs.dirs(),
 							tempObjHolder(dirs.getAllocator()));

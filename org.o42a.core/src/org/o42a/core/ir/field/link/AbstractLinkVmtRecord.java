@@ -69,7 +69,6 @@ public abstract class AbstractLinkVmtRecord<
 		return target.getRef()
 				.op(builder.host())
 				.path()
-				.target()
 				.materialize(dirs, objTrap())
 				.cast(
 						null,

@@ -155,8 +155,7 @@ final class LinkValueIR extends ValueIR {
 			tempObjHolder(code.getAllocator()).holdVolatile(code, host());
 
 			final ObjectOp valueObject =
-					value.target()
-					.materialize(dirs, tempObjHolder(code.getAllocator()));
+					value.materialize(dirs, tempObjHolder(code.getAllocator()));
 
 			value().rawValue(null, code)
 					.toAny(null, code)

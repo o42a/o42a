@@ -34,7 +34,6 @@ public final class LocalOp {
 	static LocalOp allocateLocal(CodeDirs dirs, Local local, RefOp ref) {
 
 		final ID id = local.getMemberId().toID();
-		final HostTargetOp target = ref.path().target();
 		final TargetStoreOp targetStore;
 		final MemberLocal member = local.getMember();
 
@@ -42,10 +41,10 @@ public final class LocalOp {
 
 			final Code allocation = dirs.getAllocator().allocations();
 
-			targetStore = target.allocateStore(id, allocation);
+			targetStore = ref.path().allocateStore(id, allocation);
 			targetStore.storeTarget(dirs);
 		} else {
-			targetStore = target.localStore(
+			targetStore = ref.path().localStore(
 					id,
 					ds -> ds.getBuilder()
 					.host()
