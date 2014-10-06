@@ -19,7 +19,7 @@
 */
 package org.o42a.core.value.array.impl;
 
-import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
+import static org.o42a.core.ir.object.ObjectPrecision.APPROXIMATE_OBJECT;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
 import static org.o42a.core.ir.value.ValAllocFn.VAL_ALLOC;
@@ -65,7 +65,7 @@ public class ArrayConstructorBuilder
 				function,
 				failure.head(),
 				ownerIR,
-				DERIVED);
+				APPROXIMATE_OBJECT);
 		final ValOp value = function.arg(function, OBJECT_VALUE.value()).op(
 				function,
 				builder,

@@ -134,7 +134,7 @@ public class StaticObjectStep extends Step {
 
 		@Override
 		public ObjOp pathTarget(CodeDirs dirs) {
-			return objectIR().op(getBuilder(), dirs.code());
+			return objectIR().exactOp(dirs);
 		}
 
 		@Override

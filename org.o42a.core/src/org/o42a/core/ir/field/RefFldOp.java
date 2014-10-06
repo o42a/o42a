@@ -20,7 +20,7 @@
 package org.o42a.core.ir.field;
 
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
-import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.object.ObjectOp.approximateObject;
 import static org.o42a.core.ir.object.op.ObjHolder.useVar;
 import static org.o42a.core.ir.object.vmt.VmtIR.VMT_ID;
 
@@ -69,7 +69,9 @@ public abstract class RefFldOp<
 
 			final ObjectIR targetIR = target.ir(getGenerator());
 
-			return holder.hold(code, targetIR.op(getBuilder(), dirs.code()));
+			return holder.hold(
+					code,
+					targetIR.exactOp(getBuilder(), dirs.code()));
 		}
 
 		final FldKind kind = fld().getKind();
@@ -168,7 +170,7 @@ public abstract class RefFldOp<
 		final Obj hostAscendant = host().getAscendant();
 		final Obj targetType = fld().targetType(hostAscendant);
 
-		return anonymousObject(getBuilder(), code, ptr, targetType);
+		return approximateObject(getBuilder(), code, ptr, targetType);
 	}
 
 	private BoolOp isNone(Block hasTarget, DataOp ptr) {

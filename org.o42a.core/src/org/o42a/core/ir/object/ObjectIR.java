@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE_OBJECT;
+import static org.o42a.core.ir.object.ObjectPrecision.EXACT_OBJECT;
 import static org.o42a.core.ir.object.desc.ObjectDescIR.objectDescIR;
 import static org.o42a.core.ir.object.vmt.VmtIR.vmtIR;
 import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
@@ -142,40 +144,26 @@ public class ObjectIR implements Codegen {
 		return this;
 	}
 
-	public final ObjOp op(BuilderCode code) {
-		return op(code.getBuilder(), code.code());
+	public final ObjOp exactOp(BuilderCode code) {
+		return exactOp(code.getBuilder(), code.code());
 	}
 
-	public final ObjOp op(CodeBuilder builder, Code code) {
-		return op(builder, code, ObjectPrecision.EXACT);
+	public final ObjOp exactOp(CodeBuilder builder, Code code) {
+		return op(builder, code, EXACT_OBJECT);
 	}
 
-	public final ObjOp op(BuilderCode code, ObjectPrecision precision) {
-		return op(code.getBuilder(), code.code(), precision);
+	public final ObjOp compatibleOp(BuilderCode code) {
+		return compatibleOp(code.getBuilder(), code.code());
 	}
 
-	public final ObjOp op(
+	public final ObjOp compatibleOp(CodeBuilder builder, Code code) {
+		return op(builder, code, COMPATIBLE_OBJECT);
+	}
+
+	public final ObjOp compatibleOp(
 			CodeBuilder builder,
-			Code code,
-			ObjectPrecision precision) {
-		return op(
-				builder,
-				code.means(
-						c -> getInstance()
-						.pointer(getGenerator())
-						.op(null, c)),
-				precision);
-	}
-
-	public final ObjOp op(
-			CodeBuilder builder,
-			OpMeans<ObjectIROp> ptr,
-			ObjectPrecision precision) {
-		return new ObjOp(
-				builder,
-				this,
-				ptr,
-				precision);
+			OpMeans<ObjectIROp> ptr) {
+		return new ObjOp(builder, this, ptr, COMPATIBLE_OBJECT);
 	}
 
 	public final TargetStoreOp exactTargetStore(ID id) {
@@ -185,6 +173,20 @@ public class ObjectIR implements Codegen {
 	@Override
 	public String toString() {
 		return this.object + " IR";
+	}
+
+	private final ObjOp op(
+			CodeBuilder builder,
+			Code code,
+			ObjectPrecision precision) {
+		return new ObjOp(
+				builder,
+				this,
+				code.means(
+						c -> getInstance()
+						.pointer(getGenerator())
+						.op(null, c)),
+				precision);
 	}
 
 	private static final class ExactObjectStoreOp implements TargetStoreOp {
@@ -203,7 +205,7 @@ public class ObjectIR implements Codegen {
 
 		@Override
 		public HostOp loadTarget(CodeDirs dirs) {
-			return this.objectIR.op(dirs);
+			return this.objectIR.exactOp(dirs);
 		}
 
 		@Override

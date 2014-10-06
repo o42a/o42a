@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.field;
 
-import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
+import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE_OBJECT;
 import static org.o42a.util.fn.Init.init;
 
 import java.util.function.BiConsumer;
@@ -188,7 +188,7 @@ public abstract class RefVmtRecord<
 					constructor,
 					failure.head(),
 					fld().getObjectIR(),
-					COMPATIBLE);
+					COMPATIBLE_OBJECT);
 			final CodeDirs dirs = builder.dirs(constructor, failure.head());
 			final CodeDirs subDirs =
 					dirs.begin(

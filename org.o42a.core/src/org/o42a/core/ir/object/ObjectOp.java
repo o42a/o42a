@@ -38,7 +38,7 @@ import org.o42a.core.ir.field.inst.InstFldKind;
 import org.o42a.core.ir.field.inst.InstFldOp;
 import org.o42a.core.ir.field.inst.ResumeFromOp;
 import org.o42a.core.ir.field.local.LocalIROp;
-import org.o42a.core.ir.object.impl.AnonymousObjOp;
+import org.o42a.core.ir.object.impl.ApproximateObjOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
@@ -64,18 +64,18 @@ public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
 	protected static final ID DEP_HOST_ID = ID.id("dep_host");
 	protected static final ID KEEPER_HOST_ID = ID.id("keeper_host");
 
-	public static ObjectOp anonymousObject(
+	public static ObjectOp approximateObject(
 			BuilderCode code,
 			OpMeans<DataOp> ptr,
 			Obj wellKnownType) {
-		return anonymousObject(
+		return approximateObject(
 				code.getBuilder(),
 				code.code(),
 				ptr,
 				wellKnownType);
 	}
 
-	public static ObjectOp anonymousObject(
+	public static ObjectOp approximateObject(
 			CodeBuilder builder,
 			Code code,
 			OpMeans<DataOp> ptr,
@@ -84,20 +84,20 @@ public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
 		final ObjectIR ir = wellKnownType.ir(builder.getGenerator());
 
 		if (ir.isExact()) {
-			return ir.op(builder, code);
+			return ir.exactOp(builder, code);
 		}
 
-		return anonymousObject(
+		return approximateObject(
 				builder,
 				code.means(c -> ptr.op().to(null, c, ir.getType())),
 				wellKnownType);
 	}
 
-	public static ObjectOp anonymousObject(
+	public static ObjectOp approximateObject(
 			CodeBuilder builder,
 			OpMeans<ObjectIROp> ptr,
 			Obj wellKnownType) {
-		return new AnonymousObjOp(builder, ptr, wellKnownType);
+		return new ApproximateObjOp(builder, ptr, wellKnownType);
 	}
 
 	public static ObjectOp objectAncestor(
@@ -212,7 +212,7 @@ public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
 				.toData(TARGET_ID, code);
 		final ObjectOp result = holder.holdVolatile(
 				code,
-				anonymousObject(
+				approximateObject(
 						valDirs,
 						ptr,
 						linkType.interfaceRef(typeParameters).getType()));
@@ -242,12 +242,12 @@ public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
 		out.append('(');
 
 		switch (getPrecision()) {
-		case EXACT:
+		case EXACT_OBJECT:
 			break;
-		case COMPATIBLE:
+		case COMPATIBLE_OBJECT:
 			out.append("(*) ");
 			break;
-		case DERIVED:
+		case APPROXIMATE_OBJECT:
 			out.append("(?) ");
 			break;
 		}

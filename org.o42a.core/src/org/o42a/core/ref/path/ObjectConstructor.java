@@ -258,9 +258,7 @@ public abstract class ObjectConstructor
 		private ObjectOp exactObject(CodeDirs dirs) {
 
 			final Obj sample = getConstructed();
-			final ObjOp target = sample.ir(dirs.getGenerator()).op(
-					getBuilder(),
-					dirs.code());
+			final ObjOp target = sample.ir(dirs.getGenerator()).exactOp(dirs);
 
 			dirs.code().dumpName("Static object: ", target);
 			target.fillDeps(dirs, host(), sample);

@@ -184,7 +184,7 @@ public class VoidStep extends Step {
 
 		@Override
 		public HostOp pathTarget(CodeDirs dirs) {
-			return voidIR().op(getBuilder(), dirs.code());
+			return voidIR().exactOp(dirs);
 		}
 
 		@Override

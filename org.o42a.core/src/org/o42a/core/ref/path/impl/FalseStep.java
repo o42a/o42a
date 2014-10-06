@@ -209,7 +209,7 @@ public class FalseStep extends Step {
 
 		@Override
 		public ObjOp pathTarget(CodeDirs dirs) {
-			return falseIR().op(getBuilder(), dirs.code());
+			return falseIR().exactOp(dirs);
 		}
 
 		@Override

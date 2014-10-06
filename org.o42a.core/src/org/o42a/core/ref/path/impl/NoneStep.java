@@ -135,7 +135,7 @@ public class NoneStep extends Step {
 		final CodeBuilder builder = dirs.getBuilder();
 		final Obj none = builder.getContext().getNone();
 
-		return none.ir(dirs.getGenerator()).op(builder, dirs.code());
+		return none.ir(dirs.getGenerator()).exactOp(dirs);
 	}
 
 	private static final class Inline extends InlineStep {

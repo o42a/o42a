@@ -22,7 +22,7 @@ package org.o42a.core.ir.object;
 import static org.o42a.codegen.code.AllocationMode.LAZY_ALLOCATION;
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
-import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.object.ObjectOp.approximateObject;
 
 import java.util.function.Function;
 
@@ -91,7 +91,7 @@ public abstract class AbstractObjectStoreOp
 		final DataOp objectPtr =
 				ptr(dirs).load(null, code).toData(null, code);
 
-		return anonymousObject(
+		return approximateObject(
 				dirs,
 				objectPtr,
 				getWellKnownType());

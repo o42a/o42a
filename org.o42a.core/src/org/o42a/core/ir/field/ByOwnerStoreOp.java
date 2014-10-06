@@ -22,7 +22,7 @@ package org.o42a.core.ir.field;
 import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
-import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.object.ObjectOp.approximateObject;
 
 import java.util.function.Function;
 
@@ -86,7 +86,7 @@ public abstract class ByOwnerStoreOp implements FldStoreOp {
 
 		final Block code = dirs.code();
 
-		return anonymousObject(
+		return approximateObject(
 				dirs,
 				ownerPtr(dirs).load(null, code),
 				getOwnerType());

@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.field.owner;
 
-import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.object.ObjectOp.approximateObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
@@ -75,7 +75,7 @@ public class OwnerFldOp extends FldOp<OwnerFld.Op, OwnerFld.Type> {
 			final Obj target = fld().getField().toObject();
 			final ObjectIR targetIR = target.ir(getGenerator());
 
-			return targetIR.op(getBuilder(), dirs.code());
+			return targetIR.exactOp(getBuilder(), dirs.code());
 		}
 
 		final Block code = dirs.code();
@@ -83,7 +83,7 @@ public class OwnerFldOp extends FldOp<OwnerFld.Op, OwnerFld.Type> {
 
 		return holder.hold(
 				code,
-				anonymousObject(dirs, targetPtr, fld().getAscendant()));
+				approximateObject(dirs, targetPtr, fld().getAscendant()));
 	}
 
 }

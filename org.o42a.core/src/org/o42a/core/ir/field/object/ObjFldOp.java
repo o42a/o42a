@@ -29,7 +29,9 @@ import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.core.ir.field.*;
 import org.o42a.core.ir.field.RefFld.StatefulOp;
 import org.o42a.core.ir.field.RefFld.StatefulType;
-import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.CtrOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.object.vmt.VmtIRChain;
@@ -100,10 +102,9 @@ public class ObjFldOp
 
 		final ObjectIR ir = fld().getTargetAscendant().ir(getGenerator());
 
-		return ir.op(
+		return ir.compatibleOp(
 				getBuilder(),
-				code.means(c -> ptr.to(null, c, ir.getType())),
-				ObjectPrecision.COMPATIBLE);
+				code.means(c -> ptr.to(null, c, ir.getType())));
 	}
 
 }
