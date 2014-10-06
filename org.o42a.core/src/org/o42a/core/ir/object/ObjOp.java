@@ -22,7 +22,8 @@ package org.o42a.core.ir.object;
 import static org.o42a.core.ir.field.Fld.FIELD_ID;
 import static org.o42a.core.ir.field.dep.DepOp.DEP_ID;
 import static org.o42a.core.ir.field.local.LocalIR.LOCAL_ID;
-import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
+import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE_OBJECT;
+import static org.o42a.core.ir.object.ObjectPrecision.EXACT_OBJECT;
 
 import java.util.function.Function;
 
@@ -65,10 +66,14 @@ public final class ObjOp extends ObjectOp {
 			OpMeans<ObjectIROp> ptr,
 			Obj ascendant,
 			ObjectPrecision precision) {
-		super(builder, ptr, precision);
-		this.objectIR = objectIR;
+		super(
+				builder,
+				ptr,
+				objectIR.isExact() && ascendant.is(objectIR.getObject())
+				? EXACT_OBJECT : precision);
 		assert ascendant != null :
 			"Object ascendant not specified";
+		this.objectIR = objectIR;
 		this.ascendant = ascendant;
 		assert validPrecision();
 	}
@@ -78,7 +83,7 @@ public final class ObjOp extends ObjectOp {
 			ObjectIR objectIR,
 			OpMeans<ObjectIROp> ptr,
 			ObjectPrecision precision) {
-		super(builder, ptr, precision);
+		super(builder, ptr, objectIR.isExact() ? EXACT_OBJECT : precision);
 		this.ascendant = objectIR.getObject();
 		this.objectIR = objectIR;
 		assert validPrecision();
@@ -122,7 +127,7 @@ public final class ObjOp extends ObjectOp {
 				getObjectIR(),
 				this,
 				ascendant,
-				COMPATIBLE);
+				COMPATIBLE_OBJECT);
 	}
 
 	@Override

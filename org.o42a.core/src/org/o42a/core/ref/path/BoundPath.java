@@ -944,7 +944,7 @@ public class BoundPath extends RefPath {
 		}
 
 		private ObjOp object(Code code) {
-			return this.objectIR.op(getBuilder(), code);
+			return this.objectIR.exactOp(getBuilder(), code);
 		}
 
 	}

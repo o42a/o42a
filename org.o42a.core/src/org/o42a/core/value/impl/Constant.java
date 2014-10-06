@@ -185,7 +185,7 @@ public final class Constant<T> extends ObjectConstructor {
 			final ObjectIR ir =
 					this.constant.getConstructed().ir(getGenerator());
 
-			return ir.op(getBuilder(), dirs.code());
+			return ir.exactOp(dirs);
 		}
 
 		@Override
@@ -230,7 +230,7 @@ public final class Constant<T> extends ObjectConstructor {
 			final ObjectIR ir =
 					this.constant.getConstructed().ir(dirs.getGenerator());
 
-			return ir.op(dirs);
+			return ir.exactOp(dirs);
 		}
 
 	}

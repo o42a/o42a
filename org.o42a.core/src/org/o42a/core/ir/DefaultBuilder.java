@@ -30,7 +30,7 @@ final class DefaultBuilder extends CodeBuilder {
 
 	DefaultBuilder(Function<?> function, Obj object) {
 		super(object.getContext(), function);
-		this.host = object.ir(getGenerator()).op(this, getFunction());
+		this.host = object.ir(getGenerator()).exactOp(this, getFunction());
 		initFunction();
 	}
 

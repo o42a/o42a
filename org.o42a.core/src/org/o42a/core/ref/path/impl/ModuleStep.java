@@ -173,7 +173,7 @@ public final class ModuleStep extends Step {
 
 		@Override
 		public ObjOp pathTarget(CodeDirs dirs) {
-			return moduleIR().op(getBuilder(), dirs.code());
+			return moduleIR().exactOp(dirs);
 		}
 
 		@Override

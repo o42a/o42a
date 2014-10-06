@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.object.ObjectOp.approximateObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
@@ -89,7 +89,7 @@ final class DefaultRefTargetIR implements RefTargetIR {
 
 				this.dep.dep().object(noDep).store(
 						noDep,
-						noneIR.op(builder, noDep).toData(null, noDep));
+						noneIR.exactOp(builder, noDep).toData(null, noDep));
 				noDep.go(code.tail());
 			}
 
@@ -113,7 +113,7 @@ final class DefaultRefTargetIR implements RefTargetIR {
 
 			final Block code = dirs.code();
 
-			return anonymousObject(
+			return approximateObject(
 					dirs,
 					this.dep.dep().object(code).load(null, code),
 					this.ir.refIR.ref().getResolution().resolveTarget());

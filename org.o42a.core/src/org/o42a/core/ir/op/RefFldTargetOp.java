@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.op;
 
-import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.object.ObjectOp.approximateObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
@@ -75,7 +75,7 @@ public abstract class RefFldTargetOp implements RefTargetOp {
 
 			this.dep.dep().object(noDep).store(
 					noDep,
-					noneIR.op(builder, noDep).toData(null, noDep));
+					noneIR.exactOp(builder, noDep).toData(null, noDep));
 			noDep.go(code.tail());
 		}
 
@@ -96,7 +96,7 @@ public abstract class RefFldTargetOp implements RefTargetOp {
 	public final FldOp<?, ?> loadTarget(CodeDirs dirs) {
 
 		final Block code = dirs.code();
-		final ObjectOp owner = anonymousObject(
+		final ObjectOp owner = approximateObject(
 				dirs,
 				this.dep.dep().object(code).load(null, code),
 				getWellKnownOwner());

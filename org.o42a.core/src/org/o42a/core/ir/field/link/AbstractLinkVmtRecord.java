@@ -61,7 +61,7 @@ public abstract class AbstractLinkVmtRecord<
 			return builder.getContext()
 					.getNone()
 					.ir(getGenerator())
-					.op(builder, dirs.code());
+					.exactOp(builder, dirs.code());
 		}
 
 		// Links and variables should trap the object before returning

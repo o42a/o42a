@@ -20,7 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.analysis.use.SimpleUsage.ALL_SIMPLE_USAGES;
-import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
+import static org.o42a.core.ir.object.ObjectPrecision.APPROXIMATE_OBJECT;
 import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
 import static org.o42a.core.ir.value.ValHolderFactory.NO_VAL_HOLDER;
 import static org.o42a.core.ir.value.ValOp.VALUE_ID;
@@ -30,13 +30,13 @@ import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
 import static org.o42a.util.fn.Init.init;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.FuncPtr;
+import org.o42a.codegen.code.Function;
 import org.o42a.codegen.data.FuncRec;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.type.ValueOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.Defs;
@@ -100,10 +100,6 @@ public final class ObjectValueIR {
 		return this.finalValue.get();
 	}
 
-	public final ValueOp op(CodeBuilder builder, Code code) {
-		return getObjectIR().op(builder, code).value();
-	}
-
 	public final void writeValue(DefDirs dirs, ObjOp host) {
 
 		final DefDirs subDirs = dirs.begin(
@@ -138,7 +134,7 @@ public final class ObjectValueIR {
 				function,
 				failure.head(),
 				getObjectIR(),
-				DERIVED);
+				APPROXIMATE_OBJECT);
 
 		if (failure.exists()) {
 			failure.debug("Failure");

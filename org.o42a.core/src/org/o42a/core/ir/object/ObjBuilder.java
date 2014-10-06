@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
-import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
+import static org.o42a.core.ir.object.ObjectOp.approximateObject;
+import static org.o42a.core.ir.object.ObjectPrecision.EXACT_OBJECT;
 import static org.o42a.core.ir.op.HostOp.HOST_ID;
 
 import org.o42a.codegen.code.Block;
@@ -44,7 +44,7 @@ public final class ObjBuilder extends CodeBuilder {
 				function,
 				exit,
 				hostIR,
-				hostIR.isExact() ? EXACT : hostPrecision);
+				hostIR.isExact() ? EXACT_OBJECT : hostPrecision);
 		initFunction();
 	}
 
@@ -59,19 +59,18 @@ public final class ObjBuilder extends CodeBuilder {
 			ObjectIR hostIR,
 			ObjectPrecision hostPrecision) {
 		switch (hostPrecision) {
-		case EXACT:
-			return hostIR.op(this, code);
-		case COMPATIBLE:
-			return hostIR.op(
+		case EXACT_OBJECT:
+			return hostIR.exactOp(this, code);
+		case COMPATIBLE_OBJECT:
+			return hostIR.compatibleOp(
 					this,
 					code.means(
 							c -> getObjectSignature()
 							.object(c, getFunction())
-							.to(null, c, hostIR.getType())),
-					hostPrecision);
-		case DERIVED:
+							.to(null, c, hostIR.getType())));
+		case APPROXIMATE_OBJECT:
 
-			final ObjectOp host = anonymousObject(
+			final ObjectOp host = approximateObject(
 					this,
 					code,
 					code.means(

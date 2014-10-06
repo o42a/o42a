@@ -21,7 +21,6 @@ package org.o42a.core.ir.object.op;
 
 import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
 import static org.o42a.core.ir.object.ObjectOp.objectAncestor;
-import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.op.AllocateObjectFn.ALLOCATE_OBJECT;
 import static org.o42a.core.ir.object.op.DisposeObjectFn.DISPOSE_OBJECT;
 import static org.o42a.core.ir.object.op.NewObjectFn.NEW_OBJECT;
@@ -135,10 +134,9 @@ public class CtrOp extends IROp<CtrOp.Op> {
 
 		final ObjectIR ir = getSample().ir(getGenerator());
 
-		return ir.op(
+		return ir.compatibleOp(
 				getBuilder(),
-				code.means(c -> this.objectPtr.to(null, c, ir.getType())),
-				COMPATIBLE);
+				code.means(c -> this.objectPtr.to(null, c, ir.getType())));
 	}
 
 	public final ValOp objectValue(

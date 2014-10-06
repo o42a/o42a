@@ -20,7 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectIRStruct.OBJECT_ID;
-import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.object.ObjectOp.approximateObject;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -52,7 +52,7 @@ public final class ObjectDataOp extends DefiniteIROp<ObjectIRDataOp> {
 	}
 
 	public final ObjectOp object(Code code, Obj wellKnownType) {
-		return anonymousObject(
+		return approximateObject(
 				getBuilder(),
 				code,
 				objectPtr(code, wellKnownType),

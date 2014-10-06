@@ -262,9 +262,7 @@ final class MemberStep extends AbstractMemberStep {
 		public FldOp<?, ?> loadTarget(CodeDirs dirs) {
 			return this.fld.op(
 					dirs.code(),
-					this.fld.getBodyIR()
-					.getObjectIR()
-					.op(dirs.getBuilder(), dirs.code()));
+					this.fld.getBodyIR().getObjectIR().exactOp(dirs));
 		}
 
 		@Override

@@ -20,8 +20,7 @@
 package org.o42a.core.ir.object.impl;
 
 import static org.o42a.core.ir.field.Fld.FIELD_ID;
-import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
-import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
+import static org.o42a.core.ir.object.ObjectPrecision.APPROXIMATE_OBJECT;
 import static org.o42a.core.ir.object.desc.AscendantDescIR.ASCENDANT_DESC_IR;
 
 import org.o42a.codegen.code.Block;
@@ -45,15 +44,15 @@ import org.o42a.core.object.state.Dep;
 import org.o42a.util.string.ID;
 
 
-public final class AnonymousObjOp extends ObjectOp {
+public final class ApproximateObjOp extends ObjectOp {
 
 	private final Obj wellKnownType;
 
-	public AnonymousObjOp(
+	public ApproximateObjOp(
 			CodeBuilder builder,
 			OpMeans<ObjectIROp> ptr,
 			Obj wellKnownType) {
-		super(builder, ptr, DERIVED);
+		super(builder, ptr, APPROXIMATE_OBJECT);
 		assert wellKnownType != null :
 			"Object type not specified";
 		this.wellKnownType = wellKnownType.getInterface();
@@ -66,7 +65,7 @@ public final class AnonymousObjOp extends ObjectOp {
 
 	@Override
 	public ObjectOp phi(Code code, DataOp ptr) {
-		return anonymousObject(getBuilder(), code, ptr, getWellKnownType());
+		return approximateObject(getBuilder(), code, ptr, getWellKnownType());
 	}
 
 	@Override
@@ -76,7 +75,9 @@ public final class AnonymousObjOp extends ObjectOp {
 			: "Can not cast " + getWellKnownType() + " to " + ascendant;
 		if (ascendant.is(getContext().getVoid())) {
 			// Everything is compatible with void.
-			return getWellKnownType().ir(getGenerator()).op(dirs, COMPATIBLE);
+			return getWellKnownType()
+					.ir(getGenerator())
+					.compatibleOp(dirs);
 		}
 		return dynamicCast(id, dirs, ascendant);
 	}
@@ -166,13 +167,12 @@ public final class AnonymousObjOp extends ObjectOp {
 		.ne(null, code, ascendantIR.getDescIR().ptr().op(null, code))
 		.go(code, dirs.falseDir());
 
-		final ObjOp result = ascendantIR.op(
+		final ObjOp result = ascendantIR.compatibleOp(
 				getBuilder(),
 				code.means(
 						c -> ptr()
 						.toData(null, c)
-						.to(id, c, ascendantIR.getType())),
-				COMPATIBLE);
+						.to(id, c, ascendantIR.getType())));
 
 		subDirs.done();
 

@@ -25,24 +25,24 @@ public enum ObjectPrecision {
 	/**
 	 * The object type is exactly known at compile time.
 	 */
-	EXACT,
+	EXACT_OBJECT,
 
 	/**
 	 * The object type is compatible with the required type.
 	 */
-	COMPATIBLE,
+	COMPATIBLE_OBJECT,
 
 	/**
 	 * The object can be cast to the required type. But the cast may fail.
 	 */
-	DERIVED;
+	APPROXIMATE_OBJECT;
 
 	public final boolean isCompatible() {
-		return this != DERIVED;
+		return this != APPROXIMATE_OBJECT;
 	}
 
 	public final boolean isExact() {
-		return this == EXACT;
+		return this == EXACT_OBJECT;
 	}
 
 }
