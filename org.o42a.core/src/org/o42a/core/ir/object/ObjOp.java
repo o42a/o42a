@@ -58,7 +58,6 @@ public final class ObjOp extends ObjectOp {
 
 	private final ObjectIR objectIR;
 	private final Obj ascendant;
-	private ValueOp value;
 
 	ObjOp(
 			CodeBuilder builder,
@@ -110,22 +109,6 @@ public final class ObjOp extends ObjectOp {
 
 	public final VmtIRChain.Op vmtc(Code code) {
 		return ptr().objectData(code).vmtc(code).load(null, code);
-	}
-
-	@Override
-	public final ValueOp value() {
-		if (this.value != null) {
-			return this.value;
-		}
-
-		final ValueIR valueIR = getAscendant().ir(getGenerator()).getValueIR();
-		final ValueOp value = valueIR.op(this);
-
-		if (!getPrecision().isExact()) {
-			return this.value = value;
-		}
-
-		return this.value = new ExactValueOp(value);
 	}
 
 	@Override
@@ -237,6 +220,19 @@ public final class ObjOp extends ObjectOp {
 			return getObjectIR().exactTargetStore(id);
 		}
 		return super.localStore(id, getLocal);
+	}
+
+	@Override
+	protected ValueOp createValue() {
+
+		final ValueIR valueIR = getAscendant().ir(getGenerator()).getValueIR();
+		final ValueOp value = valueIR.op(this);
+
+		if (!getPrecision().isExact()) {
+			return value;
+		}
+
+		return new ExactValueOp(value);
 	}
 
 	private boolean validPrecision() {
