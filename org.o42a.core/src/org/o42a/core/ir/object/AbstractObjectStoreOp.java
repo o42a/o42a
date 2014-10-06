@@ -23,6 +23,7 @@ import static org.o42a.codegen.code.AllocationMode.LAZY_ALLOCATION;
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
 import static org.o42a.core.ir.object.ObjectOp.approximateObject;
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import java.util.function.Function;
 
@@ -90,11 +91,14 @@ public abstract class AbstractObjectStoreOp
 		final Block code = dirs.code();
 		final DataOp objectPtr =
 				ptr(dirs).load(null, code).toData(null, code);
-
-		return approximateObject(
+		final ObjectOp object = approximateObject(
 				dirs,
 				objectPtr,
 				getWellKnownType());
+
+		tempObjHolder(dirs.getAllocator()).holdVolatile(code, object);
+
+		return object;
 	}
 
 	@Override

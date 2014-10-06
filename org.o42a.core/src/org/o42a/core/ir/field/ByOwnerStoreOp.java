@@ -23,6 +23,7 @@ import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
 import static org.o42a.core.ir.object.ObjectOp.approximateObject;
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import java.util.function.Function;
 
@@ -85,11 +86,14 @@ public abstract class ByOwnerStoreOp implements FldStoreOp {
 	public final ObjectOp loadOwner(CodeDirs dirs) {
 
 		final Block code = dirs.code();
-
-		return approximateObject(
+		final ObjectOp owner = approximateObject(
 				dirs,
 				ownerPtr(dirs).load(null, code),
 				getOwnerType());
+
+		tempObjHolder(dirs.getAllocator()).holdVolatile(code, owner);
+
+		return owner;
 	}
 
 	@Override
