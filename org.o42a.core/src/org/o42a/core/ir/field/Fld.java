@@ -28,6 +28,7 @@ import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.SubData;
+import org.o42a.core.ir.field.local.LocalIR;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRBodies;
 import org.o42a.core.ir.object.ObjectIRBody;
@@ -93,6 +94,7 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 		return false;
 	}
 
+	@Override
 	public final boolean isStateless() {
 		return getKind().isStateless() || isOmitted();
 	}
@@ -124,6 +126,7 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 		return (Fld<F, T>) bodies.fld(getKey());
 	}
 
+	@Override
 	public abstract VmtRecord vmtRecord();
 
 	public final FldOp<F, T> op(Code code, ObjOp host) {
@@ -135,6 +138,7 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 				: code.means(c -> host.ptr().field(c, getTypeInstance())));
 	}
 
+	@Override
 	public final void allocate(SubData<?> data) {
 		if (isStateless()) {
 			return;
@@ -146,6 +150,16 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 	}
 
 	public void targetAllocated() {
+	}
+
+	@Override
+	public final Fld<F, T> toFld() {
+		return this;
+	}
+
+	@Override
+	public final LocalIR toLocal() {
+		return null;
 	}
 
 	protected boolean mayOmit() {

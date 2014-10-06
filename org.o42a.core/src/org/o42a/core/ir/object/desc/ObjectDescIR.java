@@ -29,9 +29,9 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.ir.field.Fld;
+import org.o42a.core.ir.field.FldIR;
 import org.o42a.core.ir.field.dep.DepIR;
-import org.o42a.core.ir.field.local.LocalIR;
+import org.o42a.core.ir.field.inst.InstFld;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.core.object.Obj;
@@ -137,9 +137,9 @@ public class ObjectDescIR {
 		@Override
 		protected void allocate(SubData<Op> data) {
 			this.desc = data.addNewInstance(OBJECT_DESC_ID, OBJECT_DESC_TYPE);
+			allocateInstFieldDecls();
 			allocateFieldDecls();
 			allocateDepDecls();
-			allocateLocalDecls();
 			getDesc().ascendants().addAll(getObjectIR().typeBodies());
 			getDesc().fields().allocateItems(data);
 			getDesc().ascendants().allocateItems(data);
@@ -180,16 +180,32 @@ public class ObjectDescIR {
 					.size());
 		}
 
+		private void allocateInstFieldDecls() {
+
+			final RelList<FieldDescIR> descs = getDesc().fields();
+			final Collection<InstFld<?, ?>> fields =
+					getObjectIR()
+					.typeBodies()
+					.getMainBodyIR()
+					.getInstFields();
+
+			for (InstFld<?, ?> fld : fields) {
+				if (!fld.isStateless()) {
+					descs.add(new FieldDescIR(fld));
+				}
+			}
+		}
+
 		private void allocateFieldDecls() {
 
 			final RelList<FieldDescIR> descs = getDesc().fields();
-			final Collection<Fld<?, ?>> fields =
+			final Collection<FldIR<?, ?>> fields =
 					getObjectIR()
 					.typeBodies()
 					.getMainBodyIR()
 					.getFields();
 
-			for (Fld<?, ?> fld : fields) {
+			for (FldIR<?, ?> fld : fields) {
 				if (!fld.isStateless()) {
 					descs.add(new FieldDescIR(fld));
 				}
@@ -206,23 +222,9 @@ public class ObjectDescIR {
 					.getDeps();
 
 			for (DepIR dep : deps) {
-				if (!dep.isOmitted()) {
+				if (!dep.isStateless()) {
 					descs.add(new FieldDescIR(dep));
 				}
-			}
-		}
-
-		private void allocateLocalDecls() {
-
-			final RelList<FieldDescIR> descs = getDesc().fields();
-			final Collection<LocalIR> locals =
-					getObjectIR()
-					.typeBodies()
-					.getMainBodyIR()
-					.getLocals();
-
-			for (LocalIR local : locals) {
-				descs.add(new FieldDescIR(local));
 			}
 		}
 

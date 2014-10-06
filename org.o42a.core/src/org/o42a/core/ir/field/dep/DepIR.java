@@ -26,8 +26,10 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
+import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldIR;
 import org.o42a.core.ir.field.FldKind;
+import org.o42a.core.ir.field.local.LocalIR;
 import org.o42a.core.ir.object.ObjectIRBodies;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.ObjectOp;
@@ -68,6 +70,11 @@ public class DepIR implements FldIR<DepIR.Op, DepIR.Type> {
 	}
 
 	@Override
+	public final boolean isStateless() {
+		return isOmitted();
+	}
+
+	@Override
 	public final FldKind getKind() {
 		return FldKind.DEP;
 	}
@@ -97,6 +104,7 @@ public class DepIR implements FldIR<DepIR.Op, DepIR.Type> {
 		return bodies.dep(getDep());
 	}
 
+	@Override
 	public final void allocate(SubData<?> data) {
 		if (isOmitted()) {
 			return;
@@ -109,6 +117,16 @@ public class DepIR implements FldIR<DepIR.Op, DepIR.Type> {
 
 	public final DepOp op(Code code, ObjectOp host) {
 		return new DepOp(code, host, this);
+	}
+
+	@Override
+	public final Fld<?, ?> toFld() {
+		return null;
+	}
+
+	@Override
+	public final LocalIR toLocal() {
+		return null;
 	}
 
 	@Override
