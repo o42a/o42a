@@ -24,7 +24,7 @@ import static org.o42a.core.ir.object.vmt.VmtIRChain.VMT_IR_CHAIN_TYPE;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.*;
-import org.o42a.core.ir.field.Fld;
+import org.o42a.core.ir.field.FldIR;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.object.Obj;
@@ -126,7 +126,7 @@ public class VmtIR extends Struct<VmtIROp> {
 			ObjectIR objectIR,
 			VmtIR ascendantVmtIR) {
 		for (ObjectIRBody bodyIR : objectIR.bodies()) {
-			for (Fld<?, ?> fld : bodyIR.getFields()) {
+			for (FldIR<?, ?> fld : bodyIR.getFields()) {
 
 				final VmtRecord vmtRecord = fld.vmtRecord();
 
@@ -178,7 +178,7 @@ public class VmtIR extends Struct<VmtIROp> {
 				new VmtTerminator(data));
 
 		for (ObjectIRBody bodyIR : getObjectIR().bodies()) {
-			for (Fld<?, ?> fld : bodyIR.getFields()) {
+			for (FldIR<?, ?> fld : bodyIR.getFields()) {
 
 				final VmtRecord vmtRecord = fld.vmtRecord();
 
@@ -197,7 +197,7 @@ public class VmtIR extends Struct<VmtIROp> {
 		.setValue(() -> layout(getGenerator()).size());
 
 		for (ObjectIRBody bodyIR : getObjectIR().bodies()) {
-			for (Fld<?, ?> fld : bodyIR.getFields()) {
+			for (FldIR<?, ?> fld : bodyIR.getFields()) {
 
 				final VmtRecord vmtRecord = fld.vmtRecord();
 

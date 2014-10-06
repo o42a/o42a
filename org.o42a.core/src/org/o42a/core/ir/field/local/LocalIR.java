@@ -26,6 +26,7 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
+import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldIR;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.object.ObjectIRBodies;
@@ -101,11 +102,22 @@ public final class LocalIR implements FldIR<LocalIR.Op, LocalIR.Type> {
 				code.means(c -> host.ptr().field(c, getTypeInstance())));
 	}
 
+	@Override
 	public final void allocate(SubData<?> data) {
 		this.instance = data.addNewInstance(
 				LOCAL_ID.detail(getId()),
 				LOCAL_IR_TYPE,
 				instance -> instance.object().setNull());
+	}
+
+	@Override
+	public final Fld<?, ?> toFld() {
+		return null;
+	}
+
+	@Override
+	public final LocalIR toLocal() {
+		return this;
 	}
 
 	public static final class Op extends StructOp<Op> {

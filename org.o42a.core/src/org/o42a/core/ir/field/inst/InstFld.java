@@ -24,8 +24,10 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.data.Type;
+import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldIR;
 import org.o42a.core.ir.field.FldKind;
+import org.o42a.core.ir.field.local.LocalIR;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRBodies;
 import org.o42a.core.ir.object.ObjectIRBody;
@@ -77,6 +79,7 @@ public abstract class InstFld<F extends StructOp<F>, T extends Type<F>>
 
 	public abstract InstFldOp<F, T> op(Code code, ObjOp host);
 
+	@Override
 	public final void allocate(SubData<?> data) {
 		this.instance = data.addNewInstance(
 				getId(),
@@ -91,6 +94,16 @@ public abstract class InstFld<F extends StructOp<F>, T extends Type<F>>
 	}
 
 	public abstract InstFld<F, T> derive(ObjectIRBody inheritantBodyIR);
+
+	@Override
+	public final Fld<?, ?> toFld() {
+		return null;
+	}
+
+	@Override
+	public final LocalIR toLocal() {
+		return null;
+	}
 
 	protected abstract T getType();
 

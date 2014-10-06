@@ -29,6 +29,7 @@ import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.field.Fld;
+import org.o42a.core.ir.field.FldIR;
 import org.o42a.core.ir.field.dep.DepIR;
 import org.o42a.core.ir.field.inst.InstFld;
 import org.o42a.core.ir.field.inst.InstFldKind;
@@ -52,12 +53,10 @@ public final class ObjectIRBody {
 
 	private final Init<EnumMap<InstFldKind, InstFld<?, ?>>> instFields =
 			init(this::createInstFields);
-	private final Init<LinkedHashMap<MemberKey, Fld<?, ?>>> fields =
+	private final Init<LinkedHashMap<MemberKey, FldIR<?, ?>>> fields =
 			init(this::createFields);
 	private final Init<LinkedHashMap<Dep, DepIR>> deps =
 			init(this::createDeps);
-	private final Init<LinkedHashMap<MemberKey, LocalIR>> locals =
-			init(this::createLocals);
 
 	ObjectIRBody(ObjectIRBodies bodies) {
 		this.bodies = bodies;
@@ -95,16 +94,16 @@ public final class ObjectIRBody {
 		return new ObjectIRBody(inheritantBodies, getSampleDeclaration());
 	}
 
-	public final Collection<Fld<?, ?>> getFields() {
+	public final Collection<InstFld<?, ?>> getInstFields() {
+		return instFields().values();
+	}
+
+	public final Collection<FldIR<?, ?>> getFields() {
 		return fields().values();
 	}
 
 	public final Collection<DepIR> getDeps() {
 		return deps().values();
-	}
-
-	public final Collection<LocalIR> getLocals() {
-		return locals().values();
 	}
 
 	public final Fld<?, ?> fld(MemberKey memberKey) {
@@ -118,7 +117,10 @@ public final class ObjectIRBody {
 	}
 
 	public final Fld<?, ?> findFld(MemberKey memberKey) {
-		return fields().get(memberKey);
+
+		final FldIR<?, ?> fldIR = fields().get(memberKey);
+
+		return fldIR != null ? fldIR.toFld() : null;
 	}
 
 	public final DepIR dep(Dep dep) {
@@ -133,12 +135,17 @@ public final class ObjectIRBody {
 
 	public final LocalIR local(MemberKey memberKey) {
 
-		final LocalIR ir = locals().get(memberKey);
+		final FldIR<?, ?> fld = fields().get(memberKey);
 
-		assert ir != null :
+		assert fld != null :
 			memberKey + " not found in " + this;
 
-		return ir;
+		final LocalIR local = fld.toLocal();
+
+		assert local != null :
+			memberKey + " is not a local field";
+
+		return local;
 	}
 
 	final EnumMap<InstFldKind, InstFld<?, ?>> instFields() {
@@ -149,19 +156,14 @@ public final class ObjectIRBody {
 		allocateInstFields(data);
 		allocateFields(data);
 		allocateDeps(data);
-		allocateLocals(data);
 	}
 
-	private final LinkedHashMap<MemberKey, Fld<?, ?>> fields() {
+	private final LinkedHashMap<MemberKey, FldIR<?, ?>> fields() {
 		return this.fields.get();
 	}
 
 	private final LinkedHashMap<Dep, DepIR> deps() {
 		return this.deps.get();
-	}
-
-	private final LinkedHashMap<MemberKey, LocalIR> locals() {
-		return this.locals.get();
 	}
 
 	private void allocateInstFields(SubData<?> data) {
@@ -171,7 +173,7 @@ public final class ObjectIRBody {
 	}
 
 	private void allocateFields(SubData<?> data) {
-		for (Fld<?, ?> fld : fields().values()) {
+		for (FldIR<?, ?> fld : fields().values()) {
 			fld.allocate(data);
 		}
 	}
@@ -179,12 +181,6 @@ public final class ObjectIRBody {
 	private void allocateDeps(SubData<?> data) {
 		for (DepIR dep : deps().values()) {
 			dep.allocate(data);
-		}
-	}
-
-	private void allocateLocals(SubData<?> data) {
-		for (LocalIR local : locals().values()) {
-			local.allocate(data);
 		}
 	}
 
@@ -267,9 +263,9 @@ public final class ObjectIRBody {
 		}
 	}
 
-	private LinkedHashMap<MemberKey, Fld<?, ?>> createFields() {
+	private LinkedHashMap<MemberKey, FldIR<?, ?>> createFields() {
 
-		final LinkedHashMap<MemberKey, Fld<?, ?>> fields =
+		final LinkedHashMap<MemberKey, FldIR<?, ?>> fields =
 				new LinkedHashMap<>();
 
 		createFieldsDeclaredIn(fields, getSampleDeclaration());
@@ -277,71 +273,39 @@ public final class ObjectIRBody {
 		return fields;
 	}
 
-	private LinkedHashMap<MemberKey, LocalIR> createLocals() {
-
-		final LinkedHashMap<MemberKey, LocalIR> locals =
-				new LinkedHashMap<>();
-
-		createLocalsDeclaredIn(locals, getSampleDeclaration());
-
-		return locals;
-	}
-
 	private void createFieldsDeclaredIn(
-			LinkedHashMap<MemberKey, Fld<?, ?>> fields,
+			LinkedHashMap<MemberKey, FldIR<?, ?>> fields,
 			Obj ascendant) {
-
-		final Generator generator = getGenerator();
-		final Obj object = bodies().getObject();
-
 		for (Member declared : ascendant.getMembers()) {
 			if (declared.isOverride()) {
 				continue;
 			}
-
+			if (createField(fields, declared)) {
+				continue;
+			}
+			createLocal(fields, declared);
 			final MemberField declaredField = declared.toField();
 
-			if (declaredField == null) {
-				continue;
-			}
-			if (declaredField != declared) {
-				// An alias.
-				continue;
-			}
-			if (!generateField(declaredField)) {
-				continue;
-			}
-
-			final Member member =
-					object.member(declaredField.getMemberKey());
-
-			if (member != null) {
-				// Member present in object.
-
-				final Field field = member.toField().field(dummyUser());
-				final FieldIRBase fieldIR = field.ir(generator);
-				final Fld<?, ?> fld = fieldIR.declare(this);
-
-				if (fld != null) {
-					fields.put(fld.getKey(), fld);
+			if (declaredField != null) {
+				if (declaredField != declared) {
+					// An alias.
+					continue;
 				}
-			} else {
-
-				final Obj origin =
-						declaredField.getMemberKey().getOrigin().toObject();
-
-				assert origin.assertDerivedFrom(getSampleDeclaration());
-
-				final Field field =
-						origin.member(declaredField.getMemberKey())
-						.toField()
-						.field(dummyUser());
-				final FieldIRBase fieldIR = field.ir(generator);
-				final Fld<?, ?> fld = fieldIR.declareDummy(this);
-
-				if (fld != null) {
-					fields.put(fld.getKey(), fld);
+				if (!generateField(declaredField)) {
+					continue;
 				}
+				createField(fields, declaredField);
+				continue;
+			}
+
+			final MemberLocal local = declared.toLocal();
+
+			if (local == null) {
+				continue;
+			}
+
+			if (!local.getLocal().isOmitted(getGenerator())) {
+				fields.put(local.getMemberKey(), new LocalIR(this, local));
 			}
 		}
 
@@ -350,6 +314,61 @@ public final class ObjectIRBody {
 				createFieldsDeclaredIn(fields, derivative.getDerivedObject());
 			}
 		}
+	}
+
+	private boolean createField(
+			LinkedHashMap<MemberKey, FldIR<?, ?>> fields,
+			Member declared) {
+
+		final MemberField declaredField = declared.toField();
+
+		if (declaredField == null) {
+			return false;
+		}
+		if (declaredField != declared) {
+			// An alias.
+			return true;
+		}
+		if (!generateField(declaredField)) {
+			return true;
+		}
+
+		final Obj object = bodies().getObject();
+		final Generator generator = getGenerator();
+		final Member member =
+				object.member(declaredField.getMemberKey());
+
+		if (member != null) {
+			// Member present in object.
+
+			final Field field = member.toField().field(dummyUser());
+			final FieldIRBase fieldIR = field.ir(generator);
+			final Fld<?, ?> fld = fieldIR.declare(this);
+
+			if (fld != null) {
+				fields.put(fld.getKey(), fld);
+			}
+
+			return true;
+		}
+
+		final Obj origin =
+				declaredField.getMemberKey().getOrigin().toObject();
+
+		assert origin.assertDerivedFrom(getSampleDeclaration());
+
+		final Field field =
+				origin.member(declaredField.getMemberKey())
+				.toField()
+				.field(dummyUser());
+		final FieldIRBase fieldIR = field.ir(generator);
+		final Fld<?, ?> fld = fieldIR.declareDummy(this);
+
+		if (fld != null) {
+			fields.put(fld.getKey(), fld);
+		}
+
+		return true;
 	}
 
 	private boolean generateField(MemberField declaredField) {
@@ -362,6 +381,23 @@ public final class ObjectIRBody {
 				ALL_FIELD_USAGES)) {
 			// Field is never used. Skip generation.
 			return false;
+		}
+
+		return true;
+	}
+
+	private boolean createLocal(
+			LinkedHashMap<MemberKey, FldIR<?, ?>> fields,
+			Member declared) {
+
+		final MemberLocal local = declared.toLocal();
+
+		if (local == null) {
+			return false;
+		}
+
+		if (!local.getLocal().isOmitted(getGenerator())) {
+			fields.put(local.getMemberKey(), new LocalIR(this, local));
 		}
 
 		return true;
@@ -393,32 +429,6 @@ public final class ObjectIRBody {
 		for (Derivative derivative : ascendant.type().allDerivatives()) {
 			if (derivative.isSample()) {
 				createDepsDeclaredIn(deps, derivative.getDerivedObject());
-			}
-		}
-	}
-
-	private void createLocalsDeclaredIn(
-			LinkedHashMap<MemberKey, LocalIR> locals,
-			Obj ascendant) {
-		for (Member declared : ascendant.getMembers()) {
-			if (declared.isOverride()) {
-				continue;
-			}
-
-			final MemberLocal local = declared.toLocal();
-
-			if (local == null) {
-				continue;
-			}
-
-			if (!local.getLocal().isOmitted(getGenerator())) {
-				locals.put(local.getMemberKey(), new LocalIR(this, local));
-			}
-		}
-
-		for (Derivative derivative : ascendant.type().allDerivatives()) {
-			if (derivative.isSample()) {
-				createLocalsDeclaredIn(locals, derivative.getDerivedObject());
 			}
 		}
 	}
