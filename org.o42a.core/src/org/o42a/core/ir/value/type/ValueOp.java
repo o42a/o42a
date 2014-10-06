@@ -68,10 +68,9 @@ public abstract class ValueOp implements HostValueOp {
 	public final void writeCond(CodeDirs dirs) {
 		if (getValueType().isVoid()) {
 			writeVoidValue(dirs);
-			return;
+		} else {
+			defaultVoid(dirs);
 		}
-
-		defaultVoid(dirs);
 	}
 
 	@Override

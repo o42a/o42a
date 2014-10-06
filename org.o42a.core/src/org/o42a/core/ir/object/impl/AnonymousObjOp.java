@@ -38,7 +38,6 @@ import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RelList;
-import org.o42a.core.ir.value.type.ValueIR;
 import org.o42a.core.ir.value.type.ValueOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
@@ -49,7 +48,6 @@ import org.o42a.util.string.ID;
 public final class AnonymousObjOp extends ObjectOp {
 
 	private final Obj wellKnownType;
-	private ValueOp value;
 
 	public AnonymousObjOp(
 			CodeBuilder builder,
@@ -69,18 +67,6 @@ public final class AnonymousObjOp extends ObjectOp {
 	@Override
 	public ObjectOp phi(Code code, DataOp ptr) {
 		return anonymousObject(getBuilder(), code, ptr, getWellKnownType());
-	}
-
-	@Override
-	public final ValueOp value() {
-		if (this.value != null) {
-			return this.value;
-		}
-
-		final ValueIR valueIR =
-				getWellKnownType().ir(getGenerator()).getValueIR();
-
-		return this.value = valueIR.op(this);
 	}
 
 	@Override
@@ -142,6 +128,11 @@ public final class AnonymousObjOp extends ObjectOp {
 				memberKey.getOrigin().toObject());
 
 		return ascendant.local(dirs, memberKey);
+	}
+
+	@Override
+	protected ValueOp createValue() {
+		return getWellKnownType().ir(getGenerator()).getValueIR().op(this);
 	}
 
 	private ObjOp dynamicCast(ID id, CodeDirs dirs, Obj ascendant) {
