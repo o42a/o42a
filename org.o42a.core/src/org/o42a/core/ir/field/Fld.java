@@ -106,10 +106,6 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 		return getKey().getOrigin().toObject();
 	}
 
-	public final Obj getDefinedIn() {
-		return getField().getDefinedIn().toObject();
-	}
-
 	@Override
 	public T getInstance() {
 		assert !isStateless() :
