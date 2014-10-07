@@ -21,8 +21,6 @@ package org.o42a.core.ir.object.desc;
 
 import static org.o42a.core.ir.object.desc.ObjectIRDesc.OBJECT_DESC_TYPE;
 
-import java.util.Collection;
-
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
@@ -30,9 +28,8 @@ import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.field.FldIR;
-import org.o42a.core.ir.field.dep.DepIR;
-import org.o42a.core.ir.field.inst.InstFld;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.Intrinsics;
@@ -137,9 +134,7 @@ public class ObjectDescIR {
 		@Override
 		protected void allocate(SubData<Op> data) {
 			this.desc = data.addNewInstance(OBJECT_DESC_ID, OBJECT_DESC_TYPE);
-			allocateInstFieldDecls();
 			allocateFieldDecls();
-			allocateDepDecls();
 			getDesc().ascendants().addAll(getObjectIR().typeBodies());
 			getDesc().fields().allocateItems(data);
 			getDesc().ascendants().allocateItems(data);
@@ -180,50 +175,15 @@ public class ObjectDescIR {
 					.size());
 		}
 
-		private void allocateInstFieldDecls() {
-
-			final RelList<FieldDescIR> descs = getDesc().fields();
-			final Collection<InstFld<?, ?>> fields =
-					getObjectIR()
-					.typeBodies()
-					.getMainBodyIR()
-					.getInstFields();
-
-			for (InstFld<?, ?> fld : fields) {
-				if (!fld.isStateless()) {
-					descs.add(new FieldDescIR(fld));
-				}
-			}
-		}
-
 		private void allocateFieldDecls() {
 
 			final RelList<FieldDescIR> descs = getDesc().fields();
-			final Collection<FldIR<?, ?>> fields =
-					getObjectIR()
-					.typeBodies()
-					.getMainBodyIR()
-					.getFields();
+			final ObjectIRBody mainBodyIR =
+					getObjectIR().typeBodies().getMainBodyIR();
 
-			for (FldIR<?, ?> fld : fields) {
+			for (FldIR<?, ?> fld : mainBodyIR.allFields()) {
 				if (!fld.isStateless()) {
 					descs.add(new FieldDescIR(fld));
-				}
-			}
-		}
-
-		private void allocateDepDecls() {
-
-			final RelList<FieldDescIR> descs = getDesc().fields();
-			final Collection<DepIR> deps =
-					getObjectIR()
-					.typeBodies()
-					.getMainBodyIR()
-					.getDeps();
-
-			for (DepIR dep : deps) {
-				if (!dep.isStateless()) {
-					descs.add(new FieldDescIR(dep));
 				}
 			}
 		}

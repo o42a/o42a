@@ -23,7 +23,6 @@ import static org.o42a.core.ir.field.inst.InstFldKind.INST_RESUME_FROM;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.util.fn.Init.init;
 
-import java.util.Collection;
 import java.util.function.Function;
 
 import org.o42a.codegen.code.Allocator;
@@ -146,13 +145,10 @@ public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
 
 	public void fillDeps(CodeDirs dirs, HostOp host, Obj sample) {
 
-		final Collection<DepIR> depsIRs =
-				sample.ir(getGenerator())
-				.typeBodies()
-				.getMainBodyIR()
-				.getDeps();
+		final ObjectIRBody mainBodyIR =
+				sample.ir(getGenerator()).typeBodies().getMainBodyIR();
 
-		for (DepIR depIR : depsIRs) {
+		for (DepIR depIR : mainBodyIR.allDeps()) {
 			dep(dirs, depIR.getDep()).fill(dirs, host);
 		}
 	}

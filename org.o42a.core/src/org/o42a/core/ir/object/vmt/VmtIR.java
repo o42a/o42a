@@ -126,7 +126,7 @@ public class VmtIR extends Struct<VmtIROp> {
 			ObjectIR objectIR,
 			VmtIR ascendantVmtIR) {
 		for (ObjectIRBody bodyIR : objectIR.bodies()) {
-			for (FldIR<?, ?> fld : bodyIR.getFields()) {
+			for (FldIR<?, ?> fld : bodyIR.vmtFields()) {
 
 				final VmtRecord vmtRecord = fld.vmtRecord();
 
@@ -176,9 +176,22 @@ public class VmtIR extends Struct<VmtIROp> {
 				TERMINATOR_ID,
 				VMT_IR_CHAIN_TYPE,
 				new VmtTerminator(data));
+		allocateVmtRecords(data);
+	}
 
+	@Override
+	protected void fill() {
+		size()
+		.setConstant(true)
+		.setLowLevel(true)
+		.setValue(() -> layout(getGenerator()).size());
+
+		fillVmtRecords();
+	}
+
+	private void allocateVmtRecords(SubData<VmtIROp> data) {
 		for (ObjectIRBody bodyIR : getObjectIR().bodies()) {
-			for (FldIR<?, ?> fld : bodyIR.getFields()) {
+			for (FldIR<?, ?> fld : bodyIR.vmtFields()) {
 
 				final VmtRecord vmtRecord = fld.vmtRecord();
 
@@ -189,15 +202,9 @@ public class VmtIR extends Struct<VmtIROp> {
 		}
 	}
 
-	@Override
-	protected void fill() {
-		size()
-		.setConstant(true)
-		.setLowLevel(true)
-		.setValue(() -> layout(getGenerator()).size());
-
+	private void fillVmtRecords() {
 		for (ObjectIRBody bodyIR : getObjectIR().bodies()) {
-			for (FldIR<?, ?> fld : bodyIR.getFields()) {
+			for (FldIR<?, ?> fld : bodyIR.vmtFields()) {
 
 				final VmtRecord vmtRecord = fld.vmtRecord();
 
