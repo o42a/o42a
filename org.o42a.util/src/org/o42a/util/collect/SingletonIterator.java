@@ -19,10 +19,11 @@
 */
 package org.o42a.util.collect;
 
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 
-final class SingletonIterator<T> extends ReadonlyIterator<T> {
+final class SingletonIterator<T> implements Iterator<T> {
 
 	private final T element;
 	private boolean iterated;

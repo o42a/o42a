@@ -32,13 +32,12 @@ import org.o42a.core.ref.Pred;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.util.collect.ReadonlyIterator;
 import org.o42a.util.collect.SubIterator;
 
 
 final class ObjectImplementations extends SubIterator<Pred, Pred> {
 
-	public static ReadonlyIterator<Pred> objectImplementations(Pred object) {
+	public static Iterator<Pred> objectImplementations(Pred object) {
 		if (!object.isPredicted()) {
 			return object.iterator();
 		}

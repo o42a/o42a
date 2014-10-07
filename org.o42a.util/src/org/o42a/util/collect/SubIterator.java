@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 
-public abstract class SubIterator<T, B> extends ReadonlyIterator<T> {
+public abstract class SubIterator<T, B> implements Iterator<T> {
 
 	private final Iterator<B> base;
 	private Iterator<? extends T> nested;

@@ -22,7 +22,7 @@ package org.o42a.util.collect;
 import java.util.Iterator;
 
 
-final class CombinedIterator<T> extends ReadonlyIterator<T> {
+final class CombinedIterator<T> implements Iterator<T> {
 
 	private final Iterator<? extends T> first;
 	private final Iterator<? extends T> second;

@@ -29,7 +29,6 @@ import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathResolution;
-import org.o42a.util.collect.ReadonlyIterator;
 
 
 public class EnclosingPrediction extends Prediction {
@@ -72,7 +71,7 @@ public class EnclosingPrediction extends Prediction {
 	}
 
 	@Override
-	public ReadonlyIterator<Pred> iterator() {
+	public Iterator<Pred> iterator() {
 		return new Itr(this);
 	}
 
@@ -89,7 +88,7 @@ public class EnclosingPrediction extends Prediction {
 		return "EnclosingPrediction[" + this.basePrediction + ']';
 	}
 
-	private static final class Itr extends ReadonlyIterator<Pred> {
+	private static final class Itr implements Iterator<Pred> {
 
 		private final EnclosingPrediction prediction;
 		private final Iterator<Pred> bases;

@@ -20,6 +20,7 @@
 package org.o42a.core.ref.impl.prediction;
 
 import static org.o42a.core.ref.impl.prediction.ObjectImplementations.objectImplementations;
+import static org.o42a.util.collect.Iterators.combineIterators;
 import static org.o42a.util.collect.Iterators.singletonIterator;
 
 import java.util.Iterator;
@@ -28,7 +29,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.type.Derivative;
 import org.o42a.core.ref.*;
-import org.o42a.util.collect.ReadonlyIterator;
 import org.o42a.util.collect.SubIterator;
 
 
@@ -65,7 +65,7 @@ public class ObjectPrediction extends Prediction {
 	}
 
 	@Override
-	public ReadonlyIterator<Pred> iterator() {
+	public Iterator<Pred> iterator() {
 		return new Itr(this.enclosing, getScope().toObject());
 	}
 
@@ -101,8 +101,9 @@ public class ObjectPrediction extends Prediction {
 
 			return new ObjectPredIterator(
 					nextBase,
-					singletonIterator(start)
-					.then(new DerivativesIterator(start)));
+					combineIterators(
+							singletonIterator(start),
+							new DerivativesIterator(start)));
 		}
 
 	}
@@ -130,8 +131,9 @@ public class ObjectPrediction extends Prediction {
 
 			final Obj derivedObject = baseElement.getDerivedObject();
 
-			return singletonIterator(derivedObject)
-					.then(new DerivativesIterator(derivedObject));
+			return combineIterators(
+					singletonIterator(derivedObject),
+					new DerivativesIterator(derivedObject));
 		}
 
 	}
@@ -141,7 +143,7 @@ public class ObjectPrediction extends Prediction {
 
 		private final Pred base;
 
-		ObjectPredIterator(Pred base, ReadonlyIterator<Obj> derivatives) {
+		ObjectPredIterator(Pred base, Iterator<Obj> derivatives) {
 			super(derivatives);
 			this.base = base;
 		}

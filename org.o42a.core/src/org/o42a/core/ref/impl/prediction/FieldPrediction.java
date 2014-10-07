@@ -21,6 +21,7 @@ package org.o42a.core.ref.impl.prediction;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.impl.prediction.ObjectImplementations.objectImplementations;
+import static org.o42a.util.collect.Iterators.combineIterators;
 import static org.o42a.util.collect.Iterators.singletonIterator;
 
 import java.util.Iterator;
@@ -30,7 +31,6 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldReplacement;
 import org.o42a.core.ref.*;
-import org.o42a.util.collect.ReadonlyIterator;
 import org.o42a.util.collect.SubIterator;
 
 
@@ -68,7 +68,7 @@ public class FieldPrediction extends Prediction {
 	}
 
 	@Override
-	public ReadonlyIterator<Pred> iterator() {
+	public Iterator<Pred> iterator() {
 		return new Itr(this.basePrediction, getScope().toField());
 	}
 
@@ -124,9 +124,9 @@ public class FieldPrediction extends Prediction {
 		private final Field start;
 
 		OverridersIterator(Pred base, Field start) {
-			super(
-					singletonIterator(start)
-					.then(new ReplacementsIterator(start)));
+			super(combineIterators(
+					singletonIterator(start),
+					new ReplacementsIterator(start)));
 			this.start = start;
 			this.base = base;
 			start.getEnclosingScope().assertDerivedFrom(base.getScope());
@@ -164,8 +164,9 @@ public class FieldPrediction extends Prediction {
 			final Field replacingField =
 					replacement.toField().field(dummyUser());
 
-			return singletonIterator(replacingField)
-					.then(new ReplacementsIterator(replacingField));
+			return combineIterators(
+					singletonIterator(replacingField),
+					new ReplacementsIterator(replacingField));
 		}
 
 		@Override

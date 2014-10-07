@@ -19,10 +19,10 @@
 */
 package org.o42a.core.ref.impl.prediction;
 
+import static java.util.Collections.emptyIterator;
 import static org.o42a.core.ref.Pred.noPred;
 import static org.o42a.core.ref.impl.prediction.EnclosingPrediction.enclosingPrediction;
 import static org.o42a.core.ref.impl.prediction.PredictionWalker.predictRef;
-import static org.o42a.util.collect.Iterators.emptyIterator;
 
 import java.util.Iterator;
 
@@ -33,7 +33,6 @@ import org.o42a.core.ref.Pred;
 import org.o42a.core.ref.Predicted;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.value.link.Link;
-import org.o42a.util.collect.ReadonlyIterator;
 import org.o42a.util.collect.SubIterator;
 
 
@@ -78,7 +77,7 @@ final class DerefPrediction extends Prediction {
 	}
 
 	@Override
-	public ReadonlyIterator<Pred> iterator() {
+	public Iterator<Pred> iterator() {
 		return new Itr(this);
 	}
 

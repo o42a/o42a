@@ -19,10 +19,11 @@
 */
 package org.o42a.core.ref.impl.prediction;
 
+import java.util.Iterator;
+
 import org.o42a.core.ref.Pred;
 import org.o42a.core.ref.Predicted;
 import org.o42a.core.ref.Prediction;
-import org.o42a.util.collect.ReadonlyIterator;
 
 
 public final class SinglePrediction extends Prediction {
@@ -42,7 +43,7 @@ public final class SinglePrediction extends Prediction {
 	}
 
 	@Override
-	public final ReadonlyIterator<Pred> iterator() {
+	public final Iterator<Pred> iterator() {
 		return this.pred.iterator();
 	}
 

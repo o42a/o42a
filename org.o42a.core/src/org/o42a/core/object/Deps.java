@@ -19,22 +19,19 @@
 */
 package org.o42a.core.object;
 
-import static org.o42a.util.collect.Iterators.readonlyIterator;
-
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.core.object.state.Dep;
 import org.o42a.core.object.state.ObjectDeps;
 import org.o42a.core.ref.Ref;
-import org.o42a.util.collect.ReadonlyIterable;
-import org.o42a.util.collect.ReadonlyIterator;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 import org.o42a.util.string.SubID;
 
 
-public final class Deps extends ObjectDeps implements ReadonlyIterable<Dep> {
+public final class Deps extends ObjectDeps implements Iterable<Dep> {
 
 	private static final ID ANONYMOUS_DEP_PREFIX =
 			ID.id(ID.id("D").setDescription("Dependency #"));
@@ -55,8 +52,8 @@ public final class Deps extends ObjectDeps implements ReadonlyIterable<Dep> {
 	}
 
 	@Override
-	public ReadonlyIterator<Dep> iterator() {
-		return readonlyIterator(this.deps.values().iterator());
+	public Iterator<Dep> iterator() {
+		return this.deps.values().iterator();
 	}
 
 	public Dep addDep(Name name, Ref ref) {
