@@ -24,7 +24,7 @@ import java.util.Iterator;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Meta;
 import org.o42a.core.object.Obj;
-import org.o42a.util.Chain;
+import org.o42a.util.collect.Chain;
 
 
 final class MetaUpdatesChecker {

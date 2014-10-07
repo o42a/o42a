@@ -35,7 +35,6 @@ import org.o42a.codegen.AbstractGenerator;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.ProxyGenerator;
 import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.Allocated;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.data.*;

@@ -25,7 +25,7 @@ import static org.o42a.analysis.use.User.useCase;
 import org.o42a.analysis.use.UseCase;
 import org.o42a.analysis.use.UseCaseInfo;
 import org.o42a.analysis.use.User;
-import org.o42a.util.Chain;
+import org.o42a.util.collect.Chain;
 
 
 public class Analyzer implements UseCaseInfo {

@@ -21,7 +21,7 @@ package org.o42a.core.ref;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.core.Scope;
-import org.o42a.util.Chain;
+import org.o42a.util.collect.Chain;
 import org.o42a.util.fn.Cancelable;
 
 

@@ -29,7 +29,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Meta;
-import org.o42a.util.Chain;
+import org.o42a.util.collect.Chain;
 import org.o42a.util.fn.DoOnce;
 import org.o42a.util.fn.FlagInit;
 

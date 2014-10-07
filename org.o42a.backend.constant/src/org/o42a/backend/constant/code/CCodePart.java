@@ -20,7 +20,7 @@
 package org.o42a.backend.constant.code;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.util.Chain;
+import org.o42a.util.collect.Chain;
 import org.o42a.util.string.ID;
 
 

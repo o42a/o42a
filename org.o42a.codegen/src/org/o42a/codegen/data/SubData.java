@@ -29,7 +29,7 @@ import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
-import org.o42a.util.Chain;
+import org.o42a.util.collect.Chain;
 import org.o42a.util.string.ID;
 
 

@@ -29,7 +29,7 @@ import org.o42a.codegen.code.backend.BlockWriter;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.CodeOp;
 import org.o42a.util.ArrayUtil;
-import org.o42a.util.Chain;
+import org.o42a.util.collect.Chain;
 
 
 public abstract class CBlock<B extends Block> extends CCode<B>
