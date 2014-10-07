@@ -19,7 +19,7 @@
 */
 package org.o42a.core.member;
 
-import org.o42a.util.Chain;
+import org.o42a.util.collect.Chain;
 
 
 final class MemberEntries extends Chain<MemberEntry> {

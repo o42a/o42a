@@ -25,7 +25,6 @@ import static org.o42a.core.ir.field.object.FldCtrStartFn.FLD_CTR_START;
 import static org.o42a.core.ir.system.ThreadSystemType.THREAD_SYSTEM_TYPE;
 
 import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.Allocated;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
