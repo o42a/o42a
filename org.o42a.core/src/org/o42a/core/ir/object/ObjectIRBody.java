@@ -21,6 +21,7 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.field.FieldUsage.ALL_FIELD_USAGES;
+import static org.o42a.util.collect.Iterators.combineIterators;
 import static org.o42a.util.fn.Init.init;
 
 import java.util.*;
@@ -94,15 +95,19 @@ public final class ObjectIRBody {
 		return new ObjectIRBody(inheritantBodies, getSampleDeclaration());
 	}
 
-	public final Collection<InstFld<?, ?>> getInstFields() {
-		return instFields().values();
+	public final Iterable<FldIR<?, ?>> allFields() {
+		return () -> combineIterators(
+				instFields().values().iterator(),
+				combineIterators(
+						fields().values().iterator(),
+						deps().values().iterator()));
 	}
 
-	public final Collection<FldIR<?, ?>> getFields() {
+	public final Iterable<FldIR<?, ?>> vmtFields() {
 		return fields().values();
 	}
 
-	public final Collection<DepIR> getDeps() {
+	public final Iterable<DepIR> allDeps() {
 		return deps().values();
 	}
 
