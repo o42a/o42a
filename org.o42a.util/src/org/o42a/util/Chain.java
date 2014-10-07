@@ -19,14 +19,12 @@
 */
 package org.o42a.util;
 
-import static org.o42a.util.collect.Iterators.emptyIterator;
+import static java.util.Collections.emptyIterator;
 
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.BiConsumer;
 import java.util.function.UnaryOperator;
-
-import org.o42a.util.collect.ReadonlyIterable;
-import org.o42a.util.collect.ReadonlyIterator;
 
 
 /**
@@ -36,7 +34,7 @@ import org.o42a.util.collect.ReadonlyIterator;
  *
  * @param <T> item type.
  */
-public class Chain<T> implements ReadonlyIterable<T> {
+public class Chain<T> implements Iterable<T> {
 
 	private final UnaryOperator<T> getNext;
 	private final BiConsumer<T, T> setNext;
@@ -151,7 +149,7 @@ public class Chain<T> implements ReadonlyIterable<T> {
 	}
 
 	@Override
-	public ReadonlyIterator<T> iterator() {
+	public Iterator<T> iterator() {
 		if (isEmpty()) {
 			return emptyIterator();
 		}
@@ -191,7 +189,7 @@ public class Chain<T> implements ReadonlyIterable<T> {
 		return out.toString();
 	}
 
-	private final class Iter extends ReadonlyIterator<T> {
+	private final class Iter implements Iterator<T> {
 
 		private T next = Chain.this.first;
 

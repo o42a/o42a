@@ -21,10 +21,11 @@ package org.o42a.core.ref;
 
 import static org.o42a.util.collect.Iterators.singletonIterator;
 
+import java.util.Iterator;
+
 import org.o42a.core.Scope;
 import org.o42a.core.ref.impl.prediction.InitialPrediction;
 import org.o42a.core.ref.impl.prediction.Unpredicted;
-import org.o42a.util.collect.ReadonlyIterator;
 
 
 public abstract class Pred {
@@ -60,7 +61,7 @@ public abstract class Pred {
 		return new AnotherScopePred(scope, this);
 	}
 
-	public final ReadonlyIterator<Pred> iterator() {
+	public final Iterator<Pred> iterator() {
 		return singletonIterator(this);
 	}
 

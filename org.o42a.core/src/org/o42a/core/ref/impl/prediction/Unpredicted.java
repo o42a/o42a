@@ -21,11 +21,12 @@ package org.o42a.core.ref.impl.prediction;
 
 import static org.o42a.core.ref.Pred.noPred;
 
+import java.util.Iterator;
+
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Pred;
 import org.o42a.core.ref.Predicted;
 import org.o42a.core.ref.Prediction;
-import org.o42a.util.collect.ReadonlyIterator;
 
 
 public class Unpredicted extends Prediction {
@@ -40,7 +41,7 @@ public class Unpredicted extends Prediction {
 	}
 
 	@Override
-	public ReadonlyIterator<Pred> iterator() {
+	public Iterator<Pred> iterator() {
 		return noPred().iterator();
 	}
 

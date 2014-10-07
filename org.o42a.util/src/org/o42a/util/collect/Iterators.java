@@ -24,21 +24,14 @@ import java.util.Iterator;
 
 public final class Iterators {
 
-	@SuppressWarnings("rawtypes")
-	private static final EmptyIterator<?> EMPTY_ITERATOR = new EmptyIterator();
-
-	@SuppressWarnings("unchecked")
-	public static <T> ReadonlyIterator<T> emptyIterator() {
-		return (ReadonlyIterator<T>) EMPTY_ITERATOR;
-	}
-
-	public static <T> ReadonlyIterator<T> singletonIterator(T element) {
+	public static <T> Iterator<T> singletonIterator(T element) {
 		return new SingletonIterator<>(element);
 	}
 
-	public static <T> ReadonlyIterator<T> readonlyIterator(
-			Iterator<? extends T> iterator) {
-		return new PreventWriteIterator<>(iterator);
+	public static <T> Iterator<T> combineIterators(
+			Iterator<? extends T> first,
+			Iterator<? extends T> second) {
+		return new CombinedIterator<>(first, second);
 	}
 
 	private Iterators() {
