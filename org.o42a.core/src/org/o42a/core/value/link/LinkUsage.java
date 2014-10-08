@@ -34,12 +34,6 @@ public class LinkUsage extends Usage<LinkUsage> {
 			new LinkUsage("LinkDerivation");
 
 	/**
-	 * The link is eagerly evaluated.
-	 */
-	public static final LinkUsage EAGER_LINK =
-			new LinkUsage("EagerLink");
-
-	/**
 	 * Link complexity derived from ascendant.
 	 */
 	public static final LinkUsage DERIVED_LINK_COMPLEXITY =
@@ -63,9 +57,6 @@ public class LinkUsage extends Usage<LinkUsage> {
 			.or(COMPLEX_LINK_TARGET);
 
 	public static final UseSelector<LinkUsage> COMPLEX_LINK_USES =
-			ALL_LINK_USAGES;
-
-	public static final UseSelector<LinkUsage> COMPLEX_LAZY_LINK_USES =
 			LINK_COMPLEXITY_SELECTOR.or(LINK_DERIVATION);
 
 	public static final Usable<LinkUsage> usable(Object used) {
