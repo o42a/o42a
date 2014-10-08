@@ -73,18 +73,12 @@ public final class ObjectFieldIR extends FieldIR {
 		}
 
 		final LinkUses linkUses = object.type().linkUses();
-		final boolean eager;
 
-		if (linkUses.simplifiedLink(getGenerator().getAnalyzer())) {
-			eager = false;
-		} else if (linkUses.simplifiedEagerLink(getGenerator().getAnalyzer())) {
-			eager = true;
-		} else {
+		if (!linkUses.simplifiedLink(getGenerator().getAnalyzer())) {
 			return null;
 		}
 
 		final TypeParameters<?> parameters = object.type().getParameters();
-
 		final Obj ascendant =
 				dummy
 				? null
@@ -104,13 +98,13 @@ public final class ObjectFieldIR extends FieldIR {
 			target = defTarget.getRef().getResolution().toObject();
 		}
 
-		if (linkType == LinkValueType.LINK) {
-			if (!eager) {
+		if (linkType.is(LinkValueType.LINK)) {
+			if (!object.value().getStatefulness().isEager()) {
 				return new LinkFld(bodyIR, field, dummy, target, ascendant);
 			}
 			return new EagerLinkFld(bodyIR, field, dummy, target, ascendant);
 		}
-		if (linkType == LinkValueType.VARIABLE) {
+		if (linkType.is(LinkValueType.VARIABLE)) {
 			return new VarFld(bodyIR, field, dummy, target, ascendant);
 		}
 

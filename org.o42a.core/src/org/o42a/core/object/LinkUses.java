@@ -72,10 +72,6 @@ public class LinkUses {
 		return !uses().isUsed(analyzer, COMPLEX_LINK_USES);
 	}
 
-	public final boolean simplifiedEagerLink(Analyzer analyzer) {
-		return !uses().isUsed(analyzer, COMPLEX_LAZY_LINK_USES);
-	}
-
 	public final void useBodyBy(UserInfo user) {
 		uses().useBy(user, COMPLEX_LINK_TARGET);
 	}
@@ -95,9 +91,6 @@ public class LinkUses {
 
 		if (!objectValue.getDefinitions().target().exists()) {
 			uses().useBy(object.content(), COMPLEX_LINK_TARGET);
-		}
-		if (objectValue.getStatefulness().isEager()) {
-			uses().useBy(object.content(), EAGER_LINK);
 		}
 	}
 
@@ -119,9 +112,6 @@ public class LinkUses {
 		uses().useBy(
 				derivedUses.selectiveUser(COMPLEX_LINK_TARGET),
 				COMPLEX_LINK_TARGET);
-		uses().useBy(
-				derivedUses.selectiveUser(EAGER_LINK),
-				EAGER_LINK);
 	}
 
 	void fieldChanged(MemberField field) {
@@ -177,9 +167,6 @@ public class LinkUses {
 		derivedUses.useBy(
 				uses().selectiveUser(LINK_COMPLEXITY_SELECTOR),
 				DERIVED_LINK_COMPLEXITY);
-		derivedUses.useBy(
-				uses().selectiveUser(EAGER_LINK),
-				EAGER_LINK);
 	}
 
 }
