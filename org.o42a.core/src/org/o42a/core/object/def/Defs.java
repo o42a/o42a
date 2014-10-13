@@ -20,6 +20,7 @@
 package org.o42a.core.object.def;
 
 import static org.o42a.core.ir.def.InlineEval.noInlineEval;
+import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
 import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
 import static org.o42a.util.fn.Init.init;
 
@@ -123,7 +124,7 @@ public final class Defs {
 
 	public final DefValue value(Resolver resolver) {
 		if (resolver.getScope().toObject().getConstructionMode().isRuntime()) {
-			return DefValue.RUNTIME_DEF_VALUE;
+			return RUNTIME_DEF_VALUE;
 		}
 		for (Def def : get()) {
 

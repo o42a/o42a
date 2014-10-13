@@ -39,10 +39,16 @@ import org.o42a.core.value.link.Link;
 public class OverrideRequirement implements PathWalker {
 
 	public static boolean abstractsAllowedIn(Obj object) {
+		if (object.isClone()) {
+			return true;// Do not check clones for the second time.
+		}
 		if (object.isAbstract() || object.isPrototype()) {
 			return true;
 		}
 		if (object.toClause() != null) {
+			return true;
+		}
+		if (object.value().getStatefulness().isExplicitEager()) {
 			return true;
 		}
 		return object.isWrapper() || object.getDereferencedLink() != null;
