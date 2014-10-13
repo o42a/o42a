@@ -209,8 +209,10 @@ _O42A_DEBUG_TYPE_o42a_obj_ctable = {
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_obj_ctable_t, ancestor),
-			.name = "ancestor",
+			.offset = offsetof(o42a_obj_ctable_t, ancestor_desc),
+			.name = "ancestor_desc",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_desc,
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
@@ -653,12 +655,12 @@ static inline void obj_mutex_init(o42a_obj_data_t *const data) {
 
 static void derive_object_body(
 		o42a_obj_ctable_t *const ctable,
-		const o42a_bool_t main) {
+		const o42a_bool_t inherit) {
 	O42A_ENTER(return);
 	O42A_DO("Derive body");
 
 	o42a_debug_mem_name(
-			main ? "Main body: " : "Inherited body: ",
+			inherit ?  "Inherited body: ": "Main body: ",
 			ctable->body_desc);
 
 	// Derive fields.
@@ -678,7 +680,7 @@ static void derive_object_body(
 
 		const o42a_fld_desc_t *const desc = O42A(o42a_fld_desc(field));
 
-		O42A_DO(main ? "Propagate field" : "Inherit field");
+		O42A_DO(inherit ? "Inherit field" : "Propagate field");
 		if (from) {
 			ctable->from_fld = O42A(o42a_fld_by_field(from, field));
 			o42a_debug_mem_name("From: ", ctable->from_fld);
@@ -687,7 +689,7 @@ static void derive_object_body(
 		O42A_DEBUG("To: <0x%lx>\n", (long) ctable->to_fld);
 		o42a_debug_dump_mem("Field: ", field, 3);
 
-		O42A((main ? desc->propagate : desc->inherit) (ctable));
+		O42A((inherit ? desc->inherit : desc->propagate) (ctable));
 
 		O42A_DONE;
 	}
@@ -698,14 +700,14 @@ static void derive_object_body(
 
 static void derive_ancestor_bodies(
 		o42a_obj_ctable_t *const ctable,
-		const size_t excluded) {
+		const size_t excluded,
+		o42a_bool_t inherit) {
 	O42A_ENTER(return);
 
 	const o42a_obj_data_t *const data = &ctable->to->object_data;
 	const o42a_obj_ascendant_t *ascendant =
 			O42A(o42a_obj_ascendants(data->desc));
-	const o42a_obj_desc_t *const adesc =
-			ctable->ancestor->object_data.desc;
+	const o42a_obj_desc_t *const adesc = ctable->ancestor_desc;
 	const o42a_obj_ascendant_t *aascendant =
 			O42A(o42a_obj_ascendants(adesc));
 	const size_t num = adesc->ascendants.size - excluded;
@@ -715,7 +717,7 @@ static void derive_ancestor_bodies(
 				aascendant->desc == ascendant->desc
 				&& "Ancestor and sample body descriptors differ");
 		ctable->body_desc = ascendant->desc;
-		O42A(derive_object_body(ctable, O42A_FALSE));
+		O42A(derive_object_body(ctable, inherit));
 		++aascendant;
 		++ascendant;
 	}
@@ -758,46 +760,55 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	O42A_ENTER(return NULL);
 
 	o42a_obj_t *const object = ctr->object;
+	o42a_obj_data_t *const data = &object->object_data;
+	const o42a_obj_desc_t *const desc = data->desc;
+	const size_t num_ascendants = desc->ascendants.size;
+
 	const o42a_obj_t *const ancestor = ctr->ancestor;
-	const o42a_obj_data_t *const adata = &ancestor->object_data;
-
-	assert(ancestor && "Ancestor is missing");
-
-	if (adata->desc == &o42a_obj_none_desc) {
-		O42A(o42a_obj_dispose(ctr));
-		O42A_RETURN NULL;
-	}
-
+	const o42a_obj_desc_t *adesc;
 	const o42a_obj_vmtc_t *vmtc;
+	size_t consumed_ascendants;
 
-	if (ctr->vmtc->prev) {
+	if (!ancestor) {
+		// Ancestor not specified.
+		// No inheritable fields expected.
+		adesc = desc;
 		vmtc = ctr->vmtc;
+		consumed_ascendants = 0;
 	} else {
-		vmtc = O42A(o42a_obj_vmtc_alloc(ctr->vmtc->vmt, adata->vmtc));
-		if (!vmtc) {
+
+		const o42a_obj_data_t *const adata = &ancestor->object_data;
+
+		adesc = adata->desc;
+		if (adesc == &o42a_obj_none_desc) {
 			O42A(o42a_obj_dispose(ctr));
 			O42A_RETURN NULL;
 		}
+		if (ctr->vmtc->prev) {
+			vmtc = ctr->vmtc;
+		} else {
+			vmtc = O42A(o42a_obj_vmtc_alloc(ctr->vmtc->vmt, adata->vmtc));
+			if (!vmtc) {
+				O42A(o42a_obj_dispose(ctr));
+				O42A_RETURN NULL;
+			}
+		}
+
+		const size_t adiff = num_ascendants - adesc->ascendants.size;
+
+		assert((adiff == 0 || adiff == 1) && "Inheritance is impossible");
+		consumed_ascendants = adiff ? 0 : 1;
 	}
 
 	O42A(vmtc_use(vmtc));
 
-	o42a_obj_data_t *const data = &object->object_data;
-
 	data->vmtc = vmtc;
 
-	const o42a_obj_desc_t *const desc = data->desc;
-	const size_t num_ascendants = desc->ascendants.size;
-	const size_t adiff = num_ascendants - adata->desc->ascendants.size;
-
-	assert((adiff == 0 || adiff == 1) && "Inheritance is impossible");
-
-	const size_t consumed_ascendants = adiff ? 0 : 1;
-
-	// propagate sample and inherit ancestor
+	// Inherit ancestor bodies,
+	// or propagate all sample bodies if ancestor not specified.
 	o42a_obj_ctable_t ctable = {
 		.owner = ctr->owner,
-		.ancestor = ancestor,
+		.ancestor_desc = adesc,
 		.from = ancestor,
 		.to = object,
 	};
@@ -809,11 +820,15 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 			NULL));
 #endif /* NDEBUG */
 
-	derive_ancestor_bodies(&ctable, consumed_ascendants);
+	O42A(derive_ancestor_bodies(&ctable, consumed_ascendants, !!ancestor));
 
-	ctable.body_desc = desc;
-	ctable.from = NULL;
-	O42A(derive_object_body(&ctable, O42A_TRUE));
+	if (ancestor) {
+		// Propagate a main body of the sample,
+		// unless all bodies already propagated.
+		ctable.body_desc = desc;
+		ctable.from = NULL;
+		O42A(derive_object_body(&ctable, O42A_FALSE));
+	}
 
 	o42a_debug_dump_mem(
 			(object->object_data.value.flags & O42A_VAL_CONDITION)
