@@ -150,12 +150,7 @@ public class Ascendants implements AscendantsBuilder<Ascendants>, Cloneable {
 
 		final ConstructionMode ancestorMode = ancestor.getConstructionMode();
 
-		if (ancestorMode.isRuntime()) {
-			return this.constructionMode = ancestorMode;
-		}
-
-		return this.constructionMode =
-				FULL_CONSTRUCTION.restrict(constructionMode);
+		return this.constructionMode = ancestorMode.restrict(constructionMode);
 	}
 
 	public final boolean isEmpty() {
