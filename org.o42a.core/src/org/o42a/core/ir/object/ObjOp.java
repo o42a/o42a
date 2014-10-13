@@ -45,6 +45,7 @@ import org.o42a.core.ir.object.vmt.VmtIRChain;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.TargetStoreOp;
 import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.type.StateOp;
 import org.o42a.core.ir.value.type.ValueIR;
@@ -103,17 +104,34 @@ public final class ObjOp extends ObjectOp {
 	}
 
 	@Override
-	public ObjOp phi(Code code, DataOp ptr) {
+	public ObjOp phi(Code code, OpMeans<DataOp> ptr) {
 		return new ObjOp(
 				getBuilder(),
 				getObjectIR(),
-				ptr.to(null, code, ptr().getType()),
+				code.means(c -> ptr.op().to(null, c, ptr().getType())),
 				getAscendant(),
 				getPrecision());
 	}
 
+	@Override
 	public final VmtIRChain.Op vmtc(Code code) {
-		return ptr().objectData(code).vmtc(code).load(null, code);
+		if (!getPrecision().isExact()) {
+			return super.vmtc(code);
+		}
+		return getObjectIR()
+				.getVmtIR()
+				.terminator()
+				.pointer(getGenerator())
+				.op(null, code);
+	}
+
+
+	@Override
+	public ObjectValueFn valueFunc(Code code) {
+		if (!getPrecision().isExact()) {
+			return super.valueFunc(code);
+		}
+		return getObjectIR().getObjectValueIR().ptr().op(null, code);
 	}
 
 	@Override

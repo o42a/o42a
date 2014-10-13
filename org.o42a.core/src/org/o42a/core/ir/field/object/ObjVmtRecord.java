@@ -34,9 +34,7 @@ import static org.o42a.util.fn.Init.init;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CondBlock;
 import org.o42a.codegen.code.FuncPtr;
-import org.o42a.codegen.code.op.BoolOp;
-import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.code.op.StructRecOp;
+import org.o42a.codegen.code.op.*;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.RefFld.StatefulOp;
 import org.o42a.core.ir.field.RefFld.StatefulType;
@@ -131,7 +129,8 @@ final class ObjVmtRecord
 
 		final CodeDirs startDirs = dirs.sub(start);
 		final ObjectOp evalAncestor = ancestor(startDirs);
-		final DataOp evalAncestorPtr = allocate(startDirs, ctr, evalAncestor);
+		final OpMeans<DataOp> evalAncestorPtr =
+				allocate(startDirs, ctr, evalAncestor);
 
 		start.go(code.tail());
 
@@ -140,7 +139,7 @@ final class ObjVmtRecord
 
 		cont.go(code.tail());
 
-		final DataOp ancestorPtr = code.phi(
+		final OpMeans<DataOp> ancestorPtr = code.phiMeans(
 				ANCESTOR_ID,
 				evalAncestorPtr,
 				suppliedAncestorPtr);
@@ -206,25 +205,19 @@ final class ObjVmtRecord
 				.link("o42a_obj_constructor_stub", getConstructorSignature());
 	}
 
-	private DataOp allocate(CodeDirs dirs, CtrOp.Op ctr, ObjectOp ancestor) {
+	private OpMeans<DataOp> allocate(
+			CodeDirs dirs,
+			CtrOp.Op ctrPtr,
+			ObjectOp ancestor) {
 
 		final Block code = dirs.code();
-		final DataOp ancestorPtr = ancestor.toData(null, code);
+		final CtrOp ctr = ctrPtr.op(dirs.getBuilder());
 
-		ctr.op(dirs.getBuilder())
-		.sample(fld().getTarget())
-		.allocateObject(dirs);
+		ctr.sample(fld().getTarget()).allocateObject(dirs);
+		ctr.ancestor(ancestor).fillAncestor(code);
+		ctrPtr.vmtc(code).store(code, ancestor.vmtc(code));
 
-		ctr.ancestor(code).store(code, ancestorPtr);
-
-		ctr.vmtc(code).store(
-				code,
-				ancestor.objectData(code)
-				.ptr(code)
-				.vmtc(code)
-				.load(null, code));
-
-		return code.phi(null, ancestorPtr);
+		return code.means(c -> c.phi(null, ancestor.toData(null, c)));
 	}
 
 	private ObjectOp ancestor(CodeDirs dirs) {

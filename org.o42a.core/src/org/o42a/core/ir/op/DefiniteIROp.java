@@ -56,4 +56,8 @@ public abstract class DefiniteIROp<P extends DumpablePtrOp<P>>
 		return op();
 	}
 
+	public final OpMeans<P> means() {
+		return this.ptr;
+	}
+
 }

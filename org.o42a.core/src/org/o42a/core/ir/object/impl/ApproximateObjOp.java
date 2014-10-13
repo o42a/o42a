@@ -64,8 +64,12 @@ public final class ApproximateObjOp extends ObjectOp {
 	}
 
 	@Override
-	public ObjectOp phi(Code code, DataOp ptr) {
-		return approximateObject(getBuilder(), code, ptr, getWellKnownType());
+	public ObjectOp phi(Code code, OpMeans<DataOp> ptr) {
+		return approximateObject(
+				getBuilder(),
+				code,
+				ptr,
+				getWellKnownType());
 	}
 
 	@Override

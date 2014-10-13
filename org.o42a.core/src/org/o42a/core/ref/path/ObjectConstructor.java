@@ -282,7 +282,7 @@ public abstract class ObjectConstructor
 					.evalAncestor(subDirs)
 					.allocateObject(subDirs)
 					.fillAncestor(code)
-					.fillVmtc(code)
+					.fillVmtc(subDirs)
 					.fillObject(subDirs)
 					.newObject(subDirs, holder);
 

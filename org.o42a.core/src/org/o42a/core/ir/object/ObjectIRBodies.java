@@ -34,10 +34,8 @@ import org.o42a.core.ir.field.inst.InstFldKind;
 import org.o42a.core.ir.field.local.LocalIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.state.Dep;
 import org.o42a.core.object.type.Sample;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.fn.Init;
 
 
@@ -176,20 +174,14 @@ public final class ObjectIRBodies implements Iterable<ObjectIRBody> {
 
 	final ObjectIRBodies allocate() {
 
-		final ObjectIR objectIR = getObjectIR();
-		final ObjectType objectType = objectIR.getObject().type();
-		final TypeRef ancestorRef = objectType.getAncestor();
+		final Obj ancestor = getObjectIR().getAncestor();
 
-		if (ancestorRef != null) {
-
-			final Obj ancestor = ancestorRef.getInterface();
-
-			if (!ancestor.is(ancestor.getContext().getVoid())) {
-				deriveBodyIRs(ancestor, true);
-			}
+		if (ancestor != null
+				&& !ancestor.is(ancestor.getContext().getVoid())) {
+			deriveBodyIRs(ancestor, true);
 		}
 
-		final Sample sample = objectType.getSample();
+		final Sample sample = getObject().type().getSample();
 
 		if (sample != null) {
 			deriveBodyIRs(sample.getObject(), false);

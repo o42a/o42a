@@ -39,13 +39,14 @@ import org.o42a.core.ir.field.inst.ResumeFromOp;
 import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.impl.ApproximateObjOp;
 import org.o42a.core.ir.object.op.ObjHolder;
+import org.o42a.core.ir.object.vmt.VmtIRChain;
 import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.type.ValueOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.LinkValueType;
 import org.o42a.util.fn.Init;
@@ -113,9 +114,7 @@ public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
 			ObjHolder holder) {
 
 		final CodeDirs subDirs = dirs.begin(ANCESTOR_ID, "Ancestor");
-
-		final TypeRef ancestorType = object.type().getAncestor();
-		final RefOp ancestor = ancestorType.op(host);
+		final RefOp ancestor = object.type().getAncestor().op(host);
 
 		final ObjectOp result = ancestor.path().materialize(subDirs, holder);
 
@@ -143,6 +142,14 @@ public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
 		return this.precision;
 	}
 
+	public VmtIRChain.Op vmtc(Code code) {
+		return objectData(code).ptr().vmtc(code).load(null, code);
+	}
+
+	public ObjectValueFn valueFunc(Code code) {
+		return objectData(code).ptr().valueFunc(code).load(null, code);
+	}
+
 	public void fillDeps(CodeDirs dirs, HostOp host, Obj sample) {
 
 		final ObjectIRBody mainBodyIR =
@@ -164,7 +171,7 @@ public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
 		return this.value.get();
 	}
 
-	public abstract ObjectOp phi(Code code, DataOp ptr);
+	public abstract ObjectOp phi(Code code, OpMeans<DataOp> ptr);
 
 	public final ObjectDataOp objectData(Code code) {
 		return ptr().objectData(code).op(getBuilder());
