@@ -705,16 +705,13 @@ public abstract class Obj
 			return null;
 		}
 
-		final Obj cloneOf;
 		final Obj sampleCloneOf = sampleObject.getCloneOf();
 
 		if (sampleCloneOf != null) {
-			cloneOf = sampleCloneOf;
-		} else {
-			cloneOf = sampleObject;
+			return sampleCloneOf;
 		}
 
-		return cloneOf;
+		return sampleObject;
 	}
 
 	protected void fullyResolve() {
