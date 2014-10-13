@@ -25,7 +25,7 @@ import java.util.function.BooleanSupplier;
 
 public class FlagInit implements BooleanSupplier {
 
-	public static FlagInit boolInit(BooleanSupplier init) {
+	public static FlagInit flagInit(BooleanSupplier init) {
 		return new FlagInit(init);
 	}
 
