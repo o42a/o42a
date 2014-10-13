@@ -299,6 +299,9 @@ typedef struct o42a_obj_ctr {
 
 	/**
 	 * Pointer to ancestor object.
+	 *
+	 * Can be NULL if ancestor does not contain any inheritable fields,
+	 * i.e. owner references or run time dependencies.
 	 */
 	const o42a_obj_t *ancestor;
 
@@ -306,8 +309,8 @@ typedef struct o42a_obj_ctr {
 	 * VMT chain to use.
 	 *
 	 * If points to VMT chain terminator, then VMT chain will be constructed
-	 * from VMT the given VMT and ancestor. Otherwise, this VMT chain will be
-	 * used.
+	 * from the given terminator and ancestor VMT chain.
+	 * Otherwise, or if ancestor not specified, this VMT chain will be used.
 	 *
 	 * This should be either VMT chain from existing object, or the one
 	 * allocated with o42a_obj_vmtc_alloc function.
@@ -332,7 +335,7 @@ typedef struct o42a_obj_ctable {
 	 */
 	o42a_obj_t *owner;
 
-	const o42a_obj_t *const ancestor;
+	const o42a_obj_desc_t *const ancestor_desc;
 
 	const o42a_obj_t *from;
 
