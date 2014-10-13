@@ -229,9 +229,22 @@ public abstract class Code extends DebugCodeBase {
 		return writer().phi(id != null ? id : op.getId(), op);
 	}
 
+	public final <O extends Op> OpMeans<O> phiMeans(ID id, OpMeans<O> op) {
+		assert assertIncomplete();
+		return means(id, c -> c.phi(id, op.op()));
+	}
+
 	public final <O extends Op> O phi(ID id, O op1, O op2) {
 		assert assertIncomplete();
 		return writer().phi(opId(id), op1, op2);
+	}
+
+	public final <O extends Op> OpMeans<O> phiMeans(
+			ID id,
+			OpMeans<O> op1,
+			OpMeans<O> op2) {
+		assert assertIncomplete();
+		return means(id, c -> c.phi(id, op1.op(), op2.op()));
 	}
 
 	public final <O extends Op> O phi(ID id, O[] ops) {
