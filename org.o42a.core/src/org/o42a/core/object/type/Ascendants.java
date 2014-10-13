@@ -391,7 +391,10 @@ public class Ascendants implements AscendantsBuilder<Ascendants>, Cloneable {
 		if (!ancestor.isValid()) {
 			return false;
 		}
-		if (!validateUse(ancestor)) {
+		if (!Role.PROTOTYPE.checkUseBy(
+				getObject(),
+				ancestor.getRef(),
+				ancestor.getScope())) {
 			return false;
 		}
 		if (ancestor.getConstructionMode().isProhibited()) {
@@ -402,16 +405,6 @@ public class Ascendants implements AscendantsBuilder<Ascendants>, Cloneable {
 			return false;
 		}
 		return true;
-	}
-
-	private boolean validateUse(TypeRef checkUse) {
-		if (checkUse == null) {
-			return true;
-		}
-		return Role.PROTOTYPE.checkUseBy(
-				getObject(),
-				checkUse.getRef(),
-				checkUse.getScope());
 	}
 
 	private TypeRef sampleAncestor() {
@@ -455,11 +448,17 @@ public class Ascendants implements AscendantsBuilder<Ascendants>, Cloneable {
 					+ "ancestor specification");
 			return;
 		}
-		if (!objectType.getObject()
+		if (objectType.getObject()
 				.value()
 				.getStatefulness()
 				.isExplicitEager()) {
-			// Eager reference can always be constructed.
+			// Eager reference requires object instance as ancestor,
+			// not just a prototype.
+			Role.INSTANCE.checkUseBy(
+					getObject(),
+					explicitAncestor.getRef(),
+					explicitAncestor.getScope());
+		} else {
 			explicitAncestor.getRef()
 					.getPath()
 					.walk(
