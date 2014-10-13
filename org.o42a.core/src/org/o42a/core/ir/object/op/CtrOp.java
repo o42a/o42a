@@ -20,6 +20,7 @@
 package org.o42a.core.ir.object.op;
 
 import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
+import static org.o42a.core.ir.field.object.VmtChainAllocFn.VMT_CHAIN_ALLOC;
 import static org.o42a.core.ir.object.ObjectOp.objectAncestor;
 import static org.o42a.core.ir.object.op.AllocateObjectFn.ALLOCATE_OBJECT;
 import static org.o42a.core.ir.object.op.DisposeObjectFn.DISPOSE_OBJECT;
@@ -40,6 +41,7 @@ import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.field.object.VmtChainAllocFn;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.ObjectValueIR;
@@ -159,7 +161,7 @@ public class CtrOp extends IROp<CtrOp.Op> {
 		final Block code = dirs.code();
 
 		this.objectPtr =
-				allocFunc().op(null, code).allocateObject(code, descIR);
+				allocFn().op(null, code).allocateObject(code, descIR);
 		this.objectPtr.isNull(null, code).go(code, dirs.falseDir());
 		ptr(code).object(code).store(code, this.objectPtr);
 
@@ -185,28 +187,60 @@ public class CtrOp extends IROp<CtrOp.Op> {
 		return this;
 	}
 
+	public final boolean ancestorRequired() {
+		if (isEager()) {
+
+			final Obj ancestor = getSample().type().getAncestor().getType();
+
+			if (ancestor.getConstructionMode().isStrict()
+					|| ancestor.isWrapper()) {
+				// A structure of eager object's ancestor is not known
+				// at compile time. So, ancestor is always required here.
+				return true;
+			}
+		}
+
+		final ObjectIR ancestorIR =
+				getAncestor().getWellKnownType().ir(getGenerator());
+
+		// Ancestor is required only if it contains some inheritable fields.
+		return ancestorIR.hasInheritableFields();
+	}
+
 	public final CtrOp fillAncestor(Code code) {
-		ptr(code).ancestor(code).store(code, getAncestor().toData(null, code));
+
+		final DataOp ancestorPtr;
+
+		if (!ancestorRequired()) {
+			ancestorPtr = code.nullDataPtr();
+		} else {
+			ancestorPtr = getAncestor().toData(null, code);
+		}
+
+		ptr(code).ancestor(code).store(code, ancestorPtr);
+
 		return this;
 	}
 
-	public final CtrOp fillVmtc(Code code) {
+	public final CtrOp fillVmtc(CodeDirs dirs) {
 
+		final Block code = dirs.code();
 		final StructRecOp<VmtIRChain.Op> vmtcRec = ptr(code).vmtc(code);
 		final VmtIR vmtIR = getSample().ir(getGenerator()).getVmtIR();
+		final VmtIRChain.Op vmtc;
 
 		if (isExplicitEager()) {
-			vmtcRec.store(
-					code,
-					getAncestor().objectData(code)
-					.ptr()
-					.vmtc(code)
-					.load(null, code));
+			vmtc = getAncestor().vmtc(code);
+		} else if (!ancestorRequired()) {
+			vmtc =
+					vmtcAllocFn()
+					.op(null, code)
+					.allocate(dirs, vmtIR, getAncestor().vmtc(code));
 		} else {
-			vmtcRec.store(
-					code,
-					vmtIR.terminator().pointer(getGenerator()).op(null, code));
+			vmtc = vmtIR.terminator().pointer(getGenerator()).op(null, code);
 		}
+
+		vmtcRec.store(code, vmtc);
 
 		return this;
 	}
@@ -240,7 +274,7 @@ public class CtrOp extends IROp<CtrOp.Op> {
 
 		code.dump("Constructing: ", this);
 
-		this.objectPtr = newFunc().op(null, code).newObject(code, this);
+		this.objectPtr = newFn().op(null, code).newObject(code, this);
 		this.objectPtr.isNull(null, code).go(code, dirs.falseDir());
 
 		final ObjectOp newObject = object(dirs.code());
@@ -248,14 +282,20 @@ public class CtrOp extends IROp<CtrOp.Op> {
 		return holder.holdVolatile(code, newObject);
 	}
 
-	private FuncPtr<AllocateObjectFn> allocFunc() {
+	private FuncPtr<AllocateObjectFn> allocFn() {
 		return getGenerator()
 				.externalFunction()
 				.noSideEffects()
 				.link("o42a_obj_alloc", ALLOCATE_OBJECT);
 	}
 
-	private FuncPtr<NewObjectFn> newFunc() {
+	private FuncPtr<VmtChainAllocFn> vmtcAllocFn() {
+		return getGenerator()
+				.externalFunction()
+				.link("o42a_obj_vmtc_alloc", VMT_CHAIN_ALLOC);
+	}
+
+	private FuncPtr<NewObjectFn> newFn() {
 		return getGenerator()
 				.externalFunction()
 				.noSideEffects()
@@ -264,7 +304,6 @@ public class CtrOp extends IROp<CtrOp.Op> {
 
 	private void fillValue(CodeDirs dirs) {
 
-		final ObjectOp ancestor = getAncestor();
 		final Obj sample = getSample();
 		final Block code = dirs.code();
 		final ObjectValueFn valueFn;
@@ -275,12 +314,7 @@ public class CtrOp extends IROp<CtrOp.Op> {
 			final ObjectValueIR valueIR = sampleIR.getObjectValueIR();
 
 			if (sample.value().getDefinitions().areInherited()) {
-				valueFn =
-						getAncestor()
-						.objectData(code)
-						.ptr()
-						.valueFunc(code)
-						.load(null, code);
+				valueFn = getAncestor().valueFunc(code);
 			} else {
 				valueFn = valueIR.ptr().op(null, code);
 			}
@@ -298,7 +332,7 @@ public class CtrOp extends IROp<CtrOp.Op> {
 					VAL_TRAP);
 
 			final ValDirs eagerDirs = dirs.nested().value(value);
-			final ValOp result = ancestor.value().writeValue(eagerDirs);
+			final ValOp result = getAncestor().value().writeValue(eagerDirs);
 
 			value.store(dirs.code(), result);
 			eagerDirs.done();

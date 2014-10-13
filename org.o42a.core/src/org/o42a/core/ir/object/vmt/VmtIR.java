@@ -84,7 +84,7 @@ public class VmtIR extends Struct<VmtIROp> {
 
 		if (ancestor != null
 				&& ancestor.isStatic()
-				&& !ancestor.getType().getConstructionMode().isRuntime()) {
+				&& !ancestor.getType().getConstructionMode().isStrict()) {
 			// Reuse static ancestor VMT if every VMT record is inherited.
 			final VmtIR ancestorVmtIR =
 					ancestor.getType()

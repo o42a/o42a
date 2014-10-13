@@ -36,7 +36,7 @@ public final class ObjectScopeIR extends ScopeIR {
 
 		final Obj object = getScope().toObject();
 
-		if (!object.getConstructionMode().isRuntime()
+		if (!object.getConstructionMode().isStrict()
 				|| object.getDereferencedLink() == null) {
 			object.ir(getGenerator()).allocate();
 		}
