@@ -95,7 +95,7 @@ final class ValueTypeInterfaceParameters extends TypeRefParameters {
 	public final <T> TypeParameters<T> refineCompatible(
 			TypeParameters<?> refinement,
 			TypeParameters<T> defaultParameters) {
-		if (refinement.isEmpty()) {
+		if (refinement.areEmpty()) {
 			return defaultParameters;
 		}
 

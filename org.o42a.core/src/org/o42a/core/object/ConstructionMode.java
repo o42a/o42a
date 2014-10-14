@@ -42,19 +42,7 @@ public enum ConstructionMode {
 	 * derived from fully constructed one, and it is nested inside another
 	 * fully constructed object.</p>
 	 */
-	FULL_CONSTRUCTION() {
-
-		@Override
-		public boolean canUpgradeAncestor() {
-			return true;
-		}
-
-		@Override
-		public boolean canDeclareFields() {
-			return true;
-		}
-
-	},
+	FULL_CONSTRUCTION(),
 
 	/**
 	 * Strict object construction mode.
@@ -106,12 +94,8 @@ public enum ConstructionMode {
 	 */
 	PROHIBITED_CONSTRUCTION;
 
-	public boolean canUpgradeAncestor() {
-		return false;
-	}
-
 	public boolean canDeclareFields() {
-		return false;
+		return this == FULL_CONSTRUCTION;
 	}
 
 	public final boolean isStrict() {
