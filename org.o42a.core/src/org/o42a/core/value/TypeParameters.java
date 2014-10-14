@@ -131,7 +131,7 @@ public final class TypeParameters<T> extends TypeRefParameters {
 		return this.parameters.length;
 	}
 
-	public final boolean isEmpty() {
+	public final boolean areEmpty() {
 		return this.parameters.length == 0;
 	}
 
@@ -152,7 +152,7 @@ public final class TypeParameters<T> extends TypeRefParameters {
 	}
 
 	public final TypeParameters<T> declaredIn(Obj origin) {
-		if (isEmpty()) {
+		if (areEmpty()) {
 			return this;
 		}
 		return new TypeParameters<>(
@@ -329,12 +329,12 @@ public final class TypeParameters<T> extends TypeRefParameters {
 		final Obj explicitlyRefinedFor =
 				defaultParameters.getExplicitlyRefinedFor();
 
-		if (defaultParameters.isEmpty()) {
+		if (defaultParameters.areEmpty()) {
 			// Always override the empty parameters.
 			if (explicitlyRefinedFor == null) {
 				return this;
 			}
-			if (isEmpty()) {
+			if (areEmpty()) {
 				return explicitlyRefineFor(explicitlyRefinedFor);
 			}
 			return new TypeParameters<>(
@@ -344,7 +344,7 @@ public final class TypeParameters<T> extends TypeRefParameters {
 					explicitlyRefinedFor,
 					suggestOrigin(explicitlyRefinedFor));
 		}
-		if (isEmpty()) {
+		if (areEmpty()) {
 			if (defaultParameters.getValueType().is(getValueType())) {
 				return getValueType().cast(defaultParameters);
 			}
@@ -597,7 +597,7 @@ public final class TypeParameters<T> extends TypeRefParameters {
 	}
 
 	private TypeParameter[] suggestOrigin(Obj origin) {
-		if (origin == null || isEmpty()) {
+		if (origin == null || areEmpty()) {
 			return all();
 		}
 

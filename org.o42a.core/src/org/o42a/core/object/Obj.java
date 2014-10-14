@@ -662,8 +662,7 @@ public abstract class Obj
 					sample.getObject().value().getStatefulness();
 
 			if (sampleStatefulness.isEager()) {
-				checkEagerOverride();
-				return isPropagated() ? sampleStatefulness : DERIVED_EAGER;
+				return DERIVED_EAGER;
 			}
 		} else {
 
@@ -675,7 +674,6 @@ public abstract class Obj
 						ancestor.getType().value().getStatefulness();
 
 				if (ancestorStatefulness.isEager()) {
-					checkEagerOverride();
 					return DERIVED_EAGER;
 				}
 			}
@@ -772,16 +770,6 @@ public abstract class Obj
 
 	final Map<MemberId, Symbol> symbols() {
 		return Obj.this.symbols;
-	}
-
-	private void checkEagerOverride() {
-		if (value().getDefinitions().areDerived()) {
-			return;
-		}
-		getLogger().error(
-				"prohibited_eager_override",
-				value().getDefinitions(),
-				"Eagerly evaluated value can not be overridden");
 	}
 
 	private void declareMembers() {

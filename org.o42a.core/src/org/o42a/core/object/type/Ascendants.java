@@ -30,7 +30,9 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.DefinitionTarget;
-import org.o42a.core.object.*;
+import org.o42a.core.object.ConstructionMode;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.Role;
 import org.o42a.core.object.type.impl.AncestorValidator;
 import org.o42a.core.object.type.impl.ImplicitSample;
 import org.o42a.core.object.type.impl.MemberOverride;
@@ -221,9 +223,9 @@ public class Ascendants implements AscendantsBuilder<Ascendants>, Cloneable {
 		return addSample(new MemberOverride(overriddenMember, this));
 	}
 
-	public void resolveAll(ObjectType objectType) {
+	public void resolveAll() {
 		validate();
-		validateAncestors(objectType);
+		validateAncestors();
 
 		final TypeRef ancestor = getExplicitAncestor();
 		final FullResolver resolver =
@@ -418,20 +420,21 @@ public class Ascendants implements AscendantsBuilder<Ascendants>, Cloneable {
 		return sample.getAncestor();
 	}
 
-	private void validateAncestors(ObjectType objectType) {
+	private void validateAncestors() {
 
-		final TypeRef ancestor = objectType.getAncestor();
+		final TypeRef ancestor = getObject().type().getAncestor();
 
 		if (ancestor == null) {
 			return;
 		}
 
-		validateExplicitAncestor(objectType);
+		validateExplicitAncestor();
 		validateImplicitAncestor(ancestor);
-		validateSampleAncestor(objectType, ancestor);
+		validateSampleAncestor(ancestor);
+		validateStatefulness();
 	}
 
-	private void validateExplicitAncestor(ObjectType objectType) {
+	private void validateExplicitAncestor() {
 
 		final TypeRef explicitAncestor = getExplicitAncestor();
 
@@ -444,11 +447,22 @@ public class Ascendants implements AscendantsBuilder<Ascendants>, Cloneable {
 					"prohibited_explicit_ancestor",
 					explicitAncestor,
 					"Ancestor can not be specified when overriding a field."
-					+ " Use an asterisk instead of explicit "
-					+ "ancestor specification");
+					+ " Use an asterisk instead of explicit"
+					+ " ancestor specification");
 			return;
 		}
-		if (objectType.getObject()
+		if (explicitAncestor.getType()
+				.value()
+				.getStatefulness()
+				.isEager()) {
+			if (!getObject().isWrapper()
+					&& getObject().getDereferencedLink() == null) {
+				getObject().getLogger().error(
+						"prohibited_eager_inheritance",
+						explicitAncestor,
+						"Eager objects can not be inherited");
+			}
+		} else if (getObject()
 				.value()
 				.getStatefulness()
 				.isExplicitEager()) {
@@ -469,7 +483,7 @@ public class Ascendants implements AscendantsBuilder<Ascendants>, Cloneable {
 							new AncestorValidator(
 									getScope().getLogger(),
 									explicitAncestor,
-									objectType.getObject().toClause() != null))
+									getObject().toClause() != null))
 					.isResolved();
 		}
 	}
@@ -506,9 +520,7 @@ public class Ascendants implements AscendantsBuilder<Ascendants>, Cloneable {
 		}
 	}
 
-	private void validateSampleAncestor(
-			ObjectType objectType,
-			TypeRef ancestor) {
+	private void validateSampleAncestor(TypeRef ancestor) {
 
 		final Sample sample = getSample();
 
@@ -516,8 +528,7 @@ public class Ascendants implements AscendantsBuilder<Ascendants>, Cloneable {
 			return;
 		}
 
-		final TypeRef parameterizedAncestor =
-				parameterizedAncestor(objectType, ancestor);
+		final TypeRef parameterizedAncestor = parameterizedAncestor(ancestor);
 		final TypeRef sampleAncestor =
 				sample.overriddenAncestor()
 				.rescope(parameterizedAncestor.getScope());
@@ -535,26 +546,35 @@ public class Ascendants implements AscendantsBuilder<Ascendants>, Cloneable {
 						sampleAncestor);
 			}
 			this.explicitAncestor = null;
-			return;
-		}
-
-		if (!getConstructionMode().canUpgradeAncestor()
-				&& !relation.ignoreParameters().isSame()) {
-			relation.ignoreParameters().isSame();
-			getScope().getLogger().error(
-					"prohibited_ancestor_upgrade",
-					getAncestor(),
-					"Ancestor can no be upgraded");
 		}
 	}
 
-	private TypeRef parameterizedAncestor(
-			ObjectType objectType,
-			TypeRef ancestor) {
+	private void validateStatefulness() {
+		if (getObject().getPropagatedFrom() != null) {
+			return;
+		}
 
-		final TypeParameters<?> parameters = objectType.getParameters();
+		final Sample sample = getSample();
 
-		if (parameters.isEmpty()) {
+		if (sample == null) {
+			return;
+		}
+		if (!getObject().value().getStatefulness().isEager()) {
+			return;
+		}
+
+		getScope().getLogger().error(
+				"prohibited_eager_override",
+				getScope(),
+				"Eager fields can not overridden");
+	}
+
+	private TypeRef parameterizedAncestor(TypeRef ancestor) {
+
+		final TypeParameters<?> parameters =
+				getObject().type().getParameters();
+
+		if (parameters.areEmpty()) {
 			return ancestor;
 		}
 

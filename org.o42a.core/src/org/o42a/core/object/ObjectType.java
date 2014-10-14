@@ -188,7 +188,7 @@ public final class ObjectType implements UserInfo {
 	}
 
 	public void resolveAll() {
-		getAscendants().resolveAll(this);
+		getAscendants().resolveAll();
 		derivationUses().resolveAll();
 
 		final LinkUses linkUses = linkUses();
