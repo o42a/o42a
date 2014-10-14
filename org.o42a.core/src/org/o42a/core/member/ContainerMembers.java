@@ -143,13 +143,6 @@ public abstract class ContainerMembers {
 		if (field == null) {
 			return true;
 		}
-		if (!constructionMode.canDeclareFields()) {
-			member.getLogger().error(
-					"prohibited_field_declaration",
-					member,
-					"Can not declare new fields here");
-			return false;
-		}
 		if (field.isStatic()) {
 			if (!getOwner().isStatic()) {
 				member.getLogger().error(

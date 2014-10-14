@@ -47,32 +47,20 @@ public enum ConstructionMode {
 	/**
 	 * Strict object construction mode.
 	 *
-	 * <p>This mode applied when object can not be statically or dynamically
-	 * constructed, and the object is not inherited from variable target.</p>
+	 * <p>This mode is applied when object can not be constructed at compile
+	 * time, but its value still can be evaluated.</p>
 	 *
-	 * <p>Strict object construction can not change interface of the object.
-	 * The following restrictions apply to strictly constructed objects:
-	 * <ul>
-	 * <li>new members can not be declared;</li>
-	 * <li>object ancestors can not be upgraded;</li>
-	 * <li>type parameters can not be changed.</li>
-	 * <ul>
-	 *
-	 * <p>Object is strictly constructed e.g. when it's ancestor is link target.
-	 * In some cases, the value of strictly constructed object can be determined
-	 * at compile time.</p>
+	 * <p>An example of strictly constructed object is a link target.</p>
 	 */
 	STRICT_CONSTRUCTION,
 
 	/**
 	 * Run time object construction mode.
 	 *
-	 * <p>Applied when ancestor object can be determined at run time only.</p>
+	 * <p>This mode is applied when object can not be constructed at compile
+	 * time, and its value can not be evaluated.</p>
 	 *
-	 * <p>This mode is the same as the {@link #STRICT_CONSTRUCTION strict} one,
-	 * but is applied when object ancestor is  variable. In contrast to strictly
-	 * constructed object, the value of run-time constructed one can not be
-	 * evaluated at compile time.</p>
+	 * <p>An example of run time constructed object is a variable value.</p>
 	 */
 	RUNTIME_CONSTRUCTION,
 
@@ -89,14 +77,10 @@ public enum ConstructionMode {
 	/**
 	 * Object construction is prohibited.
 	 *
-	 * <p>This may happen, when object ancestor is unknown or it can not
+	 * <p>This may happen when object ancestor is unknown or it can not
 	 * be inherited. This only happens due to compilation errors.</a>
 	 */
 	PROHIBITED_CONSTRUCTION;
-
-	public boolean canDeclareFields() {
-		return this == FULL_CONSTRUCTION;
-	}
 
 	public final boolean isStrict() {
 		return ordinal() >= STRICT_CONSTRUCTION.ordinal();
