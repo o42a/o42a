@@ -125,4 +125,35 @@ public class EagerRefTest extends CompilerTestCase {
 				valueType(ValueType.INTEGER));
 	}
 
+	@Test
+	public void eagerIneritance() {
+		expectError("compiler.prohibited_eager_inheritance");
+
+		compile(
+				"A := 5",
+				"B := a>> ()");
+	}
+
+	@Test
+	public void eagerPropagation() {
+		compile(
+				"A := void (",
+				"  F := 5",
+				"  G := f>>",
+				")",
+				"B := a (*F (= 6))");
+
+		assertThat(definiteValue(field("a", "g"), ValueType.INTEGER), is(5L));
+		assertThat(definiteValue(field("b", "g"), ValueType.INTEGER), is(6L));
+	}
+
+	@Test
+	public void eagerOverride() {
+		expectError("compiler.prohibited_eager_override");
+
+		compile(
+				"A := void (F := 5>>)",
+				"B := a (*F)");
+	}
+
 }
