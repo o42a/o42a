@@ -152,7 +152,7 @@ public final class ObjectValueIR {
 	}
 
 	final boolean writeIfConstant(DefDirs dirs, DefValue value) {
-		if (!isConstantValue(value)) {
+		if (!value.hasKnownValue()) {
 			return false;
 		}
 
@@ -219,7 +219,7 @@ public final class ObjectValueIR {
 
 		final DefValue finalValue = getFinal();
 
-		if (isConstantValue(finalValue)) {
+		if (finalValue.hasKnownValue()) {
 			if (finalValue.getCondition().isFalse()) {
 				// Final value is false.
 				return reuse("o42a_obj_value_false");
@@ -241,7 +241,7 @@ public final class ObjectValueIR {
 			}
 		}
 		if (getObject().value().getStatefulness().isEager()) {
-			reuse("o42a_obj_value_eager");
+			return reuse("o42a_obj_value_eager");
 		}
 		if (getObjectIR().isExact()) {
 			return null;
@@ -300,7 +300,7 @@ public final class ObjectValueIR {
 
 		final DefValue constant = defs().getConstant();
 
-		if (!isConstantValue(constant)) {
+		if (!constant.hasKnownValue()) {
 			return constant;
 		}
 		if (!ancestorDefsUpdated()) {
@@ -314,7 +314,7 @@ public final class ObjectValueIR {
 
 		final DefValue constant = getConstant();
 
-		if (isConstantValue(constant)) {
+		if (constant.hasKnownValue()) {
 			return constant;
 		}
 		if (isUsed() && !getObject().getConstructionMode().isPredefined()) {
@@ -329,16 +329,6 @@ public final class ObjectValueIR {
 			return false;
 		}
 		return !getObject().getConstructionMode().isPredefined();
-	}
-
-	private static boolean isConstantValue(DefValue value) {
-		if (!value.getCondition().isConstant()) {
-			return false;
-		}
-		if (!value.hasValue()) {
-			return true;
-		}
-		return value.getValue().getKnowledge().isKnown();
 	}
 
 	private boolean isUsed() {

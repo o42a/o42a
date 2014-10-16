@@ -57,6 +57,16 @@ public final class DefValue {
 		return this.value != null;
 	}
 
+	public final boolean hasKnownValue() {
+		if (!getCondition().isConstant()) {
+			return false;
+		}
+		if (!hasValue()) {
+			return true;
+		}
+		return getValue().getKnowledge().isKnown();
+	}
+
 	public final DefValue upgradeScope(ScopeUpgrade upgrade) {
 		if (!hasValue()) {
 			return this;

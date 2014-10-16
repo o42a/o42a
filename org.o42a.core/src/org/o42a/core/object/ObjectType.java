@@ -35,9 +35,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.object.impl.ObjectResolution;
 import org.o42a.core.object.type.*;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.ObjectTypeParameters;
-import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.*;
 import org.o42a.util.fn.CondInit;
 import org.o42a.util.fn.Init;
 
@@ -62,7 +60,7 @@ public final class ObjectType implements UserInfo {
 	private ObjectResolution resolution = NOT_RESOLVED;
 	private Ascendants ascendants;
 
-	private CondInit<Void, Map<Scope, Derivation>> allAscendants =
+	private CondInit<java.lang.Void, Map<Scope, Derivation>> allAscendants =
 			condInit(
 					m -> getResolution().typeResolved(),
 					() -> getResolution().typeResolved()
@@ -88,12 +86,49 @@ public final class ObjectType implements UserInfo {
 		return this.sampleDeclaration.get();
 	}
 
+	/**
+	 * Whether the object expected to be constructed at run time.
+	 *
+	 * <p>This is so e.g. for clones, variable values, or for some
+	 * {@link #isRuntimeEager() eager objects}.</p>
+	 *
+	 * @return <code>true</code> if object will be constructed at run time,
+	 * or <code>false</code> if it can be constructed at compile time.
+	 */
 	public final boolean isRuntimeConstructed() {
 
 		final Obj object = getObject();
 
-		return object.getConstructionMode().isRuntime()
-				|| !object.meta().isUpdated();
+		if (object.getConstructionMode().isRuntime()) {
+			return true;
+		}
+		if (isRuntimeEager()) {
+			return true;
+		}
+		if (!object.meta().isUpdated()) {
+			return true;// Clones are preferably constructed at run time.
+		}
+
+		return false;
+	}
+
+	/**
+	 * Whether an eager object should be constructed at run time only.
+	 *
+	 * <p>Eager object can be constructed at compile time only if its value
+	 * is known at compile time.</p>
+	 *
+	 * @return <code>false</code> if the object is not eager, or can be
+	 * constructed at compile time, or <code>true</code> otherwise.
+	 */
+	public final boolean isRuntimeEager() {
+		if (!getObject().value().getStatefulness().isEager()) {
+			return false;
+		}
+
+		final Value<?> value = getObject().value().getValue();
+
+		return !value.getKnowledge().isInitiallyKnown();
 	}
 
 	@Override
