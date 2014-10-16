@@ -22,17 +22,15 @@ Eager constant ::= test (
   Assert [eager == 1] 'Wrong subsequent constant eager value'
 )
 
-Eager variable target ::= test (
-  Name = "Eager variable target"
+Eager variable value ::= test (
+  Name = "Eager variable value"
   Print error '  ' [name] nl
   
   Var := ``1
   Eager := var->>>
-  {
-    Assert [eager == 1] 'Wrong initial eager variable value'
-    Var << 2
-    Assert [eager == 1] 'Eager variable value updated'
-  }
+  Assert [eager == 1] 'Wrong initial eager variable value'
+  Var << 2
+  Assert [eager == 1] 'Eager variable value updated'
 )
 
 Eager string ::= test (
@@ -49,7 +47,16 @@ Eager link ::= test (
   
   Lnk := `rt-string 'Eager'
   Eager := Lnk>>
-  Assert [eager == "Eager"] 'Wrong eager link target'
+  Assert [eager == "Eager"] 'Wrong target of eager link'
+)
+
+Eager link target ::= test (
+  Name = "Eager link target"
+  Print error '  ' [name] nl
+  
+  Lnk := `rt-string 'Eager'
+  Eager := Lnk->>>
+  Assert [eager == "Eager"] 'Wrong eager target of link'
 )
 
 Eager yield ::= test (
