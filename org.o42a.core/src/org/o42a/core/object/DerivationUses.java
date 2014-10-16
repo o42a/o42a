@@ -66,6 +66,7 @@ final class DerivationUses implements UserInfo {
 	public void resolveAll() {
 		registerInAncestor();
 		registerSamples();
+		ensureEagerConstructed();
 	}
 
 	@Override
@@ -304,6 +305,12 @@ final class DerivationUses implements UserInfo {
 		}
 
 		sampleTypeRef.getType().type().derivationUses().useAsSample(sample);
+	}
+
+	private void ensureEagerConstructed() {
+		if (getObject().type().isRuntimeEager()) {
+			uses().useBy(getObject().value().toUser(), DERIVATION_USAGE);
+		}
 	}
 
 }
