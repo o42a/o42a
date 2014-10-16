@@ -163,11 +163,6 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 	}
 
 	protected boolean mayOmit() {
-		if (getField().isStatic()) {
-			if (!getField().toObject().value().getStatefulness().isEager()) {
-				return true;
-			}
-		}
 
 		final FieldAnalysis declarationAnalysis =
 				getField().toMember().getAnalysis().getDeclarationAnalysis();
