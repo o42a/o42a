@@ -22,6 +22,9 @@ package org.o42a.codegen;
 import java.util.HashMap;
 
 import org.o42a.analysis.Analyzer;
+import org.o42a.analysis.use.UseCase;
+import org.o42a.analysis.use.UseCaseInfo;
+import org.o42a.analysis.use.User;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.code.op.AnyOp;
@@ -33,7 +36,7 @@ import org.o42a.util.string.ID;
 import org.o42a.util.string.NameEncoder;
 
 
-public abstract class Generator {
+public abstract class Generator implements UseCaseInfo {
 
 	private final GeneratorFunctions functions;
 	private final GeneratorGlobals globals;
@@ -128,6 +131,16 @@ public abstract class Generator {
 	}
 
 	public abstract void close();
+
+	@Override
+	public final UseCase toUseCase() {
+		return getAnalyzer().toUseCase();
+	}
+
+	@Override
+	public final User<?> toUser() {
+		return getAnalyzer().toUser();
+	}
 
 	protected abstract CodeBackend codeBackend();
 

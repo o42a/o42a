@@ -153,6 +153,14 @@ public final class ObjectIRBody {
 		return local;
 	}
 
+	@Override
+	public String toString() {
+		if (this.sampleDeclaration == null) {
+			return super.toString();
+		}
+		return getObjectIR().getObject() + "@@(" + this.sampleDeclaration + ")";
+	}
+
 	final EnumMap<InstFldKind, InstFld<?, ?>> instFields() {
 		return this.instFields.get();
 	}

@@ -20,7 +20,6 @@
 package org.o42a.core.ir.field;
 
 import static org.o42a.core.member.field.FieldUsage.ALL_FIELD_USAGES;
-import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -167,9 +166,7 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 		final FieldAnalysis declarationAnalysis =
 				getField().toMember().getAnalysis().getDeclarationAnalysis();
 
-		return !declarationAnalysis.derivation().isUsed(
-				getGenerator().getAnalyzer(),
-				ALL_DERIVATION_USAGES);
+		return !declarationAnalysis.derivation().isUsed(getGenerator());
 	}
 
 	protected abstract T getType();
