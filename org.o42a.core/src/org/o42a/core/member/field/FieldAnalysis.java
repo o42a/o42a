@@ -19,9 +19,7 @@
 */
 package org.o42a.core.member.field;
 
-import static org.o42a.core.member.field.FieldUsage.FIELD_ACCESS;
-import static org.o42a.core.member.field.FieldUsage.NESTED_USAGE;
-import static org.o42a.core.member.field.FieldUsage.SUBSTANCE_USAGE;
+import static org.o42a.core.member.field.FieldUsage.*;
 import static org.o42a.core.object.type.DerivationUsage.DERIVATION_USAGE;
 import static org.o42a.util.fn.Init.init;
 
@@ -33,7 +31,7 @@ import org.o42a.core.object.type.DerivationUsage;
 import org.o42a.util.fn.Init;
 
 
-public class FieldAnalysis {
+public class FieldAnalysis implements Uses<FieldUsage> {
 
 	private final MemberField member;
 	private final Init<MemberFieldUses> uses = init(this::createUses);
@@ -56,16 +54,16 @@ public class FieldAnalysis {
 		return uses().usageUser(FIELD_ACCESS);
 	}
 
-	public UseFlag selectUse(
-			Analyzer analyzer,
-			UseSelector<FieldUsage> selector) {
-		return uses().selectUse(analyzer, selector);
+	@Override
+	public final AllUsages<FieldUsage> allUsages() {
+		return ALL_FIELD_USAGES;
 	}
 
-	public final boolean isUsed(
-			Analyzer analyzer,
+	@Override
+	public UseFlag selectUse(
+			UseCaseInfo useCase,
 			UseSelector<FieldUsage> selector) {
-		return selectUse(analyzer, selector).isUsed();
+		return uses().selectUse(useCase, selector);
 	}
 
 	public final User<DerivationUsage> derivation() {
@@ -163,7 +161,8 @@ public class FieldAnalysis {
 			if (lastDefinition != member) {
 				lastDefinition.getAnalysis().derivationUses().useBy(
 						derivationUses,
-						DERIVATION_USAGE, () -> !member.isUpdated());
+						DERIVATION_USAGE,
+						() -> !member.isUpdated());
 			}
 		}
 

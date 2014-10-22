@@ -28,7 +28,6 @@ import static org.o42a.core.ir.object.ObjectOp.ANCESTOR_ID;
 import static org.o42a.core.ir.object.ObjectOp.objectAncestor;
 import static org.o42a.core.ir.object.op.ObjHolder.objTrap;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
-import static org.o42a.core.object.type.DerivationUsage.DERIVATION_USAGE;
 import static org.o42a.util.fn.Init.init;
 
 import org.o42a.codegen.code.Block;
@@ -77,11 +76,8 @@ final class ObjVmtRecord
 
 		final FieldAnalysis analysis = fld().getField().getAnalysis();
 
-		if (!analysis.derivation().isUsed(
-				getGenerator().getAnalyzer(),
-				DERIVATION_USAGE)) {
-			// Reuse the derived constructor if no run-time
-			// inheritance expected.
+		if (!analysis.derivation().isUsed(getGenerator())) {
+			// Create constructor stub if no derivation expected at run time.
 			return constructorStub();
 		}
 
