@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.field.object.FldCtrOp.ALLOCATABLE_FLD_CTR;
+import static org.o42a.core.ir.field.FldCtrOp.ALLOCATABLE_FLD_CTR;
 import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
 import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
 
@@ -27,7 +27,7 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Function;
 import org.o42a.codegen.code.FunctionBuilder;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.field.object.FldCtrOp;
+import org.o42a.core.ir.field.FldCtrOp;
 import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.type.StateOp;

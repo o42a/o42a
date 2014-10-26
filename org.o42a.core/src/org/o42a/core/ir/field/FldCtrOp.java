@@ -17,11 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.field.object;
+package org.o42a.core.ir.field;
 
 import static org.o42a.codegen.code.AllocationMode.ALLOCATOR_ALLOCATION;
-import static org.o42a.core.ir.field.object.FldCtrFinishFn.FLD_CTR_FINISH;
-import static org.o42a.core.ir.field.object.FldCtrStartFn.FLD_CTR_START;
+import static org.o42a.core.ir.field.FldCtrFinishFn.FLD_CTR_FINISH;
+import static org.o42a.core.ir.field.FldCtrStartFn.FLD_CTR_START;
 import static org.o42a.core.ir.system.ThreadSystemType.THREAD_SYSTEM_TYPE;
 
 import org.o42a.codegen.code.*;
@@ -29,7 +29,6 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
-import org.o42a.core.ir.field.FldIROp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.util.string.ID;
 
