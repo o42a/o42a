@@ -21,7 +21,7 @@ package org.o42a.core.ir.field.alias;
 
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
-import static org.o42a.core.ir.field.object.FldCtrOp.ALLOCATABLE_FLD_CTR;
+import static org.o42a.core.ir.field.FldCtrOp.ALLOCATABLE_FLD_CTR;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
@@ -29,7 +29,6 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.field.*;
 import org.o42a.core.ir.field.RefFld.StatefulOp;
 import org.o42a.core.ir.field.RefFld.StatefulType;
-import org.o42a.core.ir.field.object.FldCtrOp;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;

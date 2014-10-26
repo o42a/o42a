@@ -17,31 +17,32 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.field.object;
+package org.o42a.core.ir.field;
 
-import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
+import static org.o42a.core.ir.field.FldCtrOp.FLD_CTR_TYPE;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.ExtSignature;
 import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.backend.FuncCaller;
+import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
 
 
-public final class FldCtrFinishFn extends Fn<FldCtrFinishFn> {
+public final class FldCtrStartFn extends Fn<FldCtrStartFn> {
 
-	public static final ExtSignature<Void, FldCtrFinishFn> FLD_CTR_FINISH =
-			customSignature("FldCtrFinishF", 2)
+	public static final ExtSignature<BoolOp, FldCtrStartFn> FLD_CTR_START =
+			customSignature("FldCtrStartF", 2)
 			.addData("object")
 			.addPtr("ctr", FLD_CTR_TYPE)
-			.returnVoid(c -> new FldCtrFinishFn(c));
+			.returnBool(c -> new FldCtrStartFn(c));
 
-	private FldCtrFinishFn(FuncCaller<FldCtrFinishFn> caller) {
+	private FldCtrStartFn(FuncCaller<FldCtrStartFn> caller) {
 		super(caller);
 	}
 
-	public final void call(Code code, DataOp object, FldCtrOp ctr) {
-		invoke(null, code, FLD_CTR_FINISH.result(), object, ctr);
+	public final BoolOp call(Code code, DataOp object, FldCtrOp ctr) {
+		return invoke(null, code, FLD_CTR_START.result(), object, ctr);
 	}
 
 }

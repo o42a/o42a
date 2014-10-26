@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
+import static org.o42a.core.ir.field.FldCtrOp.FLD_CTR_TYPE;
 import static org.o42a.core.ir.object.desc.ObjectIRDesc.OBJECT_DESC_TYPE;
 import static org.o42a.core.ir.system.MutexSystemType.MUTEX_SYSTEM_TYPE;
 import static org.o42a.core.ir.system.ThreadCondSystemType.THREAD_COND_SYSTEM_TYPE;
