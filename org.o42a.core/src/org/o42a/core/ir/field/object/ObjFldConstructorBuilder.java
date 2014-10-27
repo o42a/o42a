@@ -135,16 +135,7 @@ final class ObjFldConstructorBuilder
 			return;
 		}
 
-		object.objectData(code)
-		.ptr()
-		.vmtc(code)
-		.store(code, ctr.ptr(code).vmtc(code).load(null, code));
-
 		ctr.fillObjectByAncestor(dirs, ds -> configure(ds, vmtc, object));
-
-		ctr.ptr(code)
-		.vmtc(code)
-		.store(code, object.objectData(code).ptr().vmtc(code).load(null, code));
 
 		final DataOp result =
 				ctr.newObject(dirs, objTrap()).toData(null, code);
@@ -176,10 +167,11 @@ final class ObjFldConstructorBuilder
 		ctr.fillAncestor(code);
 
 		final VmtIRChain.Op inheritedVmtc = ctr.getAncestor().vmtc(code);
+		final ObjectOp object = ctr.object(code);
 
-		ctr.ptr(code).vmtc(code).store(code, inheritedVmtc);
+		object.objectData(code).ptr().vmtc(code).store(code, inheritedVmtc);
 
-		return ctr.object(code);
+		return object;
 	}
 
 	private ObjectOp ancestor(CodeDirs dirs) {
