@@ -31,6 +31,7 @@ import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
 import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
 import static org.o42a.core.ir.value.ValOp.finalVal;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.o42a.codegen.code.*;
@@ -246,26 +247,13 @@ public class CtrOp extends IROp<CtrOp.Op> {
 	}
 
 	public final CtrOp fillObject(CodeDirs dirs) {
+		return fillObject(dirs, null, false);
+	}
 
-		final Block dispose = dirs.addBlock("dispose");
-		final CodeDirs fillDirs = dirs.setFalseDir(dispose.head());
-
-		fillValue(dirs);
-		fillDeps(dirs);
-
-		fillDirs.done();
-
-		if (dispose.exists()) {
-			getGenerator()
-			.externalFunction()
-			.link("o42a_obj_dispose", DISPOSE_OBJECT)
-			.op(null, dispose)
-			.dispose(dispose, this);
-
-			dispose.go(dirs.falseDir());
-		}
-
-		return this;
+	public final CtrOp fillObjectByAncestor(
+			CodeDirs dirs,
+			Consumer<CodeDirs> action) {
+		return fillObject(dirs, action, true);
 	}
 
 	public final ObjectOp newObject(CodeDirs dirs, ObjHolder holder) {
@@ -302,7 +290,37 @@ public class CtrOp extends IROp<CtrOp.Op> {
 				.link("o42a_obj_new", NEW_OBJECT);
 	}
 
-	private void fillValue(CodeDirs dirs) {
+	private final CtrOp fillObject(
+			CodeDirs dirs,
+			Consumer<CodeDirs> action,
+			boolean byAncestor) {
+
+		final Block dispose = dirs.addBlock("dispose");
+		final CodeDirs fillDirs = dirs.setFalseDir(dispose.head());
+
+		fillValue(dirs, byAncestor);
+		fillDeps(dirs);
+
+		if (action != null) {
+			action.accept(fillDirs);
+		}
+
+		fillDirs.done();
+
+		if (dispose.exists()) {
+			getGenerator()
+			.externalFunction()
+			.link("o42a_obj_dispose", DISPOSE_OBJECT)
+			.op(null, dispose)
+			.dispose(dispose, this);
+
+			dispose.go(dirs.falseDir());
+		}
+
+		return this;
+	}
+
+	private void fillValue(CodeDirs dirs, boolean byAncestor) {
 
 		final Obj sample = getSample();
 		final Block code = dirs.code();
@@ -313,7 +331,7 @@ public class CtrOp extends IROp<CtrOp.Op> {
 			final ObjectIR sampleIR = sample.ir(getGenerator());
 			final ObjectValueIR valueIR = sampleIR.getObjectValueIR();
 
-			if (sample.value().getDefinitions().areInherited()) {
+			if (byAncestor || sample.value().getDefinitions().areInherited()) {
 				valueFn = getAncestor().valueFunc(code);
 			} else {
 				valueFn = valueIR.ptr().op(null, code);

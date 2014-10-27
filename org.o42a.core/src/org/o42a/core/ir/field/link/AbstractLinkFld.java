@@ -22,6 +22,7 @@ package org.o42a.core.ir.field.link;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 
+import org.o42a.core.ir.field.ConstructedRefFld;
 import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.op.ObjectRefFn;
@@ -33,7 +34,7 @@ import org.o42a.core.value.TypeParameters;
 public abstract class AbstractLinkFld<
 		F extends RefFld.Op<F>,
 		T extends RefFld.Type<F>>
-				extends RefFld<F, T, ObjectRefFn> {
+				extends ConstructedRefFld<F, T, ObjectRefFn> {
 
 	public AbstractLinkFld(
 			ObjectIRBody bodyIR,

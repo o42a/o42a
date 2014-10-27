@@ -36,12 +36,12 @@ import org.o42a.util.fn.Init;
 public abstract class ObjectRefVmtRecord<
 		F extends RefFld.Op<F>,
 		T extends RefFld.Type<F>>
-				extends RefVmtRecord<F, T, ObjectRefFn> {
+				extends ConstructedRefVmtRecord<F, T, ObjectRefFn> {
 
 	private final Init<FuncPtr<ObjectRefFn>> cloneFunc =
 			Init.init(this::createCloneFunc);
 
-	public ObjectRefVmtRecord(RefFld<F, T, ObjectRefFn> fld) {
+	public ObjectRefVmtRecord(ConstructedRefFld<F, T, ObjectRefFn> fld) {
 		super(fld);
 	}
 
@@ -84,7 +84,7 @@ public abstract class ObjectRefVmtRecord<
 				prevVmtc.loadVmt(delegate, fld().getObjectIR().getVmtIR());
 
 		prevVmt.compatible(delegate).goUnless(delegate, refer.head());
-		prevVmt.func(null, delegate, vmtConstructor())
+		prevVmt.func(null, delegate, record())
 		.load(null, delegate)
 		.call(delegate, host, prevVmtc)
 		.returnValue(delegate);

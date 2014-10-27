@@ -79,7 +79,7 @@ extern "C" {
 	if (o42a_debug_ison) O42A(o42a_dbg_mem_name(prefix, ptr))
 
 #define o42a_debug_func_name(prefix, ptr) \
-	if (o42a_debug_ison) O42A(o42a_dbg_func_name(prefix, ptr))
+	if (o42a_debug_ison) O42A(o42a_dbg_func_name(prefix, (void (*)()) ptr))
 
 #define o42a_debug_dump_mem(prefix, ptr, depth) \
 	if (o42a_debug_ison) O42A(o42a_dbg_dump_mem(prefix, ptr, depth))
@@ -268,7 +268,7 @@ void o42a_dbg_printf(const char *, ...);
 
 void o42a_dbg_mem_name(const char *, const void *);
 
-void o42a_dbg_func_name(const char *, const void *);
+void o42a_dbg_func_name(const char *, void (*)());
 
 void o42a_dbg_dump_mem(const char *, const void *, uint32_t);
 

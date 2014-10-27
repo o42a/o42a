@@ -37,7 +37,7 @@ import org.o42a.core.member.MemberKey;
 
 
 public class EagerLinkFldOp
-		extends RefFldOp<StatefulOp, StatefulType, ObjectRefFn> {
+		extends ConstructedRefFldOp<StatefulOp, StatefulType, ObjectRefFn> {
 
 	EagerLinkFldOp(ObjOp host, EagerLinkFld fld, OpMeans<StatefulOp> ptr) {
 		super(host, fld, ptr);

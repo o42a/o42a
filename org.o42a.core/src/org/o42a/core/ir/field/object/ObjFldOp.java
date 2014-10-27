@@ -26,6 +26,8 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.OpMeans;
+import org.o42a.codegen.data.Ptr;
+import org.o42a.codegen.data.StructRec;
 import org.o42a.core.ir.field.*;
 import org.o42a.core.ir.field.RefFld.StatefulOp;
 import org.o42a.core.ir.field.RefFld.StatefulType;
@@ -40,10 +42,14 @@ import org.o42a.core.ir.op.HostValueOp;
 import org.o42a.core.member.MemberKey;
 
 
-public class ObjFldOp
-		extends RefFldOp<StatefulOp, StatefulType, ObjectConstructorFn> {
+public class ObjFldOp extends RefFldOp<
+		StatefulOp,
+		StatefulType,
+		Ptr<ObjFldConf.Op>,
+		StructRec<ObjFldConf.Op>,
+		ObjectConstructorFn> {
 
-	ObjFldOp(ObjOp host, ObjFld fld, OpMeans<StatefulOp> ptr) {
+	ObjFldOp(ObjOp host, ObjFld fld, OpMeans<RefFld.StatefulOp> ptr) {
 		super(host, fld, ptr);
 	}
 
@@ -92,6 +98,11 @@ public class ObjFldOp
 		ptr.object(code).store(code, code.nullDataPtr());
 
 		return constructor.call(code, vmtc, ctr);
+	}
+
+	@Override
+	protected ObjectConstructorFn constructor(Code code, VmtIRChain.Op vmtc) {
+		return fld().conf().constructor().op(null, code);
 	}
 
 	@Override

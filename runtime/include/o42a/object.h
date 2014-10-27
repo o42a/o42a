@@ -455,8 +455,8 @@ const o42a_obj_vmtc_t *o42a_obj_vmtc_alloc(
  * If VMT chain link reference count is not zero, or the chain link is
  * terminator, then does nothing.
  *
- * If the previous link is not a terminator, then decreases the its reference
- * count and frees if this count drops to zero.
+ * If the previous link is not a terminator, then decreases its reference
+ * count and frees the memory allocated for it if this count drops to zero.
  *
  * \param vmtc VMT chain to free.
  */

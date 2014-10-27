@@ -42,7 +42,7 @@ import org.o42a.core.member.MemberKey;
 
 
 public final class VarFldOp
-		extends RefFldOp<StatefulOp, StatefulType, ObjectRefFn> {
+		extends ConstructedRefFldOp<StatefulOp, StatefulType, ObjectRefFn> {
 
 	VarFldOp(ObjOp host, VarFld fld, OpMeans<StatefulOp> ptr) {
 		super(host, fld, ptr);

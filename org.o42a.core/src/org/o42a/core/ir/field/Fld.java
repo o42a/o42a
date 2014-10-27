@@ -161,6 +161,14 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 		return null;
 	}
 
+	@Override
+	public String toString() {
+		if (this.field == null) {
+			return super.toString();
+		}
+		return this.field.toString();
+	}
+
 	protected boolean mayOmit() {
 
 		final FieldAnalysis declarationAnalysis =

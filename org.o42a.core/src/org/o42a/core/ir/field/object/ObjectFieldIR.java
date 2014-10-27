@@ -41,18 +41,18 @@ public final class ObjectFieldIR extends FieldIR {
 	}
 
 	@Override
-	protected RefFld<?, ?, ?> declareFld(ObjectIRBody bodyIR) {
+	protected RefFld<?, ?, ?, ?> declareFld(ObjectIRBody bodyIR) {
 		return declareFld(bodyIR, false);
 	}
 
 	@Override
-	protected RefFld<?, ?, ?> declareDummyFld(ObjectIRBody bodyIR) {
+	protected RefFld<?, ?, ?, ?> declareDummyFld(ObjectIRBody bodyIR) {
 		return declareFld(bodyIR, true);
 	}
 
-	private RefFld<?, ?, ?> declareFld(ObjectIRBody bodyIR, boolean dummy) {
+	private RefFld<?, ?, ?, ?> declareFld(ObjectIRBody bodyIR, boolean dummy) {
 
-		final RefFld<?, ?, ?> linkFld = declareLink(bodyIR, dummy);
+		final RefFld<?, ?, ?, ?> linkFld = declareLink(bodyIR, dummy);
 
 		if (linkFld != null) {
 			return linkFld;
@@ -61,7 +61,7 @@ public final class ObjectFieldIR extends FieldIR {
 		return new ObjFld(bodyIR, getField(), dummy);
 	}
 
-	private RefFld<?, ?, ?> declareLink(ObjectIRBody bodyIR, boolean dummy) {
+	private RefFld<?, ?, ?, ?> declareLink(ObjectIRBody bodyIR, boolean dummy) {
 
 		final Field field = getField();
 		final Obj object = field.toObject();
