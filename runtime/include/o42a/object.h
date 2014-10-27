@@ -305,22 +305,6 @@ typedef struct o42a_obj_ctr {
 	 */
 	const o42a_obj_t *ancestor;
 
-	/**
-	 * VMT chain to use.
-	 *
-	 * If points to VMT chain terminator, then VMT chain will be constructed
-	 * from the given terminator and ancestor VMT chain.
-	 * Otherwise, or if ancestor not specified, this VMT chain will be used.
-	 *
-	 * This should be either VMT chain from existing object, or the one
-	 * allocated with o42a_obj_vmtc_alloc function.
-	 *
-	 * The reference count of VMT chain link will be increased upon successful
-	 * object construction (unless it is a terminator). Otherwise the
-	 * VMT chain will be freed with o42a_obj_vmtc_free function.
-	 */
-	const o42a_obj_vmtc_t *vmtc;
-
 } o42a_obj_ctr_t;
 
 
@@ -365,7 +349,7 @@ extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_obj_ascendant;
 
 extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_field;
 
-extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_ctr;
+extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_ctr;
 
 extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctable {
 	O42A_DBG_TYPE_INFO
@@ -475,6 +459,18 @@ o42a_obj_t *o42a_obj_alloc(const o42a_obj_desc_t *);
  * Constructs previously allocated object.
  *
  * Disposes object construction if construction failed.
+ *
+ * The object VMT chain pointer should be filled. If it points to VMT chain
+ * terminator, then VMT chain will be constructed from the given terminator
+ * and ancestor VMT chain. Otherwise, or if ancestor not specified, this VMT
+ * chain will be used.
+ *
+ * This should be either VMT chain from existing object, or the one
+ * allocated with o42a_obj_vmtc_alloc function.
+ *
+ * The reference count of VMT chain link will be increased upon successful
+ * object construction (unless it is a terminator). Otherwise the
+ * VMT chain will be freed with o42a_obj_vmtc_free function.
  *
  * \param ctr[in] filled-in object construction data.
  *

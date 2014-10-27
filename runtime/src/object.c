@@ -166,9 +166,9 @@ const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_vmtc = {
 	},
 };
 
-const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_ctr = {
+const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_ctr = {
 	.type_code = 0x042a0120,
-	.field_num = 4,
+	.field_num = 3,
 	.name = "o42a_obj_ctr_t",
 	.fields = {
 		{
@@ -185,13 +185,6 @@ const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_ctr = {
 			.data_type = O42A_TYPE_DATA_PTR,
 			.offset = offsetof(o42a_obj_ctr_t, ancestor),
 			.name = "ancestor",
-		},
-		{
-			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_obj_ctr_t, vmtc),
-			.name = "vmtc",
-			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_vmtc,
 		},
 	},
 };
@@ -747,6 +740,7 @@ o42a_obj_t *o42a_obj_alloc(const o42a_obj_desc_t *const desc) {
 	o42a_obj_data_t *const data = &object->object_data;
 
 	data->desc = desc;
+	data->vmtc = NULL;
 	data->value.flags = O42A_VAL_INDEFINITE;
 	data->fld_ctrs = NULL;
 
@@ -766,14 +760,13 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 
 	const o42a_obj_t *const ancestor = ctr->ancestor;
 	const o42a_obj_desc_t *adesc;
-	const o42a_obj_vmtc_t *vmtc;
+	const o42a_obj_vmtc_t *vmtc = data->vmtc;
 	size_t consumed_ascendants;
 
 	if (!ancestor) {
 		// Ancestor not specified.
 		// No inheritable fields expected.
 		adesc = desc;
-		vmtc = ctr->vmtc;
 		consumed_ascendants = 0;
 	} else {
 
@@ -784,14 +777,13 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 			O42A(o42a_obj_dispose(ctr));
 			O42A_RETURN NULL;
 		}
-		if (ctr->vmtc->prev) {
-			vmtc = ctr->vmtc;
-		} else {
-			vmtc = O42A(o42a_obj_vmtc_alloc(ctr->vmtc->vmt, adata->vmtc));
+		if (!vmtc->prev) {
+			vmtc = O42A(o42a_obj_vmtc_alloc(vmtc->vmt, adata->vmtc));
 			if (!vmtc) {
 				O42A(o42a_obj_dispose(ctr));
 				O42A_RETURN NULL;
 			}
+			data->vmtc = vmtc;
 		}
 
 		const size_t adiff = num_ascendants - adesc->ascendants.size;
@@ -801,8 +793,6 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	}
 
 	O42A(vmtc_use(vmtc));
-
-	data->vmtc = vmtc;
 
 	// Inherit ancestor bodies,
 	// or propagate all sample bodies if ancestor not specified.
@@ -843,11 +833,12 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 void o42a_obj_dispose(const o42a_obj_ctr_t *const ctr) {
 	O42A_ENTER(return);
 
-	if (ctr->vmtc) {
-		O42A(o42a_obj_vmtc_free(ctr->vmtc));
+	const o42a_obj_data_t *const data = &ctr->object->object_data;
+
+	if (data->vmtc) {
+		O42A(o42a_obj_vmtc_free(data->vmtc));
 	}
 
-	const o42a_obj_data_t *const data = &ctr->object->object_data;
 	const o42a_val_t *const value = &data->value;
 
 	if (value->flags & O42A_VAL_CONDITION) {

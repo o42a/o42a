@@ -26,7 +26,6 @@ import static org.o42a.core.ir.object.op.AllocateObjectFn.ALLOCATE_OBJECT;
 import static org.o42a.core.ir.object.op.DisposeObjectFn.DISPOSE_OBJECT;
 import static org.o42a.core.ir.object.op.NewObjectFn.NEW_OBJECT;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
-import static org.o42a.core.ir.object.vmt.VmtIRChain.VMT_IR_CHAIN_TYPE;
 import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
 import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
 import static org.o42a.core.ir.value.ValOp.finalVal;
@@ -38,7 +37,6 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.DataRec;
-import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.CodeBuilder;
@@ -226,7 +224,11 @@ public class CtrOp extends IROp<CtrOp.Op> {
 	public final CtrOp fillVmtc(CodeDirs dirs) {
 
 		final Block code = dirs.code();
-		final StructRecOp<VmtIRChain.Op> vmtcRec = ptr(code).vmtc(code);
+		final StructRecOp<VmtIRChain.Op> vmtcRec =
+				object(code)
+				.objectData(code)
+				.ptr()
+				.vmtc(code);
 		final VmtIR vmtIR = getSample().ir(getGenerator()).getVmtIR();
 		final VmtIRChain.Op vmtc;
 
@@ -392,10 +394,6 @@ public class CtrOp extends IROp<CtrOp.Op> {
 			return ptr(null, code, getType().ancestor());
 		}
 
-		public final StructRecOp<VmtIRChain.Op> vmtc(Code code) {
-			return ptr(null, code, getType().vmtc());
-		}
-
 		public final CtrOp op(CodeBuilder builder) {
 			return new CtrOp(builder, code -> this);
 		}
@@ -407,7 +405,6 @@ public class CtrOp extends IROp<CtrOp.Op> {
 		private DataRec object;
 		private DataRec owner;
 		private DataRec ancestor;
-		private StructRec<VmtIRChain.Op> vmtc;
 
 		private Type() {
 			super(ID.rawId("o42a_obj_ctr_t"));
@@ -430,16 +427,11 @@ public class CtrOp extends IROp<CtrOp.Op> {
 			return this.ancestor;
 		}
 
-		public final StructRec<VmtIRChain.Op> vmtc() {
-			return this.vmtc;
-		}
-
 		@Override
 		protected void allocate(SubData<Op> data) {
 			this.object = data.addDataPtr("object");
 			this.owner = data.addDataPtr("owner");
 			this.ancestor = data.addDataPtr("ancestor");
-			this.vmtc = data.addPtr("vmtc", VMT_IR_CHAIN_TYPE);
 		}
 
 		@Override
