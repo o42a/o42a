@@ -20,9 +20,12 @@
 package org.o42a.core.ir.field.object;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.OpMeans;
+import org.o42a.codegen.data.Ptr;
+import org.o42a.codegen.data.StructRec;
 import org.o42a.core.ir.field.*;
 import org.o42a.core.ir.field.RefFld.StatefulOp;
 import org.o42a.core.ir.field.RefFld.StatefulType;
@@ -30,10 +33,16 @@ import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
+import org.o42a.util.fn.Init;
 
 
-public class ObjFld
-		extends RefFld<StatefulOp, StatefulType, ObjectConstructorFn> {
+public class ObjFld extends RefFld<
+		StatefulOp,
+		StatefulType,
+		Ptr<ObjFldConf.Op>,
+		StructRec<ObjFldConf.Op>> {
+
+	private final Init<ObjFldConf> conf = init(this::findConf);
 
 	public ObjFld(
 			ObjectIRBody bodyIR,
@@ -45,6 +54,10 @@ public class ObjFld
 	@Override
 	public final FldKind getKind() {
 		return FldKind.OBJ;
+	}
+
+	public final ObjFldConf conf() {
+		return this.conf.get();
 	}
 
 	@Override
@@ -65,8 +78,18 @@ public class ObjFld
 	}
 
 	@Override
-	protected ObjFldOp op(Code code, ObjOp host, OpMeans<StatefulOp> ptr) {
+	protected ObjFldOp op(
+			Code code,
+			ObjOp host,
+			OpMeans<RefFld.StatefulOp> ptr) {
 		return new ObjFldOp(host, this, ptr);
+	}
+
+	private ObjFldConf findConf() {
+		assert !isDummy() :
+			"Can not create config for dummy field " + this;
+		// TODO Reuse the object field config when possible.
+		return new ObjFldConf(this);
 	}
 
 }

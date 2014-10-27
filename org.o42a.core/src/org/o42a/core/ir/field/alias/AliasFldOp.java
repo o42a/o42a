@@ -37,7 +37,8 @@ import org.o42a.core.ir.op.HostValueOp;
 import org.o42a.core.member.MemberKey;
 
 
-final class AliasFldOp extends RefFldOp<StatefulOp, StatefulType, ObjectRefFn> {
+final class AliasFldOp
+		extends ConstructedRefFldOp<StatefulOp, StatefulType, ObjectRefFn> {
 
 	AliasFldOp(ObjOp host, AliasFld fld, OpMeans<StatefulOp> ptr) {
 		super(host, fld, ptr);

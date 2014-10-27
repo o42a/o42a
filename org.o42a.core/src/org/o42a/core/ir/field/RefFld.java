@@ -31,7 +31,6 @@ import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.ir.object.op.ObjectFn;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
@@ -42,14 +41,16 @@ import org.o42a.util.string.ID;
 public abstract class RefFld<
 		F extends RefFld.Op<F>,
 		T extends RefFld.Type<F>,
-		C extends ObjectFn<C>>
+		P,
+		R extends Rec<?, P>>
 				extends Fld<F, T> {
 
 	public static final StatefulType STATEFUL_FLD = new StatefulType();
 
 	private final Obj target;
 	private final Obj targetAscendant;
-	private final NullableInit<RefVmtRecord<F, T, C>> vmtRecord =
+
+	private final NullableInit<RefVmtRecord<F, T, P, R>> vmtRecord =
 			nullableInit(() -> isOmitted() ? null : createVmtRecord());
 
 	private boolean targetIRAllocated;
@@ -84,7 +85,7 @@ public abstract class RefFld<
 	}
 
 	@Override
-	public final RefVmtRecord<F, T, C> vmtRecord() {
+	public RefVmtRecord<F, T, P, R> vmtRecord() {
 		return this.vmtRecord.get();
 	}
 
@@ -128,10 +129,10 @@ public abstract class RefFld<
 		return instance -> fillDummy();
 	}
 
-	protected abstract RefVmtRecord<F, T, C> createVmtRecord();
+	protected abstract RefVmtRecord<F, T, P, R> createVmtRecord();
 
 	@Override
-	protected abstract RefFldOp<F, T, C> op(
+	protected abstract RefFldOp<F, T, P, R, ?> op(
 			Code code,
 			ObjOp host,
 			OpMeans<F> ptr);
@@ -202,16 +203,15 @@ public abstract class RefFld<
 		}
 	}
 
-	public static abstract class Op<S extends Op<S>>
-					extends Fld.Op<S> {
+	public static abstract class Op<S extends Op<S>> extends Fld.Op<S> {
 
 		public Op(StructWriter<S> writer) {
 			super(writer);
 		}
 
 		@Override
-		public Type<S> getType() {
-			return (Type<S>) super.getType();
+		public RefFld.Type<S> getType() {
+			return (RefFld.Type<S>) super.getType();
 		}
 
 		public final DataRecOp object(ID id, Code code) {
@@ -220,8 +220,8 @@ public abstract class RefFld<
 
 	}
 
-	public static abstract class Type<F extends Op<F>>
-					extends Fld.Type<F> {
+	public static abstract class Type<F extends RefFld.Op<F>>
+			extends Fld.Type<F> {
 
 		private DataRec object;
 
@@ -246,17 +246,17 @@ public abstract class RefFld<
 
 	}
 
-	public static final class StatelessOp extends RefFld.Op<StatelessOp> {
+	public static final class StatelessOp extends Op<StatelessOp> {
 
-		private StatelessOp(StructWriter<StatelessOp> writer) {
+		StatelessOp(StructWriter<StatelessOp> writer) {
 			super(writer);
 		}
 
 	}
 
-	public static final class StatefulOp extends RefFld.Op<StatefulOp> {
+	public static final class StatefulOp extends Op<StatefulOp> {
 
-		private StatefulOp(StructWriter<StatefulOp> writer) {
+		StatefulOp(StructWriter<StatefulOp> writer) {
 			super(writer);
 		}
 
@@ -267,7 +267,7 @@ public abstract class RefFld<
 
 	}
 
-	public static final class StatefulType extends RefFld.Type<StatefulOp> {
+	public static final class StatefulType extends Type<RefFld.StatefulOp> {
 
 		private StatefulType() {
 			super(ID.rawId("o42a_fld_obj"));
@@ -279,8 +279,8 @@ public abstract class RefFld<
 		}
 
 		@Override
-		public StatefulOp op(StructWriter<StatefulOp> writer) {
-			return new StatefulOp(writer);
+		public RefFld.StatefulOp op(StructWriter<RefFld.StatefulOp> writer) {
+			return new RefFld.StatefulOp(writer);
 		}
 
 		@Override
@@ -290,7 +290,7 @@ public abstract class RefFld<
 
 	}
 
-	public static final class StatelessType extends RefFld.Type<StatelessOp> {
+	public static final class StatelessType extends Type<RefFld.StatelessOp> {
 
 		private StatelessType() {
 			super(null);
@@ -302,25 +302,26 @@ public abstract class RefFld<
 		}
 
 		@Override
-		public StatelessOp op(StructWriter<StatelessOp> writer) {
-			return new StatelessOp(writer);
+		public RefFld.StatelessOp op(StructWriter<RefFld.StatelessOp> writer) {
+			return new RefFld.StatelessOp(writer);
 		}
 
 	}
 
 	private static class FldContent<
-			F extends Op<F>,
-			T extends Type<F>,
-			C extends ObjectFn<C>>
+			F extends RefFld.Op<F>,
+			T extends RefFld.Type<F>,
+			P,
+			R extends Rec<?, P>>
 					implements Content<T> {
 
-		private final RefFld<F, T, C> fld;
+		private final RefFld<F, T, P, R> fld;
 
-		FldContent(RefFld<F, T, C> fld) {
+		FldContent(RefFld<F, T, P, R> fld) {
 			this.fld = fld;
 		}
 
-		public final RefFld<F, T, C> fld() {
+		public final RefFld<F, T, P, R> fld() {
 			return this.fld;
 		}
 

@@ -352,7 +352,7 @@ public final class ObjectIRBody {
 				object.member(declaredField.getMemberKey());
 
 		if (member != null) {
-			// Member present in object.
+			// The member is present in object.
 
 			final Field field = member.toField().field(dummyUser());
 			final FieldIRBase fieldIR = field.ir(generator);

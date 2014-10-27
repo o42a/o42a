@@ -21,6 +21,7 @@ package org.o42a.core.ir.field.link;
 
 import static org.o42a.core.ir.object.op.ObjHolder.objTrap;
 
+import org.o42a.core.ir.field.ConstructedRefFld;
 import org.o42a.core.ir.field.ObjectRefVmtRecord;
 import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.object.ObjBuilder;
@@ -38,7 +39,7 @@ public abstract class AbstractLinkVmtRecord<
 		T extends RefFld.Type<F>>
 				extends ObjectRefVmtRecord<F, T> {
 
-	public AbstractLinkVmtRecord(RefFld<F, T, ObjectRefFn> fld) {
+	public AbstractLinkVmtRecord(ConstructedRefFld<F, T, ObjectRefFn> fld) {
 		super(fld);
 	}
 

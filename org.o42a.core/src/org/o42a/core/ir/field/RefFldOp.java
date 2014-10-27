@@ -22,17 +22,18 @@ package org.o42a.core.ir.field;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.object.ObjectOp.approximateObject;
 import static org.o42a.core.ir.object.op.ObjHolder.useVar;
-import static org.o42a.core.ir.object.vmt.VmtIR.VMT_ID;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CondBlock;
 import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.data.Rec;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.object.op.ObjectFn;
+import org.o42a.core.ir.object.vmt.VmtIRChain;
 import org.o42a.core.ir.object.vmt.VmtIRChain.Op;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.object.Obj;
@@ -42,17 +43,19 @@ import org.o42a.util.string.ID;
 public abstract class RefFldOp<
 		F extends RefFld.Op<F>,
 		T extends RefFld.Type<F>,
+		P,
+		R extends Rec<?, P>,
 		C extends ObjectFn<C>>
 				extends FldOp<F, T> {
 
-	public RefFldOp(ObjOp host, RefFld<F, T, C> fld, OpMeans<F> ptr) {
+	public RefFldOp(ObjOp host, RefFld<F, T, P, R> fld, OpMeans<F> ptr) {
 		super(host, fld, ptr);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public RefFld<F, T, C> fld() {
-		return (RefFld<F, T, C>) super.fld();
+	public RefFld<F, T, P, R> fld() {
+		return (RefFld<F, T, P, R>) super.fld();
 	}
 
 	public ObjectOp target(CodeDirs dirs, ObjHolder holder) {
@@ -141,19 +144,16 @@ public abstract class RefFldOp<
 
 	protected final DataOp construct(Code code) {
 
-		final Op vmtc = host().vmtc(code);
-		final C constructor =
-				vmtc.vmt(null, code)
-				.load(null, code)
-				.to(VMT_ID, code, fld().getObjectIR().getVmtIR())
-				.func(null, code, fld().vmtRecord().vmtConstructor())
-				.load(null, code);
+		final VmtIRChain.Op vmtc = host().vmtc(code);
+		final C constructor = constructor(code, vmtc);
 
 		code.dumpName("Constructor: ", constructor);
 		code.dumpName("Host: ", host());
 
 		return construct(code, constructor, vmtc);
 	}
+
+	protected abstract C constructor(Code code, VmtIRChain.Op vmtc);
 
 	protected abstract DataOp construct(Code code, C constructor, Op vmtc);
 

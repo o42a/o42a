@@ -23,7 +23,7 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.core.ir.field.RefFldOp;
+import org.o42a.core.ir.field.ConstructedRefFldOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.HostValueOp;
@@ -31,8 +31,9 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 
 
-public abstract class AbstractLinkFldValueOp<F extends RefFldOp<?, ?, ?>>
-		implements HostValueOp {
+public abstract class AbstractLinkFldValueOp<
+		F extends ConstructedRefFldOp<?, ?, ?>>
+				implements HostValueOp {
 
 	private final F fld;
 

@@ -38,7 +38,7 @@ import org.o42a.core.member.MemberKey;
 
 
 public class LinkFldOp
-		extends RefFldOp<StatelessOp, StatelessType, ObjectRefFn> {
+		extends ConstructedRefFldOp<StatelessOp, StatelessType, ObjectRefFn> {
 
 	LinkFldOp(ObjOp host, LinkFld fld, OpMeans<StatelessOp> ptr) {
 		super(host, fld, ptr);

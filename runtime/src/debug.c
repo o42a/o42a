@@ -377,29 +377,28 @@ union ptr_and_func {
 	void (*const func) ();
 };
 
-static void dbg_func_name(const void *const ptr) {
+static void dbg_func_name(void (*const func)()) {
 
 	o42a_dbg_env_t *const env = dbg_env;
 
-	if (!ptr) {
+	if (!func) {
 		fputs("NULL", env->output);
 		return;
 	}
 
-	const union ptr_and_func val = {.ptr = ptr};
 	const uint32_t old_command = env->command;
 
 	env->command = O42A_DBG_CMD_REPORT;
-	val.func();
+	func();
 	env->command = old_command;
 }
 
-void o42a_dbg_func_name(const char *const prefix, const void *const ptr) {
+void o42a_dbg_func_name(const char *const prefix, void (*const func)()) {
 	if (dbg_env->options.no_debug_messages) {
 		return;
 	}
 	dbg_print(prefix);
-	dbg_func_name(ptr);
+	dbg_func_name(func);
 	fputc('\n', dbg_env->output);
 }
 
@@ -508,10 +507,10 @@ static void dbg_field_value(
 	}
 	case O42A_TYPE_FUNC_PTR: {
 
-		void *func_ptr = *((void**) data);
+		union ptr_and_func func_ptr = {.ptr = *((void**) data)};
 
 		fputs(": function -> ", dbg_env->output);
-		dbg_func_name(func_ptr);
+		dbg_func_name(func_ptr.func);
 
 		break;
 	}

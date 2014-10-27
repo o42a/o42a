@@ -33,7 +33,8 @@ import org.o42a.core.member.alias.AliasField;
 import org.o42a.core.object.Obj;
 
 
-public class AliasFld extends RefFld<StatefulOp, StatefulType, ObjectRefFn> {
+public class AliasFld
+		extends ConstructedRefFld<StatefulOp, StatefulType, ObjectRefFn> {
 
 	public AliasFld(
 			ObjectIRBody bodyIR,
