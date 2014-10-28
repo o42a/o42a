@@ -22,10 +22,12 @@ package org.o42a.core.ir.object;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE_OBJECT;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT_OBJECT;
 import static org.o42a.core.ir.object.desc.ObjectDescIR.objectDescIR;
-import static org.o42a.core.ir.object.vmt.VmtIR.vmtIR;
+import static org.o42a.core.ir.object.vmt.VmtIR.deriveVmtIR;
+import static org.o42a.core.ir.object.vmt.VmtIR.newVmtIR;
 import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 import static org.o42a.util.fn.FlagInit.flagInit;
 import static org.o42a.util.fn.Init.init;
+import static org.o42a.util.fn.ReentrantInit.reentrantInit;
 
 import org.o42a.codegen.Codegen;
 import org.o42a.codegen.Generator;
@@ -43,6 +45,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.fn.FlagInit;
 import org.o42a.util.fn.Init;
+import org.o42a.util.fn.ReentrantInit;
 import org.o42a.util.string.ID;
 
 
@@ -54,7 +57,9 @@ public class ObjectIR implements Codegen {
 	private final ValueIR valueIR;
 	private final Init<ObjectDescIR> descIR =
 			init(() -> objectDescIR(this));
-	private final Init<VmtIR> vmtIR = init(() -> vmtIR(this));
+	private final ReentrantInit<VmtIR> vmtIR = reentrantInit(
+			() -> deriveVmtIR(this),
+			() -> newVmtIR(this));
 	private final Init<ObjectValueIR> objectValueIR =
 			init(() -> new ObjectValueIR(this));
 	private final Init<ObjectIRBodies> typeBodies = init(
@@ -88,6 +93,23 @@ public class ObjectIR implements Codegen {
 		final TypeRef ancestor = getObject().type().getAncestor();
 
 		return ancestor != null ? ancestor.getInterface() : null;
+	}
+
+	public final Obj staticAncestor() {
+
+		final TypeRef ancestor = getObject().type().getAncestor();
+
+		if (ancestor == null) {
+			return null;
+		}
+		if (!ancestor.isStatic()) {
+			return null;
+		}
+		if (ancestor.getType().getConstructionMode().isStrict()) {
+			return null;
+		}
+
+		return getAncestor();
 	}
 
 	public final boolean isSampleDeclaration() {

@@ -76,6 +76,19 @@ public interface FldIR<F extends StructOp<F>, T extends Type<F>> {
 
 	FldIR<F, T> get(ObjectIRBodies bodies);
 
+	default FldIR<F, T> get(ObjectIR objectIR) {
+
+		final ObjectIRBodies bodies;
+
+		if (!getBodyIR().bodies().isTypeBodies()) {
+			bodies = objectIR.bodies();
+		} else {
+			bodies = objectIR.typeBodies();
+		}
+
+		return get(bodies);
+	}
+
 	Fld<?, ?> toFld();
 
 	LocalIR toLocal();

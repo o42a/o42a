@@ -19,7 +19,9 @@
 */
 package org.o42a.core.ir.object.vmt;
 
+import static org.o42a.codegen.data.Struct.structContent;
 import static org.o42a.core.ir.object.vmt.VmtIRChain.VMT_IR_CHAIN_TYPE;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -29,30 +31,22 @@ import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.type.Sample;
-import org.o42a.core.ref.type.TypeRef;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 
 
-public class VmtIR extends Struct<VmtIROp> {
+public class VmtIR {
 
 	private static final ID SIZE_ID = ID.rawId("size");
 	private static final ID TERMINATOR_ID = ID.rawId("terminator");
 
 	public static final ID VMT_ID = ID.id("vmt");
 
-	public static VmtIR vmtIR(ObjectIR objectIR) {
-		assert objectIR.getObject().assertFullyResolved();
-
-		final VmtIR derivedVmtIR = deriveVmtIR(objectIR);
-
-		if (derivedVmtIR != null) {
-			return derivedVmtIR;
-		}
-
-		return createVmtIR(objectIR);
+	public static VmtIR newVmtIR(ObjectIR objectIR) {
+		return new VmtIR(objectIR);
 	}
 
-	private static VmtIR deriveVmtIR(ObjectIR objectIR) {
+	public static VmtIR deriveVmtIR(ObjectIR objectIR) {
 
 		final Obj object = objectIR.getObject();
 		final Obj lastDefinition = object.type().getLastDefinition();
@@ -80,16 +74,12 @@ public class VmtIR extends Struct<VmtIROp> {
 		}
 
 		// An explicitly inherited object.
-		final TypeRef ancestor = object.type().getAncestor();
+		final Obj ancestor = objectIR.staticAncestor();
 
-		if (ancestor != null
-				&& ancestor.isStatic()
-				&& !ancestor.getType().getConstructionMode().isStrict()) {
+		if (ancestor != null) {
 			// Reuse static ancestor VMT if every VMT record is inherited.
 			final VmtIR ancestorVmtIR =
-					ancestor.getType()
-					.ir(objectIR.getGenerator())
-					.getVmtIR();
+					ancestor.ir(objectIR.getGenerator()).getVmtIR();
 
 			if (deriveVmtRecords(objectIR, ancestorVmtIR)) {
 				return ancestorVmtIR;
@@ -97,29 +87,6 @@ public class VmtIR extends Struct<VmtIROp> {
 		}
 
 		return null;
-	}
-
-	private static VmtIR createVmtIR(ObjectIR objectIR) {
-
-		final Generator generator = objectIR.getGenerator();
-		final VmtIR vmtIR = new VmtIR(objectIR);
-
-		if (objectIR.isSampleDeclaration()) {
-			generator.newGlobal().struct(vmtIR);
-			return vmtIR;
-		}
-
-		final VmtIR sampleVmtIR =
-				objectIR.getSampleDeclaration().ir(generator).getVmtIR();
-		final Content<VmtIR> content = structContent();
-
-		generator.newGlobal().instance(
-				vmtIR.getId(),
-				sampleVmtIR,
-				vmtIR,
-				content);
-
-		return vmtIR;
 	}
 
 	private static boolean deriveVmtRecords(
@@ -138,55 +105,76 @@ public class VmtIR extends Struct<VmtIROp> {
 		return true;
 	}
 
+	private final ID id;
 	private final ObjectIR objectIR;
-
-	private Int32rec size;
-	private VmtIRChain terminator;
+	private final Init<VmtIRStruct> instance = init(this::allocateInstance);
 
 	private VmtIR(ObjectIR objectIR) {
-		super(objectIR.getId().detail(VMT_ID));
+		this.id = objectIR.getId().detail(VMT_ID);
 		this.objectIR = objectIR;
+	}
+
+	public final Generator getGenerator() {
+		return getObjectIR().getGenerator();
+	}
+
+	public final ID getId() {
+		return this.id;
 	}
 
 	public final ObjectIR getObjectIR() {
 		return this.objectIR;
 	}
 
+	public final Ptr<VmtIROp> ptr() {
+		return getInstance().pointer(getGenerator());
+	}
+
+	public final void allocate() {
+		getInstance();
+	}
+
 	public final Obj getSampleDeclaration() {
 		return getObjectIR().getSampleDeclaration();
 	}
 
-	public final Int32rec size() {
-		return this.size;
-	}
-
 	public final VmtIRChain terminator() {
-		return this.terminator;
+		return getInstance().terminator();
 	}
 
 	@Override
-	public VmtIROp op(StructWriter<VmtIROp> writer) {
-		return new VmtIROp(writer);
+	public String toString() {
+		if (this.id == null) {
+			return super.toString();
+		}
+		return this.id.toString();
 	}
 
-	@Override
-	protected void allocate(SubData<VmtIROp> data) {
-		this.size = data.addInt32(SIZE_ID);
-		this.terminator = data.addNewInstance(
-				TERMINATOR_ID,
-				VMT_IR_CHAIN_TYPE,
-				new VmtTerminator(data));
-		allocateVmtRecords(data);
+	final VmtIRStruct getInstance() {
+		return this.instance.get();
 	}
 
-	@Override
-	protected void fill() {
-		size()
-		.setConstant(true)
-		.setLowLevel(true)
-		.setValue(() -> layout(getGenerator()).size());
+	private VmtIRStruct allocateInstance() {
 
-		fillVmtRecords();
+		final Generator generator = getGenerator();
+		final VmtIRStruct struct = new VmtIRStruct(this);
+
+		if (getObjectIR().isSampleDeclaration()) {
+			generator.newGlobal().struct(struct);
+			return struct;
+		}
+
+		final VmtIR sampleVmtIR =
+				this.objectIR.getSampleDeclaration().ir(generator).getVmtIR();
+		final Content<VmtIRStruct> content = structContent();
+
+		generator.newGlobal().instance(
+				getId(),
+				sampleVmtIR.getInstance(),
+				struct,
+				content);
+
+		return struct;
 	}
 
 	private void allocateVmtRecords(SubData<VmtIROp> data) {
@@ -213,6 +201,56 @@ public class VmtIR extends Struct<VmtIROp> {
 				}
 			}
 		}
+	}
+
+	public static final class VmtIRStruct extends Struct<VmtIROp> {
+
+		private final VmtIR vmtIR;
+		private Int32rec size;
+		private VmtIRChain terminator;
+
+		private VmtIRStruct(VmtIR vmtIR) {
+			super(vmtIR.getId());
+			this.vmtIR = vmtIR;
+		}
+
+		public VmtIR getVmtIR() {
+			return this.vmtIR;
+		}
+
+		public final Int32rec size() {
+			return this.size;
+		}
+
+		public final VmtIRChain terminator() {
+			return this.terminator;
+		}
+
+		@Override
+		public VmtIROp op(StructWriter<VmtIROp> writer) {
+			return new VmtIROp(writer);
+		}
+
+		@Override
+		protected void allocate(SubData<VmtIROp> data) {
+			this.size = data.addInt32(SIZE_ID);
+			this.terminator = data.addNewInstance(
+					TERMINATOR_ID,
+					VMT_IR_CHAIN_TYPE,
+					new VmtTerminator(data));
+			this.vmtIR.allocateVmtRecords(data);
+		}
+
+		@Override
+		protected void fill() {
+			size()
+			.setConstant(true)
+			.setLowLevel(true)
+			.setValue(() -> layout(getGenerator()).size());
+
+			this.vmtIR.fillVmtRecords();
+		}
+
 	}
 
 	private static final class VmtTerminator implements Content<VmtIRChain> {

@@ -84,7 +84,7 @@ public final class VmtIRChain extends Type<VmtIRChain.Op> {
 		public final VmtIROp loadVmt(Code code, VmtIR vmtIR) {
 			return vmt(null, code)
 			.load(null, code)
-			.to(VMT_ID, code, vmtIR);
+			.to(VMT_ID, code, vmtIR.getInstance());
 		}
 
 		public final StructRecOp<Op> prev(ID id, Code code) {

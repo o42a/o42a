@@ -47,10 +47,7 @@ public class VmtChainAllocFn extends Fn<VmtChainAllocFn> {
 			CodeDirs dirs,
 			VmtIR vmtIR,
 			VmtIRChain.Op prev) {
-		return allocate(
-				dirs,
-				vmtIR.pointer(dirs.getGenerator()).op(null, dirs.code()),
-				prev);
+		return allocate(dirs, vmtIR.ptr().op(null, dirs.code()), prev);
 	}
 
 	public final VmtIRChain.Op allocate(

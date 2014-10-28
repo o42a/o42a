@@ -24,7 +24,6 @@ import static org.o42a.core.ir.field.object.ObjectConstructorFn.OBJECT_CONSTRUCT
 import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
 import static org.o42a.util.fn.Init.init;
 
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -34,9 +33,8 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldKind;
-import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.ir.value.ObjectValueFn;
-import org.o42a.core.object.Obj;
 import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 
@@ -74,6 +72,14 @@ public final class ObjFldConf {
 		return this.constructor.get();
 	}
 
+	@Override
+	public String toString() {
+		if (this.id == null) {
+			return super.toString();
+		}
+		return this.id.toString();
+	}
+
 	private Ptr<Op> allocate() {
 		return fld()
 				.getGenerator()
@@ -84,21 +90,16 @@ public final class ObjFldConf {
 
 	private void fill(Type instance) {
 
-		final Generator generator = instance.getGenerator();
-		final Obj target = fld().getTarget();
-		final ObjectIR targetIR = target.ir(generator);
+		final ObjectValueIR targetValueIR = fld().targetValueIR();
 
-		if (target.value().getDefinitions().areInherited()) {
+		if (targetValueIR == null) {
 			instance.valueFn().setConstant(true).setNull();
 		} else {
-			instance.valueFn()
-			.setConstant(true)
-			.setValue(targetIR.getObjectValueIR().ptr());
+			instance.valueFn().setConstant(true).setValue(targetValueIR.ptr());
 		}
 
-		instance.vmt()
-		.setConstant(true)
-		.setValue(targetIR.getVmtIR().pointer(generator).toData());
+		instance.vmt().setConstant(true).setValue(
+				fld().targetVmtIR().ptr().toData());
 	}
 
 	private FuncPtr<ObjectConstructorFn> findConstructor() {

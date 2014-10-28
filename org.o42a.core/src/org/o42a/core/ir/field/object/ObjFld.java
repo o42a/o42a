@@ -20,7 +20,7 @@
 package org.o42a.core.ir.field.object;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.util.fn.Init.init;
+import static org.o42a.util.fn.ReentrantInit.reentrantInit;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.OpMeans;
@@ -29,11 +29,12 @@ import org.o42a.codegen.data.StructRec;
 import org.o42a.core.ir.field.*;
 import org.o42a.core.ir.field.RefFld.StatefulOp;
 import org.o42a.core.ir.field.RefFld.StatefulType;
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectIRBody;
+import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.vmt.VmtIR;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
-import org.o42a.util.fn.Init;
+import org.o42a.core.object.type.Sample;
+import org.o42a.util.fn.ReentrantInit;
 
 
 public class ObjFld extends RefFld<
@@ -42,7 +43,9 @@ public class ObjFld extends RefFld<
 		Ptr<ObjFldConf.Op>,
 		StructRec<ObjFldConf.Op>> {
 
-	private final Init<ObjFldConf> conf = init(this::findConf);
+	private final ReentrantInit<ObjFldConf> conf = reentrantInit(
+			this::reuseConf,
+			() -> new ObjFldConf(this));
 
 	public ObjFld(
 			ObjectIRBody bodyIR,
@@ -85,11 +88,101 @@ public class ObjFld extends RefFld<
 		return new ObjFldOp(host, this, ptr);
 	}
 
-	private ObjFldConf findConf() {
-		assert !isDummy() :
-			"Can not create config for dummy field " + this;
-		// TODO Reuse the object field config when possible.
-		return new ObjFldConf(this);
+	final ObjectValueIR targetValueIR() {
+
+		final Obj target = getTarget();
+		final ObjectIR targetIR = target.ir(getGenerator());
+
+		if (target.value().getDefinitions().areInherited()) {
+			return null;
+		}
+
+		return targetIR.getObjectValueIR();
+	}
+
+	final VmtIR targetVmtIR() {
+		return getTarget().ir(getGenerator()).getVmtIR();
+	}
+
+	private ObjFldConf reuseConf() {
+		if (!getField().isOverride()) {
+			return null;
+		}
+
+		final Sample sample = getObjectIR().getObject().type().getSample();
+
+		if (sample != null) {
+
+			final ObjFldConf reused = reuseConfFrom(sample.getObject());
+
+			if (reused != null) {
+				return reused;
+			}
+		}
+
+		final Obj ancestor = getObjectIR().getAncestor();
+
+		if (ancestor == null) {
+			return null;
+		}
+
+		return reuseConfFrom(ancestor);
+	}
+
+	private ObjFldConf reuseConfFrom(Obj ascendant) {
+
+		final ObjectIR ascendantIR = ascendant.ir(getGenerator());
+		final ObjFld src = (ObjFld) ascendantIR.bodies().findFld(getKey());
+
+		if (src == null) {
+			// No such field in ascendant.
+			return null;
+		}
+		if (getField().isClone()) {
+			return src.conf();
+		}
+
+		final VmtIR targetVmtIR = targetVmtIR();
+
+		if (targetVmtIR != src.targetVmtIR()) {
+			// Source field has different VMT. Can not reuse it.
+			return null;
+		}
+
+		final ObjectValueIR targetValueIR = targetValueIR();
+		final ObjectValueIR srcTargetValueIR = src.targetValueIR();
+
+		if (targetValueIR == null) {
+			if (srcTargetValueIR != null) {
+				// Source target value is inherited,
+				// but the one of this field is not.
+				return null;
+			}
+			// Both targets are inherited.
+			return src.conf();
+		}
+		if (srcTargetValueIR == null) {
+			// This field's target value is inherited,
+			// but the one of source field is not.
+			return null;
+		}
+		if (targetValueIR.getOrigin() == srcTargetValueIR.getOrigin()) {
+			// Target values have the same origin, i.e. they are the same.
+			return src.conf();
+		}
+
+		final ObjectValueIRKind kind = targetValueIR.getKind();
+
+		if (!kind.isPredefined()) {
+			// Target value is not predefined.
+			return null;
+		}
+		if (kind == srcTargetValueIR.getKind()) {
+			// Targets have the same predefined values.
+			return src.conf();
+		}
+
+		return null;
 	}
 
 }
