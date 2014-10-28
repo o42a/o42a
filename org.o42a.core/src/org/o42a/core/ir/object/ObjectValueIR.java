@@ -21,6 +21,7 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.analysis.use.SimpleUsage.ALL_SIMPLE_USAGES;
 import static org.o42a.core.ir.object.ObjectPrecision.APPROXIMATE_OBJECT;
+import static org.o42a.core.ir.object.ObjectValueIRKind.*;
 import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
 import static org.o42a.core.ir.value.ValHolderFactory.NO_VAL_HOLDER;
 import static org.o42a.core.ir.value.ValOp.VALUE_ID;
@@ -86,10 +87,25 @@ public final class ObjectValueIR {
 
 		final ObjectValueFnPtr fnPtr = fnPtr();
 
-		assert !fnPtr.isStub() :
+		assert !fnPtr.getKind().isStub() :
 			"Attempt to call a stub function: " + this;
 
 		return fnPtr.ptr();
+	}
+
+	public final ObjectValueIRKind getKind() {
+		return fnPtr().getKind();
+	}
+
+	public final ObjectValueIR getReusedFrom() {
+		return fnPtr().getReusedFrom();
+	}
+
+	public final ObjectValueIR getOrigin() {
+
+		final ObjectValueIR reusedFrom = getReusedFrom();
+
+		return reusedFrom != null ? reusedFrom : this;
 	}
 
 	public final DefValue getConstant() {
@@ -193,7 +209,7 @@ public final class ObjectValueIR {
 
 		final ObjectValueFnPtr fnPtr = fnPtr();
 
-		return fnPtr.isStub() ? null : fnPtr.ptr();
+		return fnPtr.getKind().isStub() ? null : fnPtr.ptr();
 	}
 
 	private final ObjectValueFnPtr create() {
@@ -222,7 +238,7 @@ public final class ObjectValueIR {
 		if (finalValue.hasKnownValue()) {
 			if (finalValue.getCondition().isFalse()) {
 				// Final value is false.
-				return reuse("o42a_obj_value_false");
+				return predef(FALSE_VALUE_IR);
 			}
 			// Condition is true.
 			if (!finalValue.hasValue()) {
@@ -230,18 +246,18 @@ public final class ObjectValueIR {
 				if (finalValue.getCondition().isTrue()) {
 					// Condition is unknown.
 					// Do not update the value during calculation.
-					return reuse("o42a_obj_value_unknown");
+					return predef(UNKNOWN_VALUE_IR);
 				}
 				return null;
 			}
 			// Final value is known.
 			if (getValueType().isVoid()) {
 				// Value is void.
-				return reuse("o42a_obj_value_void");
+				return predef(VOID_VALUE_IR);
 			}
 		}
 		if (getObject().value().getStatefulness().isEager()) {
-			return reuse("o42a_obj_value_eager");
+			return predef(EAGER_VALUE_IR);
 		}
 		if (getObjectIR().isExact()) {
 			return null;
@@ -262,38 +278,43 @@ public final class ObjectValueIR {
 		final FuncPtr<ObjectValueFn> reused = reuseFromIR.nonStubPtr();
 
 		if (reused != null) {
-			return reuse(reused);
+			return reuse(reuseFromIR);
 		}
 
 		return null;
 	}
 
 	private final ObjectValueFnPtr create(Function<ObjectValueFn> function) {
-		return fnPtr(function.getPointer(), false);
+		return fnPtr(VALUE_IR, function.getPointer(), null);
 	}
 
-	private final ObjectValueFnPtr reuse(String name) {
-		return fnPtr(name, false);
-	}
-
-	private final ObjectValueFnPtr reuse(FuncPtr<ObjectValueFn> funcPtr) {
-		return fnPtr(funcPtr, false);
+	private final ObjectValueFnPtr reuse(ObjectValueIR from) {
+		return fnPtr(from.getKind(), from.ptr(), from.getOrigin());
 	}
 
 	private final ObjectValueFnPtr stub() {
-		return fnPtr("o42a_obj_value_stub", true);
+		return predef(STUB_VALUE_IR);
 	}
 
-	private final ObjectValueFnPtr fnPtr(String name, boolean stub) {
+	private final ObjectValueFnPtr predef(ObjectValueIRKind kind) {
+		return fnPtr(kind, kind.getFunctionName(), null);
+	}
+
+	private final ObjectValueFnPtr fnPtr(
+			ObjectValueIRKind kind,
+			String name,
+			ObjectValueIR reusedFrom) {
 		return fnPtr(
+				kind,
 				getGenerator().externalFunction().link(name, OBJECT_VALUE),
-				stub);
+				reusedFrom);
 	}
 
 	private static final ObjectValueFnPtr fnPtr(
+			ObjectValueIRKind kind,
 			FuncPtr<ObjectValueFn> funcPtr,
-			boolean stub) {
-		return new ObjectValueFnPtr(funcPtr, stub);
+			ObjectValueIR reusedFrom) {
+		return new ObjectValueFnPtr(kind, funcPtr, reusedFrom);
 	}
 
 	private DefValue determineConstant() {
@@ -354,20 +375,29 @@ public final class ObjectValueIR {
 
 	private static final class ObjectValueFnPtr {
 
+		private final ObjectValueIRKind kind;
 		private final FuncPtr<ObjectValueFn> ptr;
-		private final boolean stub;
+		private final ObjectValueIR reusedFrom;
 
-		ObjectValueFnPtr(FuncPtr<ObjectValueFn> ptr, boolean stub) {
+		ObjectValueFnPtr(
+				ObjectValueIRKind kind,
+				FuncPtr<ObjectValueFn> ptr,
+				ObjectValueIR reusedFrom) {
 			this.ptr = ptr;
-			this.stub = stub;
+			this.kind = kind;
+			this.reusedFrom = reusedFrom;
+		}
+
+		public final ObjectValueIRKind getKind() {
+			return this.kind;
 		}
 
 		public final FuncPtr<ObjectValueFn> ptr() {
 			return this.ptr;
 		}
 
-		public final boolean isStub() {
-			return this.stub;
+		public final ObjectValueIR getReusedFrom() {
+			return this.reusedFrom;
 		}
 
 		@Override

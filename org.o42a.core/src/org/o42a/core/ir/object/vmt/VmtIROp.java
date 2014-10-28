@@ -24,6 +24,7 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.Int32recOp;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.core.ir.object.vmt.VmtIR.VmtIRStruct;
 
 
 public class VmtIROp extends StructOp<VmtIROp> {
@@ -33,8 +34,8 @@ public class VmtIROp extends StructOp<VmtIROp> {
 	}
 
 	@Override
-	public final VmtIR getType() {
-		return (VmtIR) super.getType();
+	public final VmtIRStruct getType() {
+		return (VmtIRStruct) super.getType();
 	}
 
 	public final Int32recOp size(Code code) {

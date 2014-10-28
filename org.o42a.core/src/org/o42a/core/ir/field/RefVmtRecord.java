@@ -43,9 +43,9 @@ public abstract class RefVmtRecord<
 	public static final ID FLD_CTR_ID = ID.id("fctr");
 
 	private final RefFld<F, T, P, R> fld;
-	private final Init<RefRecord<P>> constructor =
-			init(this::createConstructor);
+	private final Init<RefRecord<P>> content = init(this::buildContent);
 	private R record;
+	private boolean derived;
 
 	public RefVmtRecord(RefFld<F, T, P, R> fld) {
 		this.fld = fld;
@@ -60,12 +60,12 @@ public abstract class RefVmtRecord<
 	}
 
 	public final P content() {
-		return this.constructor.get().ptr();
+		return this.content.get().ptr();
 	}
 
 	@Override
 	public boolean derive(VmtIR vmtIR) {
-		if (!this.constructor.get().isDerived()) {
+		if (!this.content.get().isDerived()) {
 			return false;
 		}
 
@@ -79,6 +79,7 @@ public abstract class RefVmtRecord<
 		}
 
 		this.record = derivedFld.vmtRecord().record();
+		this.derived = true;
 
 		assert this.record != null :
 			"Derived record for `" + this + "` is not allocated in VMT";
@@ -88,16 +89,18 @@ public abstract class RefVmtRecord<
 
 	@Override
 	public final void allocateMethods(SubData<VmtIROp> vmt) {
+		assert this.derived || this.record == null :
+			"VMT record for `" + fld() + "` already allocated";
 		this.record = allocateRecord(vmt);
+		this.derived = false;
 	}
 
 	@Override
 	public void fillMethods() {
-		record().setConstant(true).setValue(() -> content());
+		record().setConstant(true).setValue(this::content);
 	}
 
 	public final RelPtr recordOffset() {
-		fld().getObjectIR().getVmtIR();// Ensure VMT methods are allocated.
 		return record()
 				.getPointer()
 				.relativeTo(record().getEnclosing().pointer(getGenerator()));
@@ -106,6 +109,7 @@ public abstract class RefVmtRecord<
 	protected abstract R allocateRecord(SubData<VmtIROp> vmt);
 
 	protected final R record() {
+		fld().getObjectIR().getVmtIR().allocate();
 		assert this.record != null :
 			"A record for `" + this + "` is not allocated in VMT";
 		return this.record;
@@ -117,17 +121,17 @@ public abstract class RefVmtRecord<
 
 	protected abstract P createContent();
 
-	private RefRecord<P> createConstructor() {
+	private RefRecord<P> buildContent() {
 		assert !fld().getBodyIR().bodies().isTypeBodies() :
-			"Can not build constructor for type field " + this;
+			"Can not build a VMT content for type field `" + fld() + "`";
 		if (fld().isDummy()) {
 			return new RefRecord<>(dummyContent(), true);
 		}
 
-		final P reusedConstructor = reuseContent();
+		final P reusedContent = reuseContent();
 
-		if (reusedConstructor != null) {
-			return new RefRecord<>(reusedConstructor, true);
+		if (reusedContent != null) {
+			return new RefRecord<>(reusedContent, true);
 		}
 
 		return new RefRecord<>(createContent(), false);
