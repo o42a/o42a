@@ -27,7 +27,7 @@ import static org.o42a.core.ir.object.vmt.VmtIR.newVmtIR;
 import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 import static org.o42a.util.fn.FlagInit.flagInit;
 import static org.o42a.util.fn.Init.init;
-import static org.o42a.util.fn.ReentrantInit.reentrantInit;
+import static org.o42a.util.fn.ReInit.reInit;
 
 import org.o42a.codegen.Codegen;
 import org.o42a.codegen.Generator;
@@ -45,7 +45,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.fn.FlagInit;
 import org.o42a.util.fn.Init;
-import org.o42a.util.fn.ReentrantInit;
+import org.o42a.util.fn.ReInit;
 import org.o42a.util.string.ID;
 
 
@@ -57,7 +57,7 @@ public class ObjectIR implements Codegen {
 	private final ValueIR valueIR;
 	private final Init<ObjectDescIR> descIR =
 			init(() -> objectDescIR(this));
-	private final ReentrantInit<VmtIR> vmtIR = reentrantInit(
+	private final ReInit<VmtIR> vmtIR = reInit(
 			() -> deriveVmtIR(this),
 			() -> newVmtIR(this));
 	private final Init<ObjectValueIR> objectValueIR =
