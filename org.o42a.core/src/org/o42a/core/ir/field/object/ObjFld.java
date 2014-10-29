@@ -138,7 +138,7 @@ public class ObjFld extends RefFld<
 			// No such field in ascendant.
 			return null;
 		}
-		if (getField().isClone()) {
+		if (!getField().isUpdated()) {
 			return src.conf();
 		}
 
