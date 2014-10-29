@@ -23,12 +23,10 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 
-public final class ReentrantInit<V> implements Supplier<V> {
+public final class ReInit<V> implements Supplier<V> {
 
-	public static <V> ReentrantInit<V> reentrantInit(
-			Supplier<V> init,
-			Supplier<V> retry) {
-		return new ReentrantInit<>(init, retry);
+	public static <V> ReInit<V> reInit(Supplier<V> init, Supplier<V> retry) {
+		return new ReInit<>(init, retry);
 	}
 
 	private final Supplier<V> init;
@@ -36,7 +34,7 @@ public final class ReentrantInit<V> implements Supplier<V> {
 	private V value;
 	private byte status;
 
-	private ReentrantInit(Supplier<V> init, Supplier<V> retry) {
+	private ReInit(Supplier<V> init, Supplier<V> retry) {
 		this.init = init;
 		this.retry = retry;
 	}

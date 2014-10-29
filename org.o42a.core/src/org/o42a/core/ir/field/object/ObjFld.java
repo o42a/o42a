@@ -20,7 +20,7 @@
 package org.o42a.core.ir.field.object;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.util.fn.ReentrantInit.reentrantInit;
+import static org.o42a.util.fn.ReInit.reInit;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.OpMeans;
@@ -34,7 +34,7 @@ import org.o42a.core.ir.object.vmt.VmtIR;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.type.Sample;
-import org.o42a.util.fn.ReentrantInit;
+import org.o42a.util.fn.ReInit;
 
 
 public class ObjFld extends RefFld<
@@ -43,7 +43,7 @@ public class ObjFld extends RefFld<
 		Ptr<ObjFldConf.Op>,
 		StructRec<ObjFldConf.Op>> {
 
-	private final ReentrantInit<ObjFldConf> conf = reentrantInit(
+	private final ReInit<ObjFldConf> conf = reInit(
 			this::reuseConf,
 			() -> new ObjFldConf(this));
 
