@@ -43,9 +43,9 @@ import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.type.ValueIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.util.fn.AfterInit;
 import org.o42a.util.fn.FlagInit;
 import org.o42a.util.fn.Init;
-import org.o42a.util.fn.ReInit;
 import org.o42a.util.string.ID;
 
 
@@ -57,9 +57,10 @@ public class ObjectIR implements Codegen {
 	private final ValueIR valueIR;
 	private final Init<ObjectDescIR> descIR =
 			init(() -> objectDescIR(this));
-	private final ReInit<VmtIR> vmtIR = reInit(
+	private final AfterInit<VmtIR, VmtIR> vmtIR = reInit(
 			() -> deriveVmtIR(this),
-			() -> newVmtIR(this));
+			() -> newVmtIR(this))
+			.afterInit(v -> v.allowAllocationBy(this));
 	private final Init<ObjectValueIR> objectValueIR =
 			init(() -> new ObjectValueIR(this));
 	private final Init<ObjectIRBodies> typeBodies = init(
@@ -175,7 +176,7 @@ public class ObjectIR implements Codegen {
 	}
 
 	public final boolean hasInheritableFields() {
-		return this.hasInheritableFields.get();
+		return this.hasInheritableFields.isSet();
 	}
 
 	public final ObjectIR allocate() {
