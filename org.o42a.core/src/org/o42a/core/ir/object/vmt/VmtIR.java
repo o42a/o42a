@@ -108,6 +108,7 @@ public class VmtIR {
 	private final ID id;
 	private final ObjectIR objectIR;
 	private final Init<VmtIRStruct> instance = init(this::allocateInstance);
+	private byte allocationStatus;
 
 	private VmtIR(ObjectIR objectIR) {
 		this.id = objectIR.getId().detail(VMT_ID);
@@ -116,6 +117,16 @@ public class VmtIR {
 
 	public final Generator getGenerator() {
 		return getObjectIR().getGenerator();
+	}
+
+	public final VmtIR allowAllocationBy(ObjectIR objectIR) {
+		if (getObjectIR() != objectIR) {
+			return this;// VMT is reused by another object IR.
+		}
+		assert this.allocationStatus >= 0 :
+			"Can not allow allocation of `" + this + "` again";
+		this.allocationStatus = 1;
+		return this;
 	}
 
 	public final ID getId() {
@@ -155,6 +166,12 @@ public class VmtIR {
 	}
 
 	private VmtIRStruct allocateInstance() {
+		assert this.allocationStatus >= 0 :
+			"`" + this + "` already allocated";
+		assert this.allocationStatus > 0:
+			"Allocation of `" + this + "` is denied";
+
+		this.allocationStatus = -1;
 
 		final Generator generator = getGenerator();
 		final VmtIRStruct struct = new VmtIRStruct(this);
