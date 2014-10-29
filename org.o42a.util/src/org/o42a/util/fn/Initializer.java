@@ -19,49 +19,20 @@
 */
 package org.o42a.util.fn;
 
-import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 
-public final class Init<V> implements Initializer<V> {
+public interface Initializer<V> extends Supplier<V> {
 
-	public static <V> Init<V> init(Supplier<V> init) {
-		return new Init<>(init);
-	}
+	boolean isInitialized();
 
-	private final Supplier<V> init;
-	private V value;
+	V getKnown();
 
-	private Init(Supplier<V> init) {
-		this.init = init;
-	}
+	void set(V value);
 
-	@Override
-	public final boolean isInitialized() {
-		return this.value != null;
-	}
-
-	@Override
-	public final V getKnown() {
-		return this.value;
-	}
-
-	@Override
-	public final V get() {
-		if (this.value != null) {
-			return this.value;
-		}
-		return this.value = this.init.get();
-	}
-
-	@Override
-	public final void set(V value) {
-		this.value = value;
-	}
-
-	@Override
-	public String toString() {
-		return Objects.toString(this.value, "???");
+	default <R> AfterInit<V, R> afterInit(Function<V, R> apply) {
+		return new AfterInit<>(this, apply);
 	}
 
 }

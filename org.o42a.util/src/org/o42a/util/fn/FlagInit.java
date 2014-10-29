@@ -23,7 +23,7 @@ import java.util.Objects;
 import java.util.function.BooleanSupplier;
 
 
-public class FlagInit implements BooleanSupplier {
+public class FlagInit implements BooleanSupplier, Initializer<Boolean> {
 
 	public static FlagInit flagInit(BooleanSupplier init) {
 		return new FlagInit(init);
@@ -36,20 +36,27 @@ public class FlagInit implements BooleanSupplier {
 		this.init = init;
 	}
 
+	@Override
 	public final boolean isInitialized() {
 		return this.value != 0;
 	}
 
+	@Override
 	public final Boolean getKnown() {
 		return this.value == 0 ? null : this.value > 0;
 	}
 
 	@Override
 	public final boolean getAsBoolean() {
-		return get();
+		return isSet();
 	}
 
-	public final boolean get() {
+	@Override
+	public final Boolean get() {
+		return isSet();
+	}
+
+	public final boolean isSet() {
 		if (this.value != 0) {
 			return this.value > 0;
 		}
@@ -63,6 +70,11 @@ public class FlagInit implements BooleanSupplier {
 
 	public final void set(boolean value) {
 		this.value = value ? (byte) 1 : (byte) -1;
+	}
+
+	@Override
+	public final void set(Boolean value) {
+		set(value);
 	}
 
 	@Override

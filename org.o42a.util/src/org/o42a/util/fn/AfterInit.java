@@ -20,32 +20,33 @@
 package org.o42a.util.fn;
 
 import java.util.Objects;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 
-public final class ReInit<V> implements Initializer<V> {
+public final class AfterInit<T, V> implements Initializer<V> {
 
-	public static <V> ReInit<V> reInit(Supplier<V> init, Supplier<V> retry) {
-		return new ReInit<>(init, retry);
+	private final Initializer<T> init;
+	private final Function<T, V> apply;
+	private V value;
+	private boolean applied;
+
+	AfterInit(Initializer<T> init, Function<T, V> apply) {
+		this.init = init;
+		this.apply = apply;
 	}
 
-	private final Supplier<V> init;
-	private final Supplier<V> retry;
-	private V value;
-	private byte status;
-
-	private ReInit(Supplier<V> init, Supplier<V> retry) {
-		this.init = init;
-		this.retry = retry;
+	@Override
+	public V get() {
+		if (this.applied) {
+			return this.value;
+		}
+		this.applied = true;
+		return this.value = this.apply.apply(this.init.get());
 	}
 
 	@Override
 	public final boolean isInitialized() {
-		return this.status > 0;
-	}
-
-	public final boolean isInitializing() {
-		return this.status < 0;
+		return this.applied;
 	}
 
 	@Override
@@ -54,36 +55,23 @@ public final class ReInit<V> implements Initializer<V> {
 	}
 
 	@Override
-	public final V get() {
-		if (isInitialized()) {
-			return this.value;
-		}
-		if (!isInitializing()) {
-			this.status = -1;
-			try {
-
-				final V value = this.init.get();
-
-				if (value != null && !isInitialized()) {
-					return this.value = value;
-				}
-			} finally {
-				this.status = 1;
-			}
-		}
-
-		return this.value = this.retry.get();
+	public final void set(V value) {
+		this.applied = true;
+		this.value = value;
 	}
 
-	@Override
-	public final void set(V value) {
-		this.status = 1;
-		this.value = value;
+	public final void setSource(T value) {
+		this.applied = false;
+		this.value = null;
+		this.init.set(value);
 	}
 
 	@Override
 	public String toString() {
-		return Objects.toString(this.value, isInitialized() ? "null" : "???");
+		if (this.applied) {
+			return "???";
+		}
+		return Objects.toString(this.value);
 	}
 
 }
