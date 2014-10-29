@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 
-
 public final class ArgCache<K, P, V> implements BiFunction<K, P, V> {
 
 	public static <K, P, V> ArgCache<K, P, V> argCache(

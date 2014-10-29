@@ -43,7 +43,7 @@ public abstract class ObjectMeta {
 			() -> !meta().getObject().isClone() || hasUpdates());
 
 	public boolean isUpdated() {
-		return this.updated.get();
+		return this.updated.isSet();
 	}
 
 	final Chain<MetaDep> deps() {

@@ -23,7 +23,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 
-public final class NullableInit<V> implements Supplier<V> {
+public final class NullableInit<V> implements Initializer<V> {
 
 	public static <V> NullableInit<V> nullableInit(Supplier<V> init) {
 		return new NullableInit<>(init);
@@ -37,10 +37,12 @@ public final class NullableInit<V> implements Supplier<V> {
 		this.init = init;
 	}
 
+	@Override
 	public final boolean isInitialized() {
 		return this.initialized;
 	}
 
+	@Override
 	public final V getKnown() {
 		return this.value;
 	}
@@ -54,6 +56,7 @@ public final class NullableInit<V> implements Supplier<V> {
 		return this.value = this.init.get();
 	}
 
+	@Override
 	public final void set(V value) {
 		this.initialized = true;
 		this.value = value;

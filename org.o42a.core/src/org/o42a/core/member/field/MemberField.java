@@ -101,7 +101,7 @@ public abstract class MemberField
 	}
 
 	public final boolean isPrototype() {
-		return this.prototype.get();
+		return this.prototype.isSet();
 	}
 
 	@Override
