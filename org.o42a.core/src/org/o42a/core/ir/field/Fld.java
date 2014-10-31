@@ -34,7 +34,6 @@ import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.vmt.VmtRecord;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.member.field.FieldAnalysis;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
@@ -55,7 +54,6 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 		assert field
 		.toMember()
 		.getAnalysis()
-		.getDeclarationAnalysis()
 		.isUsed(bodyIR.getGenerator().getAnalyzer(), ALL_FIELD_USAGES) :
 				"Attempt to generate never accessed field " + field;
 		this.bodyIR = bodyIR;
@@ -170,11 +168,11 @@ public abstract class Fld<F extends Fld.Op<F>, T extends Fld.Type<F>>
 	}
 
 	protected boolean mayOmit() {
-
-		final FieldAnalysis declarationAnalysis =
-				getField().toMember().getAnalysis().getDeclarationAnalysis();
-
-		return !declarationAnalysis.derivation().isUsed(getGenerator());
+		return !getField()
+				.toMember()
+				.getAnalysis()
+				.derivation()
+				.isUsed(getGenerator());
 	}
 
 	protected abstract T getType();

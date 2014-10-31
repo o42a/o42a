@@ -51,10 +51,7 @@ public abstract class MemberField
 			init(() -> getDeclaration().visibilityOf(this));
 	private final FlagInit prototype = flagInit(
 			() -> getDeclaration().getPrototypeMode().detectPrototype(this));
-	private final Init<FieldAnalysis> analysis = init(
-			() -> isUpdated()
-			? new FieldAnalysis(this)
-			: getLastDefinition().getAnalysis());
+	private final Init<FieldAnalysis> analysis = init(this::createAnalysis);
 	private ArrayList<FieldReplacement> allReplacements;
 
 	public MemberField(Obj owner, FieldDeclaration declaration) {
@@ -232,6 +229,13 @@ public abstract class MemberField
 
 	private final Field field() {
 		return this.field.get();
+	}
+
+	private FieldAnalysis createAnalysis() {
+		if (!isOverride()) {
+			return new FieldAnalysis(this);
+		}
+		return getOverridden()[0].toField().getAnalysis();
 	}
 
 	private void useBy(UserInfo user) {
