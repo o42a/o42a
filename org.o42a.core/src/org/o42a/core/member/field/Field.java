@@ -46,7 +46,7 @@ import org.o42a.util.string.ID;
 public abstract class Field extends ObjectScope {
 
 	private final MemberField member;
-	private final Init<Field[]> overridden = init(this::overriddenFields);
+	private final Init<Field> overridden = init(this::overriddenField);
 	private final CondInit<Generator, FieldIR> ir = irInit(this::createIR);
 
 	public Field(MemberField member) {
@@ -138,7 +138,7 @@ public abstract class Field extends ObjectScope {
 		return toMember().isClone();
 	}
 
-	public final Field[] getOverridden() {
+	public final Field getOverridden() {
 		return this.overridden.get();
 	}
 
@@ -254,7 +254,7 @@ public abstract class Field extends ObjectScope {
 
 	protected final Obj propagateObject() {
 		if (isStatic()) {
-			return getOverridden()[0].toObject();
+			return getOverridden().toObject();
 		}
 		return new PropagatedFieldObject(this);
 	}
@@ -271,19 +271,15 @@ public abstract class Field extends ObjectScope {
 		return object != null && object.meta().isUpdated();
 	}
 
-	private Field[] overriddenFields() {
+	private Field overriddenField() {
 
-		final Member[] overriddenMembers = this.member.getOverridden();
-		final Field[] overridden = new Field[overriddenMembers.length];
+		final Member overriddenMember = this.member.getOverridden();
 
-		for (int i = 0; i < overridden.length; ++i) {
-			overridden[i] =
-					overriddenMembers[i]
-					.toField()
-					.field(dummyUser());
+		if (overriddenMember == null) {
+			return null;
 		}
 
-		return overridden;
+		return overriddenMember.toField().field(dummyUser());
 	}
 
 }

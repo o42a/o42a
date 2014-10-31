@@ -379,11 +379,13 @@ public class Ascendants implements AscendantsBuilder<Ascendants>, Cloneable {
 			Member member,
 			FieldAscendants fieldAscendants) {
 
-		Ascendants ascendants = this;
+		final Ascendants ascendants;
+		final Member overridden = member.getOverridden();
 
-		for (Member overridden : member.getOverridden()) {
-			ascendants = ascendants.addMemberOverride(overridden);
-			break;
+		if (overridden == null) {
+			ascendants = this;
+		} else {
+			ascendants = addMemberOverride(overridden);
 		}
 
 		return fieldAscendants.updateAscendants(ascendants);

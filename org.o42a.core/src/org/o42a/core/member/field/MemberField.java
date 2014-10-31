@@ -235,7 +235,7 @@ public abstract class MemberField
 		if (!isOverride()) {
 			return new FieldAnalysis(this);
 		}
-		return getOverridden()[0].toField().getAnalysis();
+		return getOverridden().toField().getAnalysis();
 	}
 
 	private void useBy(UserInfo user) {
@@ -246,7 +246,10 @@ public abstract class MemberField
 	}
 
 	private void registerAsReplacement() {
-		for (Member overridden : getOverridden()) {
+
+		final Member overridden = getOverridden();
+
+		if (overridden != null) {
 			overridden.toField().registerReplacement(this);
 		}
 	}

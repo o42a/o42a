@@ -44,7 +44,6 @@ public class MemberPropagatedFromID implements SubID {
 	private static final SubID CLONE_OF =
 			ID.displayText(" {clone of: ");
 	private static final SubID SUFFIX = ID.displayText("}");
-	private static final SubID COMMA = ID.displayText(", ");
 
 	private final Member member;
 
@@ -69,27 +68,17 @@ public class MemberPropagatedFromID implements SubID {
 					.suffix(SUFFIX));
 		}
 
-		final Member[] allOverridden = this.member.getOverridden();
+		final Member overridden = this.member.getOverridden();
 
-		if (allOverridden.length == 0) {
+		if (overridden == null) {
 			return DECLARED;
 		}
 
-		boolean comma = false;
-		ID id = ID.id(PROPAGATED_FROM);
-
-		for (Member overridden : allOverridden) {
-			if (!comma) {
-				comma = true;
-			} else {
-				id = id.suffix(COMMA);
-			}
-			id = id.suffix(
+		return ID.id(PROPAGATED_FROM)
+				.suffix(
 					memberScopePrefix(overridden)
-					.sub(overridden.getMemberId()));
-		}
-
-		return id.suffix(SUFFIX);
+					.sub(overridden.getMemberId()))
+				.suffix(SUFFIX);
 	}
 
 }

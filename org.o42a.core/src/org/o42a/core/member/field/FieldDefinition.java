@@ -57,9 +57,9 @@ public abstract class FieldDefinition extends Contained {
 
 	public static DefinitionTarget definerTarget(ObjectDefiner definer) {
 
-		final Field[] allOverridden = definer.getField().getOverridden();
+		final Field overridden = definer.getField().getOverridden();
 
-		for (Field overridden : allOverridden) {
+		if (overridden != null) {
 
 			final TypeParameters<?> typeParameters =
 					overridden.toObject().type().getParameters();
