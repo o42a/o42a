@@ -34,7 +34,8 @@ import org.o42a.util.fn.Init;
 public class FieldAnalysis implements Uses<FieldUsage> {
 
 	private final MemberField member;
-	private final Init<MemberFieldUses> uses = init(this::createUses);
+	private final Init<MemberFieldUses> uses =
+			init(() -> new MemberFieldUses(getMember()));
 	private final Init<Usable<DerivationUsage>> derivationUses =
 			init(this::createDerivationUses);
 
@@ -128,43 +129,14 @@ public class FieldAnalysis implements Uses<FieldUsage> {
 		return this.derivationUses.get();
 	}
 
-	private MemberFieldUses createUses() {
-
-		final MemberFieldUses uses = new MemberFieldUses(getMember());
-
-		if (getMember().isOverride()) {
-			getDeclarationAnalysis().uses().useByEach(uses);
-		}
-
-		return uses;
-	}
-
 	private Usable<DerivationUsage> createDerivationUses() {
 
-		final MemberField member = getMember();
 		final Usable<DerivationUsage> derivationUses =
 				DerivationUsage.usable("DerivationOf", getMember());
-		final ObjectType ownerType = member.getMemberOwner().type();
+		final ObjectType ownerType = getMember().getMemberOwner().type();
 
 		// If owner derived then member derived too.
 		derivationUses.useBy(ownerType.derivation(), DERIVATION_USAGE);
-
-		final MemberField firstDeclaration = member.getFirstDeclaration();
-
-		if (firstDeclaration != member) {
-			firstDeclaration.getAnalysis()
-			.derivationUses()
-			.useBy(derivationUses, DERIVATION_USAGE);
-
-			final MemberField lastDefinition = member.getLastDefinition();
-
-			if (lastDefinition != member) {
-				lastDefinition.getAnalysis().derivationUses().useBy(
-						derivationUses,
-						DERIVATION_USAGE,
-						() -> !member.isUpdated());
-			}
-		}
 
 		return derivationUses;
 	}
