@@ -22,6 +22,7 @@ package org.o42a.core.member;
 import static org.o42a.core.member.MemberPath.SELF_MEMBER_PATH;
 import static org.o42a.core.member.impl.MemberPropagatedFromID.memberScopePrefix;
 import static org.o42a.util.fn.Init.init;
+import static org.o42a.util.fn.NullableInit.nullableInit;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.*;
@@ -36,12 +37,11 @@ import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.fn.Init;
+import org.o42a.util.fn.NullableInit;
 import org.o42a.util.string.ID;
 
 
 public abstract class Member extends Contained {
-
-	private static final Member[] NOTHING_OVERRIDDEN = new Member[0];
 
 	private final Obj owner;
 
@@ -49,7 +49,8 @@ public abstract class Member extends Contained {
 	private final Init<Member> firstDeclaration =
 			init(this::findFirstDeclaration);
 	private final Init<Member> lastDefinition = init(this::findLastDefinition);
-	private final Init<Member[]> overridden = init(this::findOverridden);
+	private final NullableInit<Member> overridden =
+			nullableInit(this::findOverridden);
 
 	public Member(
 			LocationInfo location,
@@ -208,7 +209,7 @@ public abstract class Member extends Contained {
 		return getLastDefinition() != this;
 	}
 
-	public final Member[] getOverridden() {
+	public final Member getOverridden() {
 		return this.overridden.get();
 	}
 
@@ -255,18 +256,18 @@ public abstract class Member extends Contained {
 			return this;
 		}
 
-		final Member[] overridden = getOverridden();
+		final Member overridden = getOverridden();
 
-		if (overridden.length != 1) {
+		if (overridden == null) {
 			return this;
 		}
 
-		return overridden[0].getLastDefinition();
+		return overridden.getLastDefinition();
 	}
 
-	private Member[] findOverridden() {
+	private Member findOverridden() {
 		if (!isOverride()) {
-			return NOTHING_OVERRIDDEN;
+			return null;
 		}
 
 		final ObjectType containerType = getContainer().toObject().type();
@@ -298,27 +299,23 @@ public abstract class Member extends Contained {
 		return containerSample.getObject().member(getMemberKey());
 	}
 
-	private Member[] selectOverridden(
+	private Member selectOverridden(
 			Member ancestorMember,
 			Member sampleMember) {
 		if (sampleMember == null) {
 			if (ancestorMember == null) {
-				return NOTHING_OVERRIDDEN;
+				return null;
 			}
-			return new Member[] {ancestorMember};
+			return ancestorMember;
 		}
 		if (ancestorMember == null) {
-			return new Member[] {sampleMember};
+			return sampleMember;
 		}
 		if (sampleMember.getDefinedIn().derivedFrom(
 				ancestorMember.getDefinedIn())) {
-			return new Member[] {sampleMember};
+			return sampleMember;
 		}
-		if (ancestorMember.getDefinedIn().derivedFrom(
-				sampleMember.getDefinedIn())) {
-			return new Member[] {ancestorMember};
-		}
-		return new Member[] {sampleMember, ancestorMember};
+		return ancestorMember;
 	}
 
 }

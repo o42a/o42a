@@ -34,7 +34,7 @@ import org.o42a.core.object.type.Ascendants;
 public final class PropagatedFieldObject extends Obj {
 
 	public PropagatedFieldObject(Field field) {
-		super(field, field.getOverridden()[0].toObject());
+		super(field, field.getOverridden().toObject());
 	}
 
 	@Override

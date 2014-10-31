@@ -71,13 +71,13 @@ public enum PrototypeMode {
 
 	public final boolean detectPrototype(MemberField field) {
 
-		final Member[] overridden = field.getOverridden();
+		final Member overridden = field.getOverridden();
 
-		if (overridden.length == 0) {
+		if (overridden == null) {
 			return isPrototype();
 		}
 
-		return byOverridden(field, overridden[0].toField());
+		return byOverridden(field, overridden.toField());
 	}
 
 	abstract boolean byOverridden(

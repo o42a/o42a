@@ -52,13 +52,13 @@ public enum VisibilityMode {
 			Member member,
 			FieldDeclaration declaration) {
 
-		final Member[] overridden = member.getOverridden();
+		final Member overridden = member.getOverridden();
 
-		if (overridden.length == 0) {
+		if (overridden == null) {
 			return this.defaultVisibility;
 		}
 
-		return byOverridden(member, declaration, overridden[0]);
+		return byOverridden(member, declaration, overridden);
 	}
 
 	Visibility byOverridden(
