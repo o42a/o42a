@@ -19,6 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
+import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
 import static org.o42a.core.st.Command.noCommands;
 import static org.o42a.core.st.impl.SentenceErrors.*;
 
@@ -33,6 +34,7 @@ import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.ref.impl.cond.RefCondition;
@@ -95,6 +97,20 @@ public final class Statements extends Contained {
 		}
 		executeInstructions();
 		return this.targets = determineTargets();
+	}
+
+	public final EscapeMode getEscapeMode() {
+
+		EscapeMode escapeMode = ESCAPE_IMPOSSIBLE;
+
+		for (Command cmd : getCommands()) {
+			escapeMode = escapeMode.combine(cmd.getStatement().getEscapeMode());
+			if (escapeMode.isEscapePossible()) {
+				break;
+			}
+		}
+
+		return escapeMode;
 	}
 
 	public final void expression(RefBuilder expression) {

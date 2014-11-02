@@ -19,6 +19,8 @@
 */
 package org.o42a.core.value.array;
 
+import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
+import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
 import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 import static org.o42a.core.value.ValueKnowledge.*;
@@ -31,6 +33,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.value.array.ArrayIR;
 import org.o42a.core.ir.value.array.ArrayIRGenerator;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -111,6 +114,23 @@ public final class Array extends Contained {
 
 	public final boolean hasStaticItems() {
 		return this.arrayKnowledge.get().hasStaticItems;
+	}
+
+	public final EscapeMode getEscapeMode() {
+		if (isVariable()) {
+			return ESCAPE_POSSIBLE;
+		}
+
+		EscapeMode escapeMode = ESCAPE_IMPOSSIBLE;
+
+		for (ArrayItem item : getItems()) {
+			escapeMode = escapeMode.combine(item.getValueRef().getEscapeMode());
+			if (escapeMode.isEscapePossible()) {
+				break;
+			}
+		}
+
+		return escapeMode;
 	}
 
 	public final ArrayItem[] getItems() {

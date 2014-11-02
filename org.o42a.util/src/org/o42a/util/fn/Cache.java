@@ -19,6 +19,8 @@
 */
 package org.o42a.util.fn;
 
+import static java.util.Collections.emptyMap;
+
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -69,6 +71,21 @@ public final class Cache<K, V> implements Function<K, V> {
 	@Override
 	public final V apply(K key) {
 		return get(key);
+	}
+
+	public final Map<K, V> cache() {
+		if (this.cache == null) {
+			return emptyMap();
+		}
+		return this.cache;
+	}
+
+	@Override
+	public String toString() {
+		if (this.cache == null) {
+			return "{}";
+		}
+		return this.cache.toString();
 	}
 
 }

@@ -33,6 +33,7 @@ import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.ir.value.array.ArrayIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Def;
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.TypeParameters;
@@ -60,6 +61,11 @@ final class ArrayConstantDef extends Def {
 	@Override
 	public boolean isDefined() {
 		return true;
+	}
+
+	@Override
+	public EscapeMode getEscapeMode() {
+		return getArray().getEscapeMode();
 	}
 
 	public final Array getArray() {

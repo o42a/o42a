@@ -23,6 +23,7 @@ import static org.o42a.core.ref.path.Path.staticPath;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
+import org.o42a.core.member.alias.MemberAlias;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
@@ -48,6 +49,11 @@ public abstract class NonAliasMember extends Member {
 	@Override
 	public final boolean isAlias() {
 		return false;
+	}
+
+	@Override
+	public final MemberAlias toAlias() {
+		return null;
 	}
 
 	private static final class NonAliasPath implements MemberPath {

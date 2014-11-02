@@ -19,6 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
+import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
 import static org.o42a.core.st.Command.exitCommand;
 import static org.o42a.core.st.Command.noCommands;
 import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
@@ -31,6 +32,7 @@ import java.util.List;
 import org.o42a.core.Contained;
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberRegistry;
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.CommandTargets;
 import org.o42a.core.st.Reproducer;
@@ -94,6 +96,17 @@ public abstract class Sentence extends Contained {
 
 	public final boolean isInterrogation() {
 		return getKind().isInterrogative() || getBlock().isInterrogation();
+	}
+
+	public final EscapeMode getEscapeMode() {
+
+		final Sentence prerequisite = getPrerequisite();
+
+		if (prerequisite != null) {
+			return prerequisite.getEscapeMode().combine(this::altsEscapeMode);
+		}
+
+		return altsEscapeMode();
 	}
 
 	public final List<Statements> getAlternatives() {
@@ -401,6 +414,20 @@ public abstract class Sentence extends Contained {
 		}
 
 		return result.add(exitCommand(getLocation()));
+	}
+
+	private EscapeMode altsEscapeMode() {
+
+		EscapeMode escapeMode = ESCAPE_IMPOSSIBLE;
+
+		for (Statements alt : getAlternatives()) {
+			escapeMode.combine(alt.getEscapeMode());
+			if (escapeMode.isEscapePossible()) {
+				break;
+			}
+		}
+
+		return escapeMode;
 	}
 
 }

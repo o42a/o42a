@@ -37,6 +37,7 @@ import org.o42a.core.member.Accessor;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.TypeParameters;
@@ -74,6 +75,13 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 		this.rightOperandId = FIELD_NAME.memberName(
 				CASE_INSENSITIVE.canonicalName(rightOperandName));
 		this.rightOperandType = rightOperandType;
+	}
+
+	@Override
+	public EscapeMode getEscapeMode() {
+		return leftOperand()
+				.getEscapeMode()
+				.combine(() -> rightOperand().getEscapeMode());
 	}
 
 	@SuppressWarnings("unchecked")

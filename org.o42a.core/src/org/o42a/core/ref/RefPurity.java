@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,34 +17,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member;
-
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
-
-import org.o42a.core.Distributor;
-import org.o42a.core.object.def.EscapeMode;
-import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Statement;
+package org.o42a.core.ref;
 
 
-public abstract class DeclarationStatement extends Statement {
+public enum RefPurity {
 
-	public DeclarationStatement(
-			LocationInfo location,
-			Distributor distributor) {
-		super(location, distributor);
+	PURE_REF,
+	IMPURE_REF;
+
+	public final boolean isPure() {
+		return this == PURE_REF;
 	}
-
-	@Override
-	public boolean isValid() {
-		return true;
-	}
-
-	@Override
-	public final EscapeMode getEscapeMode() {
-		return ESCAPE_IMPOSSIBLE;
-	}
-
-	public abstract Member toMember();
 
 }

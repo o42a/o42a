@@ -22,6 +22,7 @@ package org.o42a.root.array;
 import static org.o42a.common.macro.Macros.expandMacro;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
+import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
 import static org.o42a.core.ref.RefUsage.TYPE_PARAMETER_REF_USAGE;
 import static org.o42a.core.value.array.ArrayValueType.ARRAY;
 import static org.o42a.root.array.ArrayOfDuplicatesFn.ARRAY_OF_DUPLICATES;
@@ -48,6 +49,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.type.TypeRef;
@@ -73,6 +75,11 @@ public class Duplicates extends AnnotatedBuiltin {
 
 	public Duplicates(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
+	}
+
+	@Override
+	public EscapeMode getEscapeMode() {
+		return ESCAPE_POSSIBLE;
 	}
 
 	@Override

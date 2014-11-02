@@ -22,6 +22,7 @@ package org.o42a.root;
 import static org.o42a.core.ir.def.Eval.FALSE_EVAL;
 import static org.o42a.core.ir.def.InlineEval.falseInlineEval;
 import static org.o42a.core.object.OwnerPath.NO_OWNER_PATH;
+import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
@@ -36,6 +37,7 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.OwnerPath;
 import org.o42a.core.object.common.StandaloneObjectScope;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.FullResolver;
@@ -60,6 +62,11 @@ public class FalseObject extends BuiltinObject {
 	@Override
 	public boolean isConstantBuiltin() {
 		return true;
+	}
+
+	@Override
+	public EscapeMode getEscapeMode() {
+		return ESCAPE_IMPOSSIBLE;
 	}
 
 	@Override

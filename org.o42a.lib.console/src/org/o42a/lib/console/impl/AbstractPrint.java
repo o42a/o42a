@@ -21,6 +21,7 @@ package org.o42a.lib.console.impl;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
+import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
 import static org.o42a.lib.console.impl.PrintFn.PRINT;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
@@ -40,6 +41,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Accessor;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
@@ -64,6 +66,11 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 	public AbstractPrint(Obj owner, AnnotatedSources sources, String funcName) {
 		super(owner, sources);
 		this.funcName = funcName;
+	}
+
+	@Override
+	public EscapeMode getEscapeMode() {
+		return ESCAPE_IMPOSSIBLE;
 	}
 
 	@Override

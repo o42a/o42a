@@ -20,10 +20,12 @@
 package org.o42a.compiler.ip.st.assignment;
 
 import static org.o42a.core.ir.cmd.Cmds.noCmd;
+import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.ir.cmd.InlineCmd;
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.action.Action;
@@ -40,6 +42,11 @@ final class AssignmentError extends AssignmentKind {
 	@Override
 	public boolean isError() {
 		return true;
+	}
+
+	@Override
+	public EscapeMode getEscapeMode() {
+		return ESCAPE_IMPOSSIBLE;
 	}
 
 	@Override

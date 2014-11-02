@@ -22,6 +22,7 @@ package org.o42a.core.object.def;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
 import static org.o42a.core.object.def.DefTarget.UNKNOWN_DEF_TARGET;
+import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
 import static org.o42a.core.object.def.impl.DefTargetFinder.defTarget;
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.ref.ScopeUpgrade.wrapScope;
@@ -123,6 +124,20 @@ public class Definitions extends Scoped {
 
 	public final Value<?> getConstant() {
 		return this.constant.get();
+	}
+
+	public final EscapeMode getEscapeMode() {
+
+		EscapeMode escapeMode = ESCAPE_POSSIBLE;
+
+		for (Def def : defs().get()) {
+			escapeMode = escapeMode.combine(def.getEscapeMode());
+			if (escapeMode.isEscapePossible()) {
+				break;
+			}
+		}
+
+		return escapeMode;
 	}
 
 	public final Defs defs() {

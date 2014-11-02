@@ -21,6 +21,7 @@ package org.o42a.core.st;
 
 import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.source.LocationInfo;
 
 
@@ -33,6 +34,8 @@ public abstract class Statement extends Contained {
 	}
 
 	public abstract boolean isValid();
+
+	public abstract EscapeMode getEscapeMode();
 
 	public abstract Command command(CommandEnv env);
 
