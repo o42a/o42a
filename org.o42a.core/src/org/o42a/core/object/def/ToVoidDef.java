@@ -57,6 +57,11 @@ final class ToVoidDef extends Def {
 	}
 
 	@Override
+	public EscapeMode getEscapeMode() {
+		return this.def.getEscapeMode();
+	}
+
+	@Override
 	public boolean isDefined() {
 		return true;
 	}

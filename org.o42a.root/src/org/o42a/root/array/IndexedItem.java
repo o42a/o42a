@@ -20,6 +20,7 @@
 package org.o42a.root.array;
 
 import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
+import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
 import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
@@ -34,6 +35,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectValue;
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PrefixPath;
@@ -57,6 +59,11 @@ abstract class IndexedItem extends AnnotatedBuiltin {
 
 	IndexedItem(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
+	}
+
+	@Override
+	public EscapeMode getEscapeMode() {
+		return ESCAPE_POSSIBLE;
 	}
 
 	@Override

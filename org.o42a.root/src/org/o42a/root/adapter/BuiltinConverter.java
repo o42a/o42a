@@ -20,6 +20,7 @@
 package org.o42a.root.adapter;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
+import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
 
 import org.o42a.common.builtin.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
@@ -32,6 +33,7 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
@@ -46,6 +48,11 @@ public abstract class BuiltinConverter<F, T> extends AnnotatedBuiltin {
 
 	public BuiltinConverter(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
+	}
+
+	@Override
+	public EscapeMode getEscapeMode() {
+		return ESCAPE_IMPOSSIBLE;
 	}
 
 	@Override

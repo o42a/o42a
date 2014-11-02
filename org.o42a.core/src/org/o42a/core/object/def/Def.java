@@ -150,6 +150,8 @@ public abstract class Def implements SourceInfo {
 		return false;
 	}
 
+	public abstract EscapeMode getEscapeMode();
+
 	public final Def upgradeScope(Scope toScope) {
 		if (toScope.is(getScope())) {
 			return this;

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,34 +17,32 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member;
+package org.o42a.core.object.def;
 
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
-
-import org.o42a.core.Distributor;
-import org.o42a.core.object.def.EscapeMode;
-import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Statement;
+import java.util.function.Supplier;
 
 
-public abstract class DeclarationStatement extends Statement {
+public enum EscapeMode {
 
-	public DeclarationStatement(
-			LocationInfo location,
-			Distributor distributor) {
-		super(location, distributor);
+	ESCAPE_POSSIBLE,
+	ESCAPE_IMPOSSIBLE;
+
+	public final boolean isEscapePossible() {
+		return this == ESCAPE_POSSIBLE;
 	}
 
-	@Override
-	public boolean isValid() {
-		return true;
+	public final EscapeMode combine(EscapeMode other) {
+		if (isEscapePossible()) {
+			return this;
+		}
+		return other;
 	}
 
-	@Override
-	public final EscapeMode getEscapeMode() {
-		return ESCAPE_IMPOSSIBLE;
+	public final EscapeMode combine(Supplier<EscapeMode> other) {
+		if (isEscapePossible()) {
+			return this;
+		}
+		return other.get();
 	}
-
-	public abstract Member toMember();
 
 }

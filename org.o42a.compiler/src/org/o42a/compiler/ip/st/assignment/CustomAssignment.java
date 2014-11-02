@@ -31,6 +31,7 @@ import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.action.Action;
@@ -78,6 +79,11 @@ final class CustomAssignment extends AssignmentKind {
 
 	public final Ref getRef() {
 		return this.ref;
+	}
+
+	@Override
+	public EscapeMode getEscapeMode() {
+		return getRef().getEscapeMode();
 	}
 
 	@Override

@@ -24,6 +24,7 @@ import static org.o42a.util.fn.Init.init;
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Container;
 import org.o42a.core.member.*;
+import org.o42a.core.member.alias.MemberAlias;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.MemberLocal;
@@ -112,6 +113,11 @@ public final class ClauseAlias extends Member {
 
 	@Override
 	public MemberField toField() {
+		return null;
+	}
+
+	@Override
+	public MemberAlias toAlias() {
 		return null;
 	}
 

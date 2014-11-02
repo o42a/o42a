@@ -21,7 +21,9 @@ package org.o42a.core.ref;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.AdapterId.adapterId;
+import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
 import static org.o42a.core.ref.RefUsage.TYPE_PARAMETER_REF_USAGE;
+import static org.o42a.core.ref.impl.RefPurityDetector.detectPurity;
 import static org.o42a.core.ref.path.Path.FALSE_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.Path.VOID_PATH;
@@ -44,6 +46,7 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.ref.impl.ReturnCommand;
 import org.o42a.core.ref.impl.YieldStatement;
 import org.o42a.core.ref.path.*;
@@ -123,6 +126,25 @@ public class Ref extends Statement implements RefBuilder {
 		final TypeParameters<?> typeParameters = typeParameters(getScope());
 
 		return typeParameters != null ? typeParameters.getValueType() : null;
+	}
+
+	public final RefPurity getPurity() {
+		return detectPurity(this);
+	}
+
+	@Override
+	public EscapeMode getEscapeMode() {
+		if (!getPurity().isPure()) {
+			return ESCAPE_POSSIBLE;
+		}
+
+		final Obj target = getResolution().toObject();
+
+		if (target == null) {
+			return ESCAPE_POSSIBLE;
+		}
+
+		return target.meta().getEscapeMode();
 	}
 
 	public final Ref setLocation(LocationInfo location) {

@@ -26,6 +26,7 @@ import static org.o42a.util.fn.NullableInit.nullableInit;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.*;
+import org.o42a.core.member.alias.MemberAlias;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.impl.MemberPropagatedFromID;
@@ -161,6 +162,8 @@ public abstract class Member extends Contained {
 	public abstract MemberTypeParameter toTypeParameter();
 
 	public abstract MemberField toField();
+
+	public abstract MemberAlias toAlias();
 
 	public abstract MemberLocal toLocal();
 

@@ -20,6 +20,7 @@
 package org.o42a.root.array;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
+import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.common.builtin.AnnotatedBuiltin;
@@ -34,6 +35,7 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.TypeParameters;
@@ -51,6 +53,11 @@ final class ArrayAsRow extends AnnotatedBuiltin {
 
 	ArrayAsRow(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
+	}
+
+	@Override
+	public EscapeMode getEscapeMode() {
+		return ESCAPE_POSSIBLE;
 	}
 
 	@Override

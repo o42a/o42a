@@ -21,6 +21,7 @@ package org.o42a.core.object.def;
 
 import static org.o42a.core.ir.def.Eval.VOID_EVAL;
 import static org.o42a.core.ir.def.InlineEval.voidInlineEval;
+import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 import static org.o42a.core.st.DefValue.defValue;
 import static org.o42a.core.value.Void.VOID;
@@ -51,6 +52,11 @@ final class VoidDef extends Def {
 	@Override
 	public boolean isDefined() {
 		return true;
+	}
+
+	@Override
+	public EscapeMode getEscapeMode() {
+		return ESCAPE_IMPOSSIBLE;
 	}
 
 	@Override

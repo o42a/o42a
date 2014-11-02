@@ -29,6 +29,7 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.def.RefOpEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.def.Def;
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.TypeParameters;
@@ -52,6 +53,11 @@ public final class RefDef extends Def {
 	@Override
 	public boolean isDefined() {
 		return true;
+	}
+
+	@Override
+	public EscapeMode getEscapeMode() {
+		return this.ref.getEscapeMode();
 	}
 
 	@Override

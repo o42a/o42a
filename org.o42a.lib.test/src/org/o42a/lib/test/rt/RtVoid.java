@@ -19,6 +19,8 @@
 */
 package org.o42a.lib.test.rt;
 
+import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.common.builtin.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
@@ -29,6 +31,7 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
@@ -44,6 +47,11 @@ public class RtVoid extends AnnotatedBuiltin {
 
 	public RtVoid(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
+	}
+
+	@Override
+	public EscapeMode getEscapeMode() {
+		return ESCAPE_IMPOSSIBLE;
 	}
 
 	@Override

@@ -150,6 +150,11 @@ public final class MemberAlias extends Member {
 	}
 
 	@Override
+	public final MemberAlias toAlias() {
+		return this;
+	}
+
+	@Override
 	public final MemberLocal toLocal() {
 		return null;
 	}

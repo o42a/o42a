@@ -19,12 +19,19 @@
 */
 package org.o42a.core.object;
 
+import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
+import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
 import static org.o42a.util.fn.Init.init;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.alias.MemberAlias;
+import org.o42a.core.member.field.MemberField;
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.meta.ObjectMeta;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.fn.Init;
 
 
@@ -33,6 +40,7 @@ public final class Meta extends ObjectMeta {
 	private final Obj object;
 	private final Init<Nesting> nesting =
 			init(() -> getObject().createNesting());
+	private final Init<EscapeMode> escapeMode = init(this::detectEscapeMode);
 
 	Meta(Obj object) {
 		this.object = object;
@@ -85,6 +93,10 @@ public final class Meta extends ObjectMeta {
 		return getNesting().findObjectIn(enclosing);
 	}
 
+	public final EscapeMode getEscapeMode() {
+		return this.escapeMode.get();
+	}
+
 	public final boolean is(Meta meta) {
 		return this == meta;
 	}
@@ -95,6 +107,63 @@ public final class Meta extends ObjectMeta {
 			return super.toString();
 		}
 		return "Meta[" + this.object + ']';
+	}
+
+	private EscapeMode detectEscapeMode() {
+
+		final TypeRef ancestor = getObject().type().getAncestor();
+
+		if (ancestor != null && !ancestor.getRef().getPurity().isPure()) {
+			return ESCAPE_POSSIBLE;
+		}
+
+		final EscapeMode defEscapeMode =
+				getObject().value().getDefinitions().getEscapeMode();
+
+		if (defEscapeMode.isEscapePossible()) {
+			return defEscapeMode;
+		}
+
+		return membersEscapeMode();
+	}
+
+	private EscapeMode membersEscapeMode() {
+
+		EscapeMode escapeMode = ESCAPE_IMPOSSIBLE;
+
+		for (Member member : getObject().members().values()) {
+
+			final MemberField field = member.toField();
+
+			if (field != null) {
+				escapeMode = escapeMode.combine(memberEscapeMode(member));
+				if (escapeMode.isEscapePossible()) {
+					break;
+				}
+			}
+		}
+
+		return escapeMode;
+	}
+
+	private EscapeMode memberEscapeMode(Member member) {
+
+		final MemberField field = member.toField();
+
+		if (field != null) {
+			return field.field(dummyUser()).toObject().meta().getEscapeMode();
+		}
+
+		final MemberAlias alias = member.toAlias();
+
+		if (alias != null) {
+			if (alias.getRef().getPurity().isPure()) {
+				return ESCAPE_IMPOSSIBLE;
+			}
+			return ESCAPE_POSSIBLE;
+		}
+
+		return ESCAPE_IMPOSSIBLE;
 	}
 
 }

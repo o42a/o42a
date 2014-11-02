@@ -19,6 +19,9 @@
 */
 package org.o42a.common.macro.st;
 
+import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
+
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.*;
 
@@ -26,6 +29,7 @@ import org.o42a.core.st.*;
 final class ExpandMacroStatement extends Statement {
 
 	private final Ref expansion;
+	private ExpandMacroCommand command;
 
 	ExpandMacroStatement(Ref expansion) {
 		super(expansion, expansion.distribute());
@@ -42,8 +46,18 @@ final class ExpandMacroStatement extends Statement {
 	}
 
 	@Override
+	public EscapeMode getEscapeMode() {
+		if (this.command == null) {
+			return ESCAPE_IMPOSSIBLE;
+		}
+		return this.command.escapeMode();
+	}
+
+	@Override
 	public Command command(CommandEnv env) {
-		return new ExpandMacroCommand(this, env);
+		assert this.command == null :
+			"Macro expand command already created";
+		return this.command = new ExpandMacroCommand(this, env);
 	}
 
 	@Override

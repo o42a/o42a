@@ -21,6 +21,7 @@ package org.o42a.root.array;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
+import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
 import static org.o42a.root.array.CopyArrayElementsFn.COPY_ARRAY_ELEMENTS;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
@@ -39,6 +40,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Accessor;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
@@ -67,6 +69,11 @@ abstract class AbstractCopyArrayElements extends AnnotatedBuiltin {
 
 	AbstractCopyArrayElements(Obj owner, AnnotatedSources sources) {
 		super(owner, sources);
+	}
+
+	@Override
+	public EscapeMode getEscapeMode() {
+		return ESCAPE_POSSIBLE;
 	}
 
 	@Override
