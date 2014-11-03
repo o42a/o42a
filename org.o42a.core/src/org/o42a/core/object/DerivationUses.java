@@ -78,12 +78,7 @@ final class DerivationUses implements UserInfo {
 	}
 
 	void useAsAncestor(Obj derived) {
-		if (derived.getWrapped() == derived) {
-			getObject()
-			.mostWrapped()
-			.type()
-			.registerDerivative(new Inheritor(derived));
-		}
+		getObject().type().registerDerivative(new Inheritor(derived));
 		uses().useBy(derived.content(), DERIVATION_USAGE);
 		uses().useBy(derived.type().derivation(), DERIVATION_USAGE);
 		trackUpdatesByAncestor(derived);
@@ -93,12 +88,7 @@ final class DerivationUses implements UserInfo {
 
 		final Obj derived = sample.getDerivedObject();
 
-		if (derived.getWrapped() == derived) {
-			getObject()
-			.mostWrapped()
-			.type()
-			.registerDerivative(sample);
-		}
+		getObject().type().registerDerivative(sample);
 		uses().useBy(derived.content(), DERIVATION_USAGE);
 		uses().useBy(derived.type().derivation(), DERIVATION_USAGE);
 

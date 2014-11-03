@@ -21,8 +21,8 @@ package org.o42a.core.ref;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.AdapterId.adapterId;
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
 import static org.o42a.core.ref.RefUsage.TYPE_PARAMETER_REF_USAGE;
+import static org.o42a.core.ref.impl.EscapeModeDetector.detectEscapeMode;
 import static org.o42a.core.ref.impl.RefPurityDetector.detectPurity;
 import static org.o42a.core.ref.path.Path.FALSE_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
@@ -138,17 +138,8 @@ public class Ref extends Statement implements RefBuilder {
 	}
 
 	public EscapeMode escapeMode(Scope scope) {
-		if (!purity(scope).isPure()) {
-			return ESCAPE_POSSIBLE;
-		}
-
-		final Obj target = resolve(scope.resolver()).toObject();
-
-		if (target == null) {
-			return ESCAPE_POSSIBLE;
-		}
-
-		return target.meta().getEscapeMode();
+		assert assertCompatible(scope);
+		return detectEscapeMode(this, scope);
 	}
 
 	public final Ref setLocation(LocationInfo location) {

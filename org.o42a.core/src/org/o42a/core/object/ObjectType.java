@@ -303,6 +303,9 @@ public final class ObjectType implements UserInfo {
 			this.allDerivatives = new ArrayList<>();
 		}
 		this.allDerivatives.add(derivative);
+		if (getObject().isWrapper()) {
+			getObject().getWrapped().type().registerDerivative(derivative);
+		}
 	}
 
 	void registerUpdatedDerivative(Derivative derivative) {
