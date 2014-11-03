@@ -31,6 +31,7 @@ import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.meta.ObjectMeta;
+import org.o42a.core.object.type.Derivative;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.fn.Init;
 
@@ -40,7 +41,12 @@ public final class Meta extends ObjectMeta {
 	private final Obj object;
 	private final Init<Nesting> nesting =
 			init(() -> getObject().createNesting());
-	private final Init<EscapeMode> escapeMode = init(this::detectEscapeMode);
+	private final Init<EscapeMode> ownEscapeMode =
+			init(this::detectOwnEscapeMode);
+	private final Init<EscapeMode> overridersEscapeMode =
+			init(this::detectOverridersEscapeMode);
+	private final Init<EscapeMode> derivativesEscapeMode =
+			init(this::detectDerivativesEscapeMode);
 
 	Meta(Obj object) {
 		this.object = object;
@@ -80,6 +86,24 @@ public final class Meta extends ObjectMeta {
 		return this.nesting.get();
 	}
 
+	/**
+	 * An escape mode of the object itself.
+	 *
+	 * @return <code>true</code> if ancestor is pure, the value definition does
+	 * not allow any
+	 */
+	public final EscapeMode ownEscapeMode() {
+		return this.ownEscapeMode.get();
+	}
+
+	public final EscapeMode overridersEscapeMode() {
+		return this.overridersEscapeMode.get();
+	}
+
+	public final EscapeMode derivativesEscapeMode() {
+		return this.derivativesEscapeMode.get();
+	}
+
 	public final Obj findIn(Scope enclosing) {
 
 		final Scope enclosingScope = getObject().getScope().getEnclosingScope();
@@ -91,10 +115,6 @@ public final class Meta extends ObjectMeta {
 		enclosing.assertDerivedFrom(enclosingScope);
 
 		return getNesting().findObjectIn(enclosing);
-	}
-
-	public final EscapeMode getEscapeMode() {
-		return this.escapeMode.get();
 	}
 
 	public final boolean is(Meta meta) {
@@ -109,7 +129,70 @@ public final class Meta extends ObjectMeta {
 		return "Meta[" + this.object + ']';
 	}
 
-	private EscapeMode detectEscapeMode() {
+	private EscapeMode detectOverridersEscapeMode() {
+
+		final Obj sampleDeclaration = getObject().type().getSampleDeclaration();
+
+		if (!sampleDeclaration.is(getObject())) {
+			return sampleDeclaration.meta().overridersEscapeMode();
+		}
+
+		EscapeMode escapeMode = ownEscapeMode();
+
+		if (escapeMode.isEscapePossible()) {
+			return escapeMode;
+		}
+		for (Derivative derivative : getObject().type().allDerivatives()) {
+			if (!derivative.isSample()) {
+				continue;
+			}
+
+			final Meta derivedMeta = derivative.getDerivedObject().meta();
+
+			if (!derivedMeta.isUpdated()) {
+				continue;
+			}
+			escapeMode = escapeMode.combine(
+					derivedMeta.overridersEscapeMode());
+			if (escapeMode.isEscapePossible()) {
+				break;
+			}
+		}
+
+		return escapeMode;
+	}
+
+	private EscapeMode detectDerivativesEscapeMode() {
+
+		final Obj sampleDeclaration = getObject().type().getSampleDeclaration();
+
+		if (!sampleDeclaration.is(getObject())) {
+			return sampleDeclaration.meta().derivativesEscapeMode();
+		}
+
+		EscapeMode escapeMode = ownEscapeMode();
+
+		if (escapeMode.isEscapePossible()) {
+			return escapeMode;
+		}
+		for (Derivative derivative : getObject().type().allDerivatives()) {
+
+			final Meta derivedMeta = derivative.getDerivedObject().meta();
+
+			if (!derivedMeta.isUpdated()) {
+				continue;
+			}
+			escapeMode = escapeMode.combine(
+					derivedMeta.derivativesEscapeMode());
+			if (escapeMode.isEscapePossible()) {
+				break;
+			}
+		}
+
+		return escapeMode;
+	}
+
+	private EscapeMode detectOwnEscapeMode() {
 
 		final TypeRef ancestor = getObject().type().getAncestor();
 
@@ -151,7 +234,7 @@ public final class Meta extends ObjectMeta {
 		final MemberField field = member.toField();
 
 		if (field != null) {
-			return field.field(dummyUser()).toObject().meta().getEscapeMode();
+			return field.field(dummyUser()).toObject().meta().ownEscapeMode();
 		}
 
 		final MemberAlias alias = member.toAlias();

@@ -19,8 +19,10 @@
 */
 package org.o42a.core.ref.impl;
 
-import static org.o42a.core.ref.RefPurity.IMPURE_REF;
-import static org.o42a.core.ref.RefPurity.PURE_REF;
+import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
+
+import java.util.function.Supplier;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
@@ -28,52 +30,56 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.alias.MemberAlias;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.object.state.Dep;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.RefPurity;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.sentence.Local;
 import org.o42a.core.value.link.Link;
 
 
-public class RefPurityDetector implements PathWalker {
+public class EscapeModeDetector implements PathWalker {
 
-	public static RefPurity detectPurity(Ref ref, Scope scope) {
+	public static EscapeMode detectEscapeMode(Ref ref, Scope scope) {
 
-		final RefPurityDetector detector = new RefPurityDetector();
+		final EscapeModeDetector detector = new EscapeModeDetector();
 
-		ref.resolve(scope.walkingResolver(detector)).resolve();
+		if (!ref.resolve(scope.walkingResolver(detector)).isResolved()) {
+			return ESCAPE_POSSIBLE;
+		}
 
-		return detector.purity;
+		return detector.escapeMode.get();
 	}
 
-	private RefPurity purity = PURE_REF;
+	private boolean isStatic;
+	private Supplier<EscapeMode> escapeMode;
 
-	private RefPurityDetector() {
+	private EscapeModeDetector() {
 	}
 
 	@Override
 	public boolean root(BoundPath path, Scope root) {
-		return pure();
+		this.isStatic = true;
+		return ownEscapeMode(root.toObject());
 	}
 
 	@Override
 	public boolean start(BoundPath path, Scope start) {
-		return pure();
+		this.isStatic = false;
+		return derivativesEscapeMode(start.toObject());
 	}
 
 	@Override
 	public boolean module(Step step, Obj module) {
-		return pure();
+		return ownEscapeMode(module);
 	}
 
 	@Override
 	public boolean staticScope(Step step, Scope scope) {
-		return pure();
+		return ownEscapeMode(scope.toObject());
 	}
 
 	@Override
@@ -82,7 +88,7 @@ public class RefPurityDetector implements PathWalker {
 			Step step,
 			Container enclosing,
 			ReversePath reversePath) {
-		return pure();
+		return derivativesEscapeMode(enclosing.toObject());
 	}
 
 	@Override
@@ -91,48 +97,41 @@ public class RefPurityDetector implements PathWalker {
 		final MemberField field = member.toField();
 
 		if (field != null) {
-			return pure();
+			return overridersEscapeMode(field.field(dummyUser()).toObject());
 		}
 
 		final MemberAlias alias = member.toAlias();
 
 		if (alias != null) {
-			return setPurity(alias.getRef().getPurity());
+			return nested(alias.getRef(), container.getScope());
 		}
 
-		return impure();
+		return escape();
 	}
 
 	@Override
 	public boolean dereference(Obj linkObject, Step step, Link link) {
-		return impure();
+		return escape();
 	}
 
 	@Override
 	public boolean local(Step step, Scope scope, Local local) {
-		return setPurity(local.ref().getPurity());
+		return nested(local.ref(), scope);
 	}
 
 	@Override
 	public boolean dep(Obj object, Dep dep) {
-		return setPurity(dep.ref().getPurity());
+		return nested(dep.ref(), object.getScope());
 	}
 
 	@Override
 	public boolean object(Step step, Obj object) {
-
-		final TypeRef ancestor = object.type().getAncestor();
-
-		if (ancestor == null) {
-			return pure();
-		}
-
-		return setPurity(ancestor.getRef().getPurity());
+		return overridersEscapeMode(object);
 	}
 
 	@Override
 	public boolean pathTrimmed(BoundPath path, Scope root) {
-		return true;
+		return root(path, root);
 	}
 
 	@Override
@@ -144,18 +143,45 @@ public class RefPurityDetector implements PathWalker {
 		return true;
 	}
 
-	private final boolean setPurity(RefPurity purity) {
-		this.purity = purity;
-		return purity.isPure();
+	private final boolean escape() {
+		this.escapeMode = null;
+		return false;
 	}
 
-	private final boolean pure() {
+	private final boolean ownEscapeMode(Obj object) {
+		if (object == null) {
+			return escape();
+		}
+		return escapeMode(() -> object.meta().ownEscapeMode());
+	}
+
+	private final boolean overridersEscapeMode(Obj object) {
+		if (object == null) {
+			return escape();
+		}
+		if (this.isStatic) {
+			return ownEscapeMode(object);
+		}
+		return escapeMode(() -> object.meta().overridersEscapeMode());
+	}
+
+	private final boolean derivativesEscapeMode(Obj object) {
+		if (object == null) {
+			return escape();
+		}
+		if (this.isStatic) {
+			return ownEscapeMode(object);
+		}
+		return escapeMode(() -> object.meta().derivativesEscapeMode());
+	}
+
+	private final boolean escapeMode(Supplier<EscapeMode> escapeMode) {
+		this.escapeMode = escapeMode;
 		return true;
 	}
 
-	private final boolean impure() {
-		this.purity = IMPURE_REF;
-		return false;
+	private final boolean nested(Ref ref, Scope scope) {
+		return ref.resolve(scope.walkingResolver(this)).isResolved();
 	}
 
 }
