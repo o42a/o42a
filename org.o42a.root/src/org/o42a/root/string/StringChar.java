@@ -78,8 +78,10 @@ final class StringChar extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public EscapeMode getEscapeMode() {
-		return string().getEscapeMode().combine(() -> index().getEscapeMode());
+	public EscapeMode escapeMode(Scope scope) {
+		return string()
+				.escapeMode(scope)
+				.combine(() -> index().escapeMode(scope));
 	}
 
 	@Override

@@ -21,7 +21,6 @@ package org.o42a.lib.console.impl;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
 import static org.o42a.lib.console.impl.PrintFn.PRINT;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
@@ -69,8 +68,8 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public EscapeMode getEscapeMode() {
-		return ESCAPE_IMPOSSIBLE;
+	public EscapeMode escapeMode(Scope scope) {
+		return text().escapeMode(scope);
 	}
 
 	@Override

@@ -21,11 +21,13 @@ package org.o42a.core.member;
 
 import static org.o42a.core.ir.cmd.Cmds.noCmd;
 import static org.o42a.core.ir.cmd.Cmds.noInlineCmd;
+import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.object.def.DefTarget;
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.Command;
 import org.o42a.core.st.CommandEnv;
@@ -60,6 +62,11 @@ public abstract class DeclarationCommand extends Command {
 	@Override
 	public final Action action(Resolver resolver) {
 		return new ExecuteCommand(this, Condition.TRUE);
+	}
+
+	@Override
+	public EscapeMode escapeMode(Scope scope) {
+		return ESCAPE_IMPOSSIBLE;
 	}
 
 	@Override

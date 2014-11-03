@@ -19,9 +19,6 @@
 */
 package org.o42a.compiler.ip.file;
 
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
-
-import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.*;
@@ -46,11 +43,6 @@ class HeaderStatement extends Statement {
 
 	public final Ref getRef() {
 		return this.ref;
-	}
-
-	@Override
-	public EscapeMode getEscapeMode() {
-		return ESCAPE_IMPOSSIBLE;
 	}
 
 	@Override

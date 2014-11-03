@@ -27,6 +27,7 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.object.def.impl.RefDef;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.CommandEnv;
@@ -62,6 +63,11 @@ public final class ReturnCommand extends RefCommand {
 		return new ReturnValue(
 				this,
 				getValueAdapter().value(resolver));
+	}
+
+	@Override
+	public EscapeMode escapeMode(Scope scope) {
+		return getRef().escapeMode(scope);
 	}
 
 	@Override

@@ -20,9 +20,7 @@
 package org.o42a.core.st.impl.declarative;
 
 import static org.o42a.core.ir.cmd.Control.mainControl;
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
-import static org.o42a.core.st.impl.declarative.DeclarativeBlockCommand.sentencesEscapeMode;
 import static org.o42a.util.fn.NullableInit.nullableInit;
 
 import java.util.List;
@@ -98,10 +96,7 @@ final class BlockDef extends Def {
 
 	@Override
 	public EscapeMode getEscapeMode() {
-		if (isYielding()) {
-			return ESCAPE_POSSIBLE;
-		}
-		return sentencesEscapeMode(getSentences());
+		return this.sentences.escapeMode(getScope());
 	}
 
 	public final List<Sentence> getSentences() {

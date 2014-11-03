@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref.impl.cond;
 
-import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.Local;
@@ -44,11 +43,6 @@ public final class RefCondition extends Statement {
 
 	public final Ref ref() {
 		return this.ref;
-	}
-
-	@Override
-	public EscapeMode getEscapeMode() {
-		return ref().getEscapeMode();
 	}
 
 	public final boolean isLocal() {

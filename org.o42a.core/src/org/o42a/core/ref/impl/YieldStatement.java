@@ -19,9 +19,6 @@
 */
 package org.o42a.core.ref.impl;
 
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
-
-import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
@@ -38,11 +35,6 @@ public class YieldStatement extends Statement {
 
 	public final Ref getValue() {
 		return this.value;
-	}
-
-	@Override
-	public EscapeMode getEscapeMode() {
-		return ESCAPE_POSSIBLE;
 	}
 
 	@Override

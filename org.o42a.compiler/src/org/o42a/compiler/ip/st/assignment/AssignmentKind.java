@@ -48,9 +48,9 @@ abstract class AssignmentKind {
 		return false;
 	}
 
-	public abstract EscapeMode getEscapeMode();
-
 	public abstract Action action(Resolver resolver);
+
+	public abstract EscapeMode escapeMode(Scope scope);
 
 	public abstract void resolve(FullResolver resolver);
 

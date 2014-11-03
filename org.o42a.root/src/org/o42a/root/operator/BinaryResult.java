@@ -77,13 +77,6 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 		this.rightOperandType = rightOperandType;
 	}
 
-	@Override
-	public EscapeMode getEscapeMode() {
-		return leftOperand()
-				.getEscapeMode()
-				.combine(() -> rightOperand().getEscapeMode());
-	}
-
 	@SuppressWarnings("unchecked")
 	public final TypeParameters<T> getResultParameters() {
 		return (TypeParameters<T>) type().getParameters();
@@ -95,6 +88,13 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 
 	public final ValueType<R> getRightOperandType() {
 		return this.rightOperandType;
+	}
+
+	@Override
+	public EscapeMode escapeMode(Scope scope) {
+		return leftOperand()
+				.escapeMode(scope)
+				.combine(() -> rightOperand().escapeMode(scope));
 	}
 
 	@Override

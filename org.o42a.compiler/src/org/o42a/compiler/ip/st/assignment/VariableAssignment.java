@@ -98,13 +98,13 @@ final class VariableAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public EscapeMode getEscapeMode() {
-		return ESCAPE_POSSIBLE;
+	public Action action(Resolver resolver) {
+		return new ExecuteCommand(getStatement(), Condition.RUNTIME);
 	}
 
 	@Override
-	public Action action(Resolver resolver) {
-		return new ExecuteCommand(getStatement(), Condition.RUNTIME);
+	public EscapeMode escapeMode(Scope scope) {
+		return ESCAPE_POSSIBLE;
 	}
 
 	@Override

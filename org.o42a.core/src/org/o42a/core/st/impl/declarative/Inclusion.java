@@ -19,10 +19,7 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
-
 import org.o42a.core.member.Inclusions;
-import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.Statements;
@@ -40,11 +37,6 @@ public class Inclusion extends Statement {
 	@Override
 	public boolean isValid() {
 		return true;
-	}
-
-	@Override
-	public EscapeMode getEscapeMode() {
-		return ESCAPE_IMPOSSIBLE;
 	}
 
 	@Override

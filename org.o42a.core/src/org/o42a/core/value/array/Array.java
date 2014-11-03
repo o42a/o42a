@@ -124,7 +124,8 @@ public final class Array extends Contained {
 		EscapeMode escapeMode = ESCAPE_IMPOSSIBLE;
 
 		for (ArrayItem item : getItems()) {
-			escapeMode = escapeMode.combine(item.getValueRef().getEscapeMode());
+			escapeMode = escapeMode.combine(
+					item.getValueRef().escapeMode(getScope()));
 			if (escapeMode.isEscapePossible()) {
 				break;
 			}

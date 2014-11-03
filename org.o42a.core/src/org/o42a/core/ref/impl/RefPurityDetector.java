@@ -42,11 +42,11 @@ import org.o42a.core.value.link.Link;
 
 public class RefPurityDetector implements PathWalker {
 
-	public static RefPurity detectPurity(Ref ref) {
+	public static RefPurity detectPurity(Ref ref, Scope scope) {
 
 		final RefPurityDetector detector = new RefPurityDetector();
 
-		ref.resolve(ref.getScope().walkingResolver(detector));
+		ref.resolve(scope.walkingResolver(detector));
 
 		return detector.purity;
 	}

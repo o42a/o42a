@@ -59,8 +59,8 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public EscapeMode getEscapeMode() {
-		return input().getEscapeMode();
+	public EscapeMode escapeMode(Scope scope) {
+		return input().escapeMode(scope);
 	}
 
 	@Override

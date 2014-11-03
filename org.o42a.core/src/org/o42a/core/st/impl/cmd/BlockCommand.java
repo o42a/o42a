@@ -24,6 +24,7 @@ import java.util.List;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.ir.cmd.InlineCmd;
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
@@ -68,6 +69,11 @@ public abstract class BlockCommand<B extends Block> extends Command {
 	@Override
 	public final Action action(Resolver resolver) {
 		return this.sentences.action(this, getBlock(), resolver);
+	}
+
+	@Override
+	public EscapeMode escapeMode(Scope scope) {
+		return this.sentences.escapeMode(scope);
 	}
 
 	@Override

@@ -129,16 +129,20 @@ public class Ref extends Statement implements RefBuilder {
 	}
 
 	public final RefPurity getPurity() {
-		return detectPurity(this);
+		return purity(getScope());
 	}
 
-	@Override
-	public EscapeMode getEscapeMode() {
-		if (!getPurity().isPure()) {
+	public final RefPurity purity(Scope scope) {
+		assert assertCompatible(scope);
+		return detectPurity(this, scope);
+	}
+
+	public EscapeMode escapeMode(Scope scope) {
+		if (!purity(scope).isPure()) {
 			return ESCAPE_POSSIBLE;
 		}
 
-		final Obj target = getResolution().toObject();
+		final Obj target = resolve(scope.resolver()).toObject();
 
 		if (target == null) {
 			return ESCAPE_POSSIBLE;

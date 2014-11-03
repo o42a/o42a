@@ -50,7 +50,7 @@ public class RtVoid extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public EscapeMode getEscapeMode() {
+	public EscapeMode escapeMode(Scope scope) {
 		return ESCAPE_IMPOSSIBLE;
 	}
 

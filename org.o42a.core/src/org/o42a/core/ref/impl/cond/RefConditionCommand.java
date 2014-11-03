@@ -27,6 +27,7 @@ import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.def.DefTarget;
+import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
@@ -93,6 +94,11 @@ final class RefConditionCommand extends Command {
 		return new ExecuteCommand(
 				this,
 				getRef().value(resolver).getKnowledge().getCondition());
+	}
+
+	@Override
+	public EscapeMode escapeMode(Scope scope) {
+		return getRef().escapeMode(scope);
 	}
 
 	@Override

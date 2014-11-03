@@ -99,12 +99,12 @@ public final class Statements extends Contained {
 		return this.targets = determineTargets();
 	}
 
-	public final EscapeMode getEscapeMode() {
+	public final EscapeMode escapeMode(Scope scope) {
 
 		EscapeMode escapeMode = ESCAPE_IMPOSSIBLE;
 
 		for (Command cmd : getCommands()) {
-			escapeMode = escapeMode.combine(cmd.getStatement().getEscapeMode());
+			escapeMode = escapeMode.combine(cmd.escapeMode(scope));
 			if (escapeMode.isEscapePossible()) {
 				break;
 			}

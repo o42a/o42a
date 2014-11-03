@@ -20,7 +20,6 @@
 package org.o42a.root.adapter;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
 
 import org.o42a.common.builtin.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
@@ -51,14 +50,14 @@ public abstract class BuiltinConverter<F, T> extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public EscapeMode getEscapeMode() {
-		return ESCAPE_IMPOSSIBLE;
-	}
-
-	@Override
 	@SuppressWarnings("unchecked")
 	public TypeParameters<T> getBuiltinTypeParameters() {
 		return (TypeParameters<T>) type().getParameters();
+	}
+
+	@Override
+	public EscapeMode escapeMode(Scope scope) {
+		return object().escapeMode(scope);
 	}
 
 	@Override

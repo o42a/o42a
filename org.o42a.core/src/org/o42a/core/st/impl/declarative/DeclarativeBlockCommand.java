@@ -19,36 +19,19 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
-
-import java.util.List;
-
 import org.o42a.core.Scope;
-import org.o42a.core.object.def.*;
+import org.o42a.core.object.def.DefTarget;
+import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.def.DefinitionsBuilder;
 import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.CommandTargets;
 import org.o42a.core.st.impl.cmd.BlockCommand;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.st.sentence.Sentence;
 
 
 public final class DeclarativeBlockCommand
 		extends BlockCommand<DeclarativeBlock>
 		implements DefinitionsBuilder {
-
-	public static EscapeMode sentencesEscapeMode(List<Sentence> sentences) {
-
-		EscapeMode escapeMode = ESCAPE_IMPOSSIBLE;
-
-		for (Sentence sentence : sentences) {
-			escapeMode = escapeMode.combine(sentence.getEscapeMode());
-			if (escapeMode.isEscapePossible()) {
-				break;
-			}
-		}
-
-		return escapeMode;
-	}
 
 	private BlockDefinitions blockDefinitions;
 

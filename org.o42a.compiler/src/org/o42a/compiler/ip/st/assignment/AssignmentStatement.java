@@ -27,7 +27,6 @@ import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.compiler.ip.access.AccessDistributor;
 import org.o42a.compiler.ip.access.AccessRules;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.ref.Resolution;
@@ -98,11 +97,6 @@ public class AssignmentStatement extends Statement {
 	@Override
 	public boolean isValid() {
 		return !getAssignmentKind().isError();
-	}
-
-	@Override
-	public EscapeMode getEscapeMode() {
-		return getAssignmentKind().getEscapeMode();
 	}
 
 	@Override
