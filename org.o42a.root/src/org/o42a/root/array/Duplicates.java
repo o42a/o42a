@@ -78,7 +78,7 @@ public class Duplicates extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public EscapeMode getEscapeMode() {
+	public EscapeMode escapeMode(Scope scope) {
 		return ESCAPE_POSSIBLE;
 	}
 

@@ -57,7 +57,7 @@ public final class RefDef extends Def {
 
 	@Override
 	public EscapeMode getEscapeMode() {
-		return this.ref.getEscapeMode();
+		return this.ref.escapeMode(getScope());
 	}
 
 	@Override

@@ -98,15 +98,16 @@ public abstract class Sentence extends Contained {
 		return getKind().isInterrogative() || getBlock().isInterrogation();
 	}
 
-	public final EscapeMode getEscapeMode() {
+	public final EscapeMode escapeMode(Scope scope) {
 
 		final Sentence prerequisite = getPrerequisite();
 
 		if (prerequisite != null) {
-			return prerequisite.getEscapeMode().combine(this::altsEscapeMode);
+			return prerequisite.escapeMode(scope)
+					.combine(() -> altsEscapeMode(scope));
 		}
 
-		return altsEscapeMode();
+		return altsEscapeMode(scope);
 	}
 
 	public final List<Statements> getAlternatives() {
@@ -416,12 +417,12 @@ public abstract class Sentence extends Contained {
 		return result.add(exitCommand(getLocation()));
 	}
 
-	private EscapeMode altsEscapeMode() {
+	private EscapeMode altsEscapeMode(Scope scope) {
 
 		EscapeMode escapeMode = ESCAPE_IMPOSSIBLE;
 
 		for (Statements alt : getAlternatives()) {
-			escapeMode.combine(alt.getEscapeMode());
+			escapeMode.combine(alt.escapeMode(scope));
 			if (escapeMode.isEscapePossible()) {
 				break;
 			}

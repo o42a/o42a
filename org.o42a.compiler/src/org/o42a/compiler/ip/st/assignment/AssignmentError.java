@@ -45,13 +45,13 @@ final class AssignmentError extends AssignmentKind {
 	}
 
 	@Override
-	public EscapeMode getEscapeMode() {
-		return ESCAPE_IMPOSSIBLE;
+	public Action action(Resolver resolver) {
+		return new ExecuteCommand(getStatement(), Condition.FALSE);
 	}
 
 	@Override
-	public Action action(Resolver resolver) {
-		return new ExecuteCommand(getStatement(), Condition.FALSE);
+	public EscapeMode escapeMode(Scope scope) {
+		return ESCAPE_IMPOSSIBLE;
 	}
 
 	@Override

@@ -36,11 +36,11 @@ public interface Builtin extends LocationInfo {
 
 	boolean isConstantBuiltin();
 
-	EscapeMode getEscapeMode();
-
 	TypeParameters<?> getBuiltinTypeParameters();
 
 	Obj toObject();
+
+	EscapeMode escapeMode(Scope scope);
 
 	Value<?> calculateBuiltin(Resolver resolver);
 

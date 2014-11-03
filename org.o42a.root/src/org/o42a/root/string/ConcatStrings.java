@@ -64,8 +64,8 @@ final class ConcatStrings extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public EscapeMode getEscapeMode() {
-		return what().getEscapeMode().combine(() -> with().getEscapeMode());
+	public EscapeMode escapeMode(Scope scope) {
+		return what().escapeMode(scope).combine(() -> with().escapeMode(scope));
 	}
 
 	@Override

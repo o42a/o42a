@@ -19,10 +19,7 @@
 */
 package org.o42a.core.member;
 
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
-
 import org.o42a.core.Distributor;
-import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Statement;
 
@@ -38,11 +35,6 @@ public abstract class DeclarationStatement extends Statement {
 	@Override
 	public boolean isValid() {
 		return true;
-	}
-
-	@Override
-	public final EscapeMode getEscapeMode() {
-		return ESCAPE_IMPOSSIBLE;
 	}
 
 	public abstract Member toMember();

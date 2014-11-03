@@ -19,7 +19,6 @@
 */
 package org.o42a.common.macro.st;
 
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
 import static org.o42a.core.value.macro.MacroConsumer.DEFAULT_MACRO_EXPANSION_LOGGER;
 import static org.o42a.util.fn.Cache.cache;
 
@@ -86,6 +85,11 @@ final class ExpandMacroCommand extends Command {
 	}
 
 	@Override
+	public EscapeMode escapeMode(Scope scope) {
+		return valueAdapter(scope).getAdaptedRef().escapeMode(scope);
+	}
+
+	@Override
 	public void resolveTargets(TargetResolver resolver, Scope origin) {
 		valueAdapter(origin).resolveTargets(resolver);
 	}
@@ -138,21 +142,6 @@ final class ExpandMacroCommand extends Command {
 	@Override
 	protected void fullyResolve(FullResolver resolver) {
 		valueAdapter(resolver.getScope()).resolveAll(resolver);
-	}
-
-	EscapeMode escapeMode() {
-
-		EscapeMode escapeMode = ESCAPE_IMPOSSIBLE;
-
-		for (ValueAdapter adapter : this.adapters.cache().values()) {
-			escapeMode =
-					escapeMode.combine(adapter.getAdaptedRef().getEscapeMode());
-			if (escapeMode.isEscapePossible()) {
-				break;
-			}
-		}
-
-		return escapeMode;
 	}
 
 	private ValueAdapter createAdapterIn(Scope scope) {

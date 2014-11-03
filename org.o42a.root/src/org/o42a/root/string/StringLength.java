@@ -54,8 +54,8 @@ final class StringLength extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public EscapeMode getEscapeMode() {
-		return string().getEscapeMode();
+	public EscapeMode escapeMode(Scope scope) {
+		return string().escapeMode(scope);
 	}
 
 	@Override

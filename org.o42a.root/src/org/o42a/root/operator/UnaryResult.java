@@ -77,8 +77,8 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public EscapeMode getEscapeMode() {
-		return operand().getEscapeMode();
+	public EscapeMode escapeMode(Scope scope) {
+		return operand().escapeMode(scope);
 	}
 
 	@Override

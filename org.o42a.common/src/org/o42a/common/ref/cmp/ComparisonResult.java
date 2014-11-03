@@ -58,8 +58,8 @@ final class ComparisonResult extends BuiltinObject {
 	}
 
 	@Override
-	public EscapeMode getEscapeMode() {
-		return this.cmp.getEscapeMode();
+	public EscapeMode escapeMode(Scope scope) {
+		return this.cmp.escapeMode(scope);
 	}
 
 	@Override

@@ -82,15 +82,15 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public EscapeMode getEscapeMode() {
-		return getRef().getEscapeMode();
-	}
-
-	@Override
 	public Action action(Resolver resolver) {
 		return new ExecuteCommand(
 				getStatement(),
 				getRef().value(resolver).getKnowledge().getCondition());
+	}
+
+	@Override
+	public EscapeMode escapeMode(Scope scope) {
+		return getRef().escapeMode(scope);
 	}
 
 	@Override

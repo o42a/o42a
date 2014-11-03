@@ -58,7 +58,7 @@ public class BuiltinDef extends Def {
 
 	@Override
 	public EscapeMode getEscapeMode() {
-		return this.builtin.getEscapeMode();
+		return this.builtin.escapeMode(getScope());
 	}
 
 	@Override

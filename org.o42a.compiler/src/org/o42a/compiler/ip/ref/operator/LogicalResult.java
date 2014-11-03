@@ -48,8 +48,8 @@ final class LogicalResult extends BuiltinObject {
 	}
 
 	@Override
-	public EscapeMode getEscapeMode() {
-		return operand().getEscapeMode();
+	public EscapeMode escapeMode(Scope scope) {
+		return operand().escapeMode(scope);
 	}
 
 	@Override

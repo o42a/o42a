@@ -65,7 +65,7 @@ public class FalseObject extends BuiltinObject {
 	}
 
 	@Override
-	public EscapeMode getEscapeMode() {
+	public EscapeMode escapeMode(Scope scope) {
 		return ESCAPE_IMPOSSIBLE;
 	}
 

@@ -69,11 +69,11 @@ final class SubString extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public EscapeMode getEscapeMode() {
+	public EscapeMode escapeMode(Scope scope) {
 		return string()
-				.getEscapeMode()
-				.combine(() -> from().getEscapeMode())
-				.combine(() -> to().getEscapeMode());
+				.escapeMode(scope)
+				.combine(() -> from().escapeMode(scope))
+				.combine(() -> to().escapeMode(scope));
 	}
 
 	@Override

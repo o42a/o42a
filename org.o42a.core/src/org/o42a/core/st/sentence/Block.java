@@ -19,14 +19,11 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.impl.declarative.DeclarativeBlockCommand.sentencesEscapeMode;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.imperative.NamedBlocks;
@@ -79,11 +76,6 @@ public abstract class Block extends Statement {
 	@Override
 	public boolean isValid() {
 		return true;
-	}
-
-	@Override
-	public EscapeMode getEscapeMode() {
-		return sentencesEscapeMode(getSentences());
 	}
 
 	public final Statements getEnclosing() {
