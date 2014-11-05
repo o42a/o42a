@@ -19,6 +19,10 @@
 */
 package org.o42a.core.object.def;
 
+import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
+import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
+
+import org.o42a.core.Scope;
 import org.o42a.core.ref.Ref;
 
 
@@ -43,6 +47,16 @@ public final class DefTarget {
 
 	public final Ref getRef() {
 		return this.ref;
+	}
+
+	public final EscapeMode escapeMode(Scope scope) {
+		if (!exists()) {
+			return ESCAPE_POSSIBLE;
+		}
+		if (isUnknown()) {
+			return ESCAPE_IMPOSSIBLE;
+		}
+		return getRef().escapeMode(scope);
 	}
 
 	@Override

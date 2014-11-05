@@ -19,42 +19,30 @@
 */
 package org.o42a.core.value.link.impl;
 
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
-
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.value.ValueEscapeMode;
 
 
-public class LinkValueEscapeMode implements ValueEscapeMode {
+public class LinkTargetEscapeMode implements ValueEscapeMode {
 
-	public static final LinkValueEscapeMode LINK_VALUE_ESCAPE_MODE =
-			new LinkValueEscapeMode();
+	public static final LinkTargetEscapeMode LINK_TARGET_ESCAPE_MODE =
+			new LinkTargetEscapeMode();
 
-	private LinkValueEscapeMode() {
+	private LinkTargetEscapeMode() {
 	}
 
 	@Override
 	public EscapeMode valueEscapeMode(Obj object) {
-
-		final DefTarget target = object.value().getDefinitions().target();
-
-		if (!target.exists()) {
-			return ESCAPE_POSSIBLE;
-		}
-		if (target.isUnknown()) {
-			return ESCAPE_IMPOSSIBLE;
-		}
-
-		return target.getRef().escapeMode(
-				object.getScope().getEnclosingScope());
+		return object.value()
+				.getDefinitions()
+				.target()
+				.escapeMode(object.getScope().getEnclosingScope());
 	}
 
 	@Override
 	public String toString() {
-		return "LINK_VALUE_ESCAPE_MODE";
+		return "LINK_TARGET_ESCAPE_MODE";
 	}
 
 }
