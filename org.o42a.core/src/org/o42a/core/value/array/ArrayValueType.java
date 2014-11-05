@@ -23,6 +23,7 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 import static org.o42a.core.source.Intrinsic.intrInit;
 import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
+import static org.o42a.core.value.ValueEscapeMode.VALUE_ESCAPE_POSSIBLE;
 import static org.o42a.core.value.array.impl.ArrayValueIRDesc.ARRAY_VALUE_IR_DESC;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
@@ -84,6 +85,11 @@ public class ArrayValueType extends ValueType<Array> {
 	@Override
 	public final boolean isVariable() {
 		return this.variable;
+	}
+
+	@Override
+	public ValueEscapeMode valueEscapeMode() {
+		return VALUE_ESCAPE_POSSIBLE;
 	}
 
 	public final MemberKey itemTypeKey(Intrinsics intrinsics) {

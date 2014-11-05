@@ -119,6 +119,8 @@ public abstract class ValueType<T> {
 
 	public abstract boolean isVariable();
 
+	public abstract ValueEscapeMode valueEscapeMode();
+
 	public final boolean is(ValueType<?> valueType) {
 		return this == valueType;
 	}

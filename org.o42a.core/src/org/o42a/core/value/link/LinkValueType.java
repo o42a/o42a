@@ -22,6 +22,8 @@ package org.o42a.core.value.link;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.source.Intrinsic.intrInit;
+import static org.o42a.core.value.ValueEscapeMode.VALUE_ESCAPE_POSSIBLE;
+import static org.o42a.core.value.link.impl.LinkValueEscapeMode.LINK_VALUE_ESCAPE_MODE;
 import static org.o42a.core.value.link.impl.LinkValueIRDesc.LINK_VALUE_IR_DESC;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
@@ -53,6 +55,11 @@ public abstract class LinkValueType extends ValueType<KnownLink> {
 	public static final LinkValueType LINK = new LinkValueType("link") {
 
 		@Override
+		public ValueEscapeMode valueEscapeMode() {
+			return LINK_VALUE_ESCAPE_MODE;
+		}
+
+		@Override
 		public Obj typeObject(Intrinsics intrinsics) {
 			return intrinsics.getLink();
 		}
@@ -60,6 +67,11 @@ public abstract class LinkValueType extends ValueType<KnownLink> {
 	};
 
 	public static final LinkValueType VARIABLE = new LinkValueType("variable") {
+
+		@Override
+		public ValueEscapeMode valueEscapeMode() {
+			return VALUE_ESCAPE_POSSIBLE;
+		}
 
 		@Override
 		public Obj typeObject(Intrinsics intrinsics) {
