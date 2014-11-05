@@ -19,6 +19,8 @@
 */
 package org.o42a.core.value;
 
+import static org.o42a.core.value.ValueEscapeMode.DEFINITIONS_VALUE_ESCAPE;
+
 import org.o42a.core.Distributor;
 import org.o42a.core.object.value.Statefulness;
 import org.o42a.core.ref.FullResolver;
@@ -45,6 +47,11 @@ public abstract class SingleValueType<T> extends ValueType<T> {
 	@Override
 	public final boolean isVariable() {
 		return false;
+	}
+
+	@Override
+	public final ValueEscapeMode valueEscapeMode() {
+		return DEFINITIONS_VALUE_ESCAPE;
 	}
 
 	public final Ref constantRef(

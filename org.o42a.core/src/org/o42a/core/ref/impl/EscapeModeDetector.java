@@ -20,6 +20,7 @@
 package org.o42a.core.ref.impl;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
 import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
 
 import java.util.function.Supplier;
@@ -111,7 +112,14 @@ public class EscapeModeDetector implements PathWalker {
 
 	@Override
 	public boolean dereference(Obj linkObject, Step step, Link link) {
-		return escape();
+
+		final EscapeMode linkEscapeMode = this.escapeMode.get();
+
+		if (linkEscapeMode.isEscapePossible()) {
+			return escape();
+		}
+
+		return escapeMode(() -> ESCAPE_IMPOSSIBLE);
 	}
 
 	@Override

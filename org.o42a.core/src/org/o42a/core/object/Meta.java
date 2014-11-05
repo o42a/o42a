@@ -200,11 +200,15 @@ public final class Meta extends ObjectMeta {
 			return ESCAPE_POSSIBLE;
 		}
 
-		final EscapeMode defEscapeMode =
-				getObject().value().getDefinitions().getEscapeMode();
+		final EscapeMode valueEscapeMode =
+				getObject()
+				.type()
+				.getValueType()
+				.valueEscapeMode()
+				.valueEscapeMode(getObject());
 
-		if (defEscapeMode.isEscapePossible()) {
-			return defEscapeMode;
+		if (valueEscapeMode.isEscapePossible()) {
+			return valueEscapeMode;
 		}
 
 		return membersEscapeMode();
