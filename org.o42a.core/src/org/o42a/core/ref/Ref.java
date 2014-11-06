@@ -128,10 +128,6 @@ public class Ref extends Statement implements RefBuilder {
 		return typeParameters != null ? typeParameters.getValueType() : null;
 	}
 
-	public final RefPurity getPurity() {
-		return purity(getScope());
-	}
-
 	public final RefPurity purity(Scope scope) {
 		assert assertCompatible(scope);
 		return detectPurity(this, scope);

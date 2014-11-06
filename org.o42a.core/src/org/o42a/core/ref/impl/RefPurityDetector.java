@@ -97,7 +97,7 @@ public class RefPurityDetector implements PathWalker {
 		final MemberAlias alias = member.toAlias();
 
 		if (alias != null) {
-			return setPurity(alias.getRef().getPurity());
+			return setPurity(alias.getRef().purity(container.getScope()));
 		}
 
 		return impure();
@@ -110,12 +110,12 @@ public class RefPurityDetector implements PathWalker {
 
 	@Override
 	public boolean local(Step step, Scope scope, Local local) {
-		return setPurity(local.ref().getPurity());
+		return setPurity(local.ref().purity(scope));
 	}
 
 	@Override
 	public boolean dep(Obj object, Dep dep) {
-		return setPurity(dep.ref().getPurity());
+		return setPurity(dep.ref().purity(object.getScope()));
 	}
 
 	@Override
@@ -127,7 +127,8 @@ public class RefPurityDetector implements PathWalker {
 			return pure();
 		}
 
-		return setPurity(ancestor.getRef().getPurity());
+		return setPurity(
+				ancestor.getRef().purity(object.getScope().getEnclosingScope()));
 	}
 
 	@Override

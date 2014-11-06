@@ -199,7 +199,10 @@ public final class Meta extends ObjectMeta {
 
 		final TypeRef ancestor = getObject().type().getAncestor();
 
-		if (ancestor != null && !ancestor.getRef().getPurity().isPure()) {
+		if (ancestor != null
+				&& !ancestor.getRef()
+				.purity(getObject().getScope().getEnclosingScope())
+				.isPure()) {
 			return ESCAPE_POSSIBLE;
 		}
 
@@ -247,7 +250,7 @@ public final class Meta extends ObjectMeta {
 		final MemberAlias alias = member.toAlias();
 
 		if (alias != null) {
-			if (alias.getRef().getPurity().isPure()) {
+			if (alias.getRef().purity(getObject().getScope()).isPure()) {
 				return ESCAPE_IMPOSSIBLE;
 			}
 			return ESCAPE_POSSIBLE;
