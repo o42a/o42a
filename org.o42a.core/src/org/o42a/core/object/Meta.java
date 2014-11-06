@@ -193,6 +193,9 @@ public final class Meta extends ObjectMeta {
 	}
 
 	private EscapeMode detectOwnEscapeMode() {
+		if (!getObject().value().getStatefulness().isStateless()) {
+			return ESCAPE_POSSIBLE;
+		}
 
 		final TypeRef ancestor = getObject().type().getAncestor();
 
