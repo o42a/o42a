@@ -34,6 +34,8 @@ import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
 import static org.o42a.core.value.link.TargetRef.targetRef;
 import static org.o42a.util.fn.Init.init;
 
+import java.util.function.Function;
+
 import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
@@ -133,9 +135,15 @@ public class Ref extends Statement implements RefBuilder {
 		return detectPurity(this, scope);
 	}
 
-	public EscapeMode escapeMode(Scope scope) {
+	public final EscapeMode escapeMode(Scope scope) {
+		return escapeMode(scope, null);
+	}
+
+	public final EscapeMode escapeMode(
+			Scope scope,
+			Function<Obj, EscapeMode> detect) {
 		assert assertCompatible(scope);
-		return detectEscapeMode(this, scope);
+		return detectEscapeMode(this, scope, detect);
 	}
 
 	public final Ref setLocation(LocationInfo location) {
