@@ -22,13 +22,11 @@ package org.o42a.core.object.meta;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
 import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
+import static org.o42a.core.object.meta.DetectEscapeMode.OWN_ESCAPE_MODE;
 import static org.o42a.core.object.meta.EscapeDetectionMethod.ALWAYS_ESCAPE;
 import static org.o42a.core.object.meta.EscapeDetectionMethod.ANCESTOR_ESCAPE;
 import static org.o42a.core.object.meta.EscapeDetectionMethod.OBJECT_ESCAPE;
-import static org.o42a.util.Misc.coalesce;
 import static org.o42a.util.fn.Init.init;
-
-import java.util.function.Function;
 
 import org.o42a.core.member.Member;
 import org.o42a.core.member.alias.MemberAlias;
@@ -40,9 +38,6 @@ import org.o42a.util.fn.Init;
 
 
 public final class ObjectAnalysis {
-
-	private static final Function<Obj, EscapeMode> OWN_ESCAPE_MODE =
-			obj -> obj.analysis().ownEscapeMode();
 
 	private final Obj object;
 
@@ -92,24 +87,36 @@ public final class ObjectAnalysis {
 		return this.overridersEscapeMode.get();
 	}
 
-	public EscapeMode overridersEscapeMode(Function<Obj, EscapeMode> f) {
-		return escapeDetectionMethod().overridersEscapeMode(
+	public EscapeMode overridersEscapeMode(DetectEscapeMode detect) {
+		return escapeDetectionMethod(detect).overridersEscapeMode(
 				getObject(),
-				coalesce(f, OWN_ESCAPE_MODE));
+				detect);
 	}
 
 	public final EscapeMode derivativesEscapeMode() {
 		return this.derivativesEscapeMode.get();
 	}
 
-	public EscapeMode derivativesEscapeMode(Function<Obj, EscapeMode> f) {
-		return escapeDetectionMethod().derivativesEscapeMode(
+	public EscapeMode derivativesEscapeMode(DetectEscapeMode detect) {
+		return escapeDetectionMethod(detect).derivativesEscapeMode(
 				getObject(),
-				coalesce(f, OWN_ESCAPE_MODE));
+				detect);
 	}
 
 	private final EscapeDetectionMethod escapeDetectionMethod() {
 		return this.escapeDetectionMethod.get();
+	}
+
+	private final EscapeDetectionMethod escapeDetectionMethod(
+			DetectEscapeMode detect) {
+
+		final EscapeDetectionMethod method = escapeDetectionMethod();
+
+		if (!detect.objectDefinitionsIgnored()) {
+			return method;
+		}
+
+		return method.ignoreObjectDefinitions();
 	}
 
 	private EscapeDetectionMethod chooseEscapeDetectionMethod() {

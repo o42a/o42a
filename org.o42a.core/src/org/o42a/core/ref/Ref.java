@@ -21,6 +21,7 @@ package org.o42a.core.ref;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.AdapterId.adapterId;
+import static org.o42a.core.object.meta.DetectEscapeMode.OWN_ESCAPE_MODE;
 import static org.o42a.core.ref.RefUsage.TYPE_PARAMETER_REF_USAGE;
 import static org.o42a.core.ref.impl.EscapeModeDetector.detectEscapeMode;
 import static org.o42a.core.ref.impl.RefPurityDetector.detectPurity;
@@ -33,8 +34,6 @@ import static org.o42a.core.ref.type.impl.ValueTypeInterface.valueTypeInterfaceO
 import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
 import static org.o42a.core.value.link.TargetRef.targetRef;
 import static org.o42a.util.fn.Init.init;
-
-import java.util.function.Function;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
@@ -49,6 +48,7 @@ import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.def.EscapeMode;
+import org.o42a.core.object.meta.DetectEscapeMode;
 import org.o42a.core.ref.impl.ReturnCommand;
 import org.o42a.core.ref.impl.YieldStatement;
 import org.o42a.core.ref.path.*;
@@ -136,12 +136,12 @@ public class Ref extends Statement implements RefBuilder {
 	}
 
 	public final EscapeMode escapeMode(Scope scope) {
-		return escapeMode(scope, null);
+		return escapeMode(scope, OWN_ESCAPE_MODE);
 	}
 
 	public final EscapeMode escapeMode(
 			Scope scope,
-			Function<Obj, EscapeMode> detect) {
+			DetectEscapeMode detect) {
 		assert assertCompatible(scope);
 		return detectEscapeMode(this, scope, detect);
 	}
