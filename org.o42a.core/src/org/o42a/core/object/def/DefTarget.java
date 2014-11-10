@@ -21,6 +21,7 @@ package org.o42a.core.object.def;
 
 import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
 import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
+import static org.o42a.core.object.meta.DetectEscapeMode.ANCESTOR_ESCAPE_MODE;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Ref;
@@ -56,9 +57,7 @@ public final class DefTarget {
 		if (isUnknown()) {
 			return ESCAPE_IMPOSSIBLE;
 		}
-		return getRef().escapeMode(
-				scope,
-				obj -> obj.analysis().ancestorEscapeMode());
+		return getRef().escapeMode(scope, ANCESTOR_ESCAPE_MODE);
 	}
 
 	@Override

@@ -23,7 +23,6 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
 import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.o42a.core.Container;
@@ -33,6 +32,7 @@ import org.o42a.core.member.alias.MemberAlias;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.EscapeMode;
+import org.o42a.core.object.meta.DetectEscapeMode;
 import org.o42a.core.object.state.Dep;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ReversePath;
@@ -48,7 +48,7 @@ public class EscapeModeDetector implements PathWalker {
 	public static EscapeMode detectEscapeMode(
 			Ref ref,
 			Scope scope,
-			Function<Obj, EscapeMode> detect) {
+			DetectEscapeMode detect) {
 
 		final EscapeModeDetector detector = new EscapeModeDetector(detect);
 
@@ -59,11 +59,11 @@ public class EscapeModeDetector implements PathWalker {
 		return detector.escapeMode.get();
 	}
 
-	private final Function<Obj, EscapeMode> detect;
+	private final DetectEscapeMode detect;
 	private boolean isStatic;
 	private Supplier<EscapeMode> escapeMode;
 
-	private EscapeModeDetector(Function<Obj, EscapeMode> detect) {
+	private EscapeModeDetector(DetectEscapeMode detect) {
 		this.detect = detect;
 	}
 
