@@ -23,6 +23,7 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
 import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.o42a.core.Container;
@@ -44,9 +45,12 @@ import org.o42a.core.value.link.Link;
 
 public class EscapeModeDetector implements PathWalker {
 
-	public static EscapeMode detectEscapeMode(Ref ref, Scope scope) {
+	public static EscapeMode detectEscapeMode(
+			Ref ref,
+			Scope scope,
+			Function<Obj, EscapeMode> detect) {
 
-		final EscapeModeDetector detector = new EscapeModeDetector();
+		final EscapeModeDetector detector = new EscapeModeDetector(detect);
 
 		if (!ref.resolve(scope.walkingResolver(detector)).isResolved()) {
 			return ESCAPE_POSSIBLE;
@@ -55,10 +59,12 @@ public class EscapeModeDetector implements PathWalker {
 		return detector.escapeMode.get();
 	}
 
+	private final Function<Obj, EscapeMode> detect;
 	private boolean isStatic;
 	private Supplier<EscapeMode> escapeMode;
 
-	private EscapeModeDetector() {
+	private EscapeModeDetector(Function<Obj, EscapeMode> detect) {
+		this.detect = detect;
 	}
 
 	@Override
@@ -170,7 +176,8 @@ public class EscapeModeDetector implements PathWalker {
 		if (this.isStatic) {
 			return ownEscapeMode(object);
 		}
-		return escapeMode(() -> object.analysis().overridersEscapeMode());
+		return escapeMode(
+				() -> object.analysis().overridersEscapeMode(this.detect));
 	}
 
 	private final boolean derivativesEscapeMode(Obj object) {
@@ -180,7 +187,8 @@ public class EscapeModeDetector implements PathWalker {
 		if (this.isStatic) {
 			return ownEscapeMode(object);
 		}
-		return escapeMode(() -> object.analysis().derivativesEscapeMode());
+		return escapeMode(
+				() -> object.analysis().derivativesEscapeMode(this.detect));
 	}
 
 	private final boolean escapeMode(Supplier<EscapeMode> escapeMode) {

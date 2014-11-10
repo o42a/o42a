@@ -25,6 +25,7 @@ import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
 import static org.o42a.core.object.meta.EscapeDetectionMethod.ALWAYS_ESCAPE;
 import static org.o42a.core.object.meta.EscapeDetectionMethod.ANCESTOR_ESCAPE;
 import static org.o42a.core.object.meta.EscapeDetectionMethod.OBJECT_ESCAPE;
+import static org.o42a.util.Misc.coalesce;
 import static org.o42a.util.fn.Init.init;
 
 import java.util.function.Function;
@@ -40,6 +41,9 @@ import org.o42a.util.fn.Init;
 
 public final class ObjectAnalysis {
 
+	private static final Function<Obj, EscapeMode> OWN_ESCAPE_MODE =
+			obj -> obj.analysis().ownEscapeMode();
+
 	private final Obj object;
 
 	private final Init<EscapeDetectionMethod> escapeDetectionMethod =
@@ -47,11 +51,9 @@ public final class ObjectAnalysis {
 	private final Init<EscapeMode> ownEscapeMode =
 			init(this::detectOwnEscapeMode);
 	private final Init<EscapeMode> overridersEscapeMode =
-			init(() -> overridersEscapeMode(
-					obj -> obj.analysis().ownEscapeMode()));
+			init(() -> overridersEscapeMode(OWN_ESCAPE_MODE));
 	private final Init<EscapeMode> derivativesEscapeMode =
-			init(() -> derivativesEscapeMode(
-					obj -> obj.analysis().ownEscapeMode()));
+			init(() -> derivativesEscapeMode(OWN_ESCAPE_MODE));
 
 	ObjectAnalysis(Obj object) {
 		this.object = object;
@@ -59,6 +61,21 @@ public final class ObjectAnalysis {
 
 	public final Obj getObject() {
 		return this.object;
+	}
+
+	/**
+	 * Detects an escape mode of object ancestor expression.
+	 *
+	 * @return escape mode of ancestor access operation.
+	 */
+	public final EscapeMode ancestorEscapeMode() {
+		if (!escapeDetectionMethod().alwaysEscapes()) {
+			return ESCAPE_IMPOSSIBLE;
+		}
+		if (!escapeDetectionMethodByAncestor().alwaysEscapes()) {
+			return ESCAPE_IMPOSSIBLE;
+		}
+		return ESCAPE_POSSIBLE;
 	}
 
 	/**
@@ -76,7 +93,9 @@ public final class ObjectAnalysis {
 	}
 
 	public EscapeMode overridersEscapeMode(Function<Obj, EscapeMode> f) {
-		return escapeDetectionMethod().overridersEscapeMode(getObject(), f);
+		return escapeDetectionMethod().overridersEscapeMode(
+				getObject(),
+				coalesce(f, OWN_ESCAPE_MODE));
 	}
 
 	public final EscapeMode derivativesEscapeMode() {
@@ -84,7 +103,9 @@ public final class ObjectAnalysis {
 	}
 
 	public EscapeMode derivativesEscapeMode(Function<Obj, EscapeMode> f) {
-		return escapeDetectionMethod().derivativesEscapeMode(getObject(), f);
+		return escapeDetectionMethod().derivativesEscapeMode(
+				getObject(),
+				coalesce(f, OWN_ESCAPE_MODE));
 	}
 
 	private final EscapeDetectionMethod escapeDetectionMethod() {
@@ -96,6 +117,10 @@ public final class ObjectAnalysis {
 			// Stateful and eager objects always escape.
 			return ALWAYS_ESCAPE;
 		}
+		return escapeDetectionMethodByAncestor();
+	}
+
+	private EscapeDetectionMethod escapeDetectionMethodByAncestor() {
 
 		final TypeRef ancestor = getObject().type().getAncestor();
 

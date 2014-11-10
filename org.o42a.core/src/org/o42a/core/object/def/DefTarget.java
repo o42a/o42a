@@ -56,10 +56,9 @@ public final class DefTarget {
 		if (isUnknown()) {
 			return ESCAPE_IMPOSSIBLE;
 		}
-		if (getRef().purity(scope).isPure()) {
-			return ESCAPE_IMPOSSIBLE;
-		}
-		return ESCAPE_POSSIBLE;
+		return getRef().escapeMode(
+				scope,
+				obj -> obj.analysis().ancestorEscapeMode());
 	}
 
 	@Override
