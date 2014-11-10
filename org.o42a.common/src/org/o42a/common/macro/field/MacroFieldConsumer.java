@@ -19,7 +19,7 @@
 */
 package org.o42a.common.macro.field;
 
-import org.o42a.core.object.Meta;
+import org.o42a.core.object.ObjectMeta;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
@@ -46,7 +46,7 @@ public final class MacroFieldConsumer
 
 	@Override
 	public MacroFieldMetaDep newDep(
-			Meta meta,
+			ObjectMeta meta,
 			Ref macroRef,
 			PathTemplate template) {
 		return new MacroFieldMetaDep(meta, macroRef);

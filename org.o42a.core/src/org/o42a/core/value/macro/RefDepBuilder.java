@@ -25,8 +25,8 @@ import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
-import org.o42a.core.object.Meta;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectMeta;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.object.meta.ParentMetaDep;
 import org.o42a.core.object.state.Dep;
@@ -43,7 +43,7 @@ final class RefDepBuilder<D extends MetaDep> implements PathWalker {
 	private final RefDep<D> dep;
 	private final Ref ref;
 	private final PathTemplate template;
-	private Meta[] parentMeta;
+	private ObjectMeta[] parentMeta;
 	private Path depPath;
 	private boolean nested;
 
@@ -205,7 +205,7 @@ final class RefDepBuilder<D extends MetaDep> implements PathWalker {
 	private D newDep() {
 
 		final Ref ref;
-		final Meta meta = this.parentMeta[0];
+		final ObjectMeta meta = this.parentMeta[0];
 		final Scope scope = this.ref.getScope();
 
 		if (scope.toObject() != null) {
@@ -234,7 +234,7 @@ final class RefDepBuilder<D extends MetaDep> implements PathWalker {
 		}
 
 		if (this.parentMeta == null) {
-			this.parentMeta = new Meta[] {object.meta()};
+			this.parentMeta = new ObjectMeta[] {object.meta()};
 		} else {
 			this.parentMeta =
 					ArrayUtil.append(this.parentMeta, object.meta());
@@ -297,7 +297,7 @@ final class RefDepBuilder<D extends MetaDep> implements PathWalker {
 
 	private BoundPath depPath() {
 
-		final Meta topMeta = this.parentMeta[this.parentMeta.length - 1];
+		final ObjectMeta topMeta = this.parentMeta[this.parentMeta.length - 1];
 		final Path depPath;
 
 		if (this.depPath == null) {
@@ -343,7 +343,7 @@ final class RefDepBuilder<D extends MetaDep> implements PathWalker {
 		}
 
 		@Override
-		protected boolean triggered(Meta meta) {
+		protected boolean triggered(ObjectMeta meta) {
 
 			final PathResolution resolution = this.depPath.resolve(
 					pathResolver(meta.getObject().getScope(), dummyUser()));

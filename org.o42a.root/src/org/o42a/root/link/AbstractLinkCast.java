@@ -21,8 +21,8 @@ package org.o42a.root.link;
 
 import org.o42a.common.macro.AnnotatedMacro;
 import org.o42a.common.object.AnnotatedSources;
-import org.o42a.core.object.Meta;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectMeta;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
@@ -85,17 +85,17 @@ abstract class AbstractLinkCast extends AnnotatedMacro {
 		}
 
 		@Override
-		protected boolean triggered(Meta meta) {
+		protected boolean triggered(ObjectMeta meta) {
 
 			final Resolver resolver = meta.getObject().getScope().resolver();
-			final Meta linkMeta =
+			final ObjectMeta linkMeta =
 					this.path.resolve(resolver).toObject().meta();
 
 			return linkMeta.isUpdated();
 		}
 
 		@Override
-		protected boolean changed(Meta meta) {
+		protected boolean changed(ObjectMeta meta) {
 			return true;
 		}
 

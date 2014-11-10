@@ -20,7 +20,7 @@
 package org.o42a.common.macro.st;
 
 import org.o42a.core.member.field.MemberField;
-import org.o42a.core.object.Meta;
+import org.o42a.core.object.ObjectMeta;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathTemplate;
@@ -40,7 +40,7 @@ final class TempMacroDep implements MacroDep<TempMetaDep> {
 	}
 
 	@Override
-	public TempMetaDep newDep(Meta meta, Ref macroRef, PathTemplate template) {
+	public TempMetaDep newDep(ObjectMeta meta, Ref macroRef, PathTemplate template) {
 		return new TempMetaDep(meta, this, macroRef);
 	}
 

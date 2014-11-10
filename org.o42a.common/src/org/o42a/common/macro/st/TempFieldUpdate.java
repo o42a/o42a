@@ -19,14 +19,14 @@
 */
 package org.o42a.common.macro.st;
 
-import org.o42a.core.object.Meta;
+import org.o42a.core.object.ObjectMeta;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.object.meta.NestedMetaDep;
 
 
 final class TempFieldUpdate extends NestedMetaDep {
 
-	TempFieldUpdate(TempMetaDep parent, Meta declaredIn) {
+	TempFieldUpdate(TempMetaDep parent, ObjectMeta declaredIn) {
 		super(parent, declaredIn);
 	}
 

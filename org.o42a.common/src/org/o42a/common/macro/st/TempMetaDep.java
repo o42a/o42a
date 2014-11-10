@@ -22,7 +22,7 @@ package org.o42a.common.macro.st;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.util.fn.Init.init;
 
-import org.o42a.core.object.Meta;
+import org.o42a.core.object.ObjectMeta;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
@@ -36,7 +36,7 @@ final class TempMetaDep extends MetaDep {
 	private MetaDep parentDep;
 	private final Init<MetaDep> nestedDep = init(this::createNestedDep);
 
-	TempMetaDep(Meta declaredIn, TempMacroDep dep, Ref macroRef) {
+	TempMetaDep(ObjectMeta declaredIn, TempMacroDep dep, Ref macroRef) {
 		super(declaredIn);
 		this.dep = dep;
 		this.macroRef = macroRef;
@@ -53,7 +53,7 @@ final class TempMetaDep extends MetaDep {
 	}
 
 	@Override
-	protected boolean triggered(Meta meta) {
+	protected boolean triggered(ObjectMeta meta) {
 
 		final Resolution resolution =
 				this.macroRef.resolve(meta.getObject().getScope().resolver());
@@ -66,7 +66,7 @@ final class TempMetaDep extends MetaDep {
 	}
 
 	@Override
-	protected boolean changed(Meta meta) {
+	protected boolean changed(ObjectMeta meta) {
 		return true;
 	}
 
@@ -76,7 +76,7 @@ final class TempMetaDep extends MetaDep {
 
 	private MetaDep createNestedDep() {
 
-		final Meta nestedMeta =
+		final ObjectMeta nestedMeta =
 				this.dep.getTempField()
 				.toField()
 				.field(dummyUser())

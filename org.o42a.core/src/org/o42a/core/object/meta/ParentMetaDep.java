@@ -19,7 +19,7 @@
 */
 package org.o42a.core.object.meta;
 
-import org.o42a.core.object.Meta;
+import org.o42a.core.object.ObjectMeta;
 
 
 public abstract class ParentMetaDep extends MetaDep {
@@ -37,12 +37,12 @@ public abstract class ParentMetaDep extends MetaDep {
 	}
 
 	@Override
-	protected boolean triggered(Meta meta) {
+	protected boolean triggered(ObjectMeta meta) {
 		return nestedDep().triggered(nestedMeta(meta));
 	}
 
 	@Override
-	protected boolean changed(Meta meta) {
+	protected boolean changed(ObjectMeta meta) {
 		return nestedDep().changed(nestedMeta(meta));
 	}
 

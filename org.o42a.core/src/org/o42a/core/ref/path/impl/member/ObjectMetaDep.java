@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref.path.impl.member;
 
-import org.o42a.core.object.Meta;
+import org.o42a.core.object.ObjectMeta;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
@@ -30,7 +30,7 @@ final class ObjectMetaDep extends MetaDep {
 	private final Ref ref;
 	private MetaDep parentDep;
 
-	ObjectMetaDep(Meta declaredIn, Ref ref) {
+	ObjectMetaDep(ObjectMeta declaredIn, Ref ref) {
 		super(declaredIn);
 		this.ref = ref;
 	}
@@ -46,7 +46,7 @@ final class ObjectMetaDep extends MetaDep {
 	}
 
 	@Override
-	protected boolean triggered(Meta meta) {
+	protected boolean triggered(ObjectMeta meta) {
 
 		final Resolution resolution =
 				this.ref.resolve(meta.getObject().getScope().resolver());
@@ -59,7 +59,7 @@ final class ObjectMetaDep extends MetaDep {
 	}
 
 	@Override
-	protected boolean changed(Meta meta) {
+	protected boolean changed(ObjectMeta meta) {
 		return true;
 	}
 
