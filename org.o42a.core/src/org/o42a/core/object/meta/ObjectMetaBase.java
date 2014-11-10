@@ -39,6 +39,7 @@ import org.o42a.util.fn.FlagInit;
 public abstract class ObjectMetaBase {
 
 	private final Obj object;
+	private final ObjectAnalysis analysis;
 	private IdentityHashMap<MetaDep, Boolean> tripped;
 	private Chain<MetaDep> deps;
 	private final DoOnce initialize = doOnce(this::doInitialize);
@@ -47,6 +48,7 @@ public abstract class ObjectMetaBase {
 
 	public ObjectMetaBase(Obj object) {
 		this.object = object;
+		this.analysis = new ObjectAnalysis(object);
 	}
 
 	public final Obj getObject() {
@@ -76,6 +78,10 @@ public abstract class ObjectMetaBase {
 		return this.updated.isSet();
 	}
 
+	public final ObjectAnalysis analysis() {
+		return this.analysis;
+	}
+
 	public final boolean is(ObjectMeta meta) {
 		return this == meta;
 	}
@@ -85,7 +91,7 @@ public abstract class ObjectMetaBase {
 		if (this.object == null) {
 			return super.toString();
 		}
-		return "Meta[" + this.object + ']';
+		return "ObjectMeta[" + this.object + ']';
 	}
 
 	final Chain<MetaDep> deps() {

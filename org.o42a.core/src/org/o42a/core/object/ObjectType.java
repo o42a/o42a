@@ -28,6 +28,7 @@ import static org.o42a.util.fn.CondInit.condInit;
 import static org.o42a.util.fn.Init.init;
 
 import java.util.*;
+import java.util.function.BiFunction;
 
 import org.o42a.analysis.use.User;
 import org.o42a.analysis.use.UserInfo;
@@ -191,6 +192,14 @@ public final class ObjectType implements UserInfo {
 			return emptyList();
 		}
 		return this.updatedDerivatives;
+	}
+
+	public final <T> T eachDerivative(T t, BiFunction<DerivedObject, T, T> f) {
+		return eachDerivativeOf(new DerivedObject(getObject()), t, f);
+	}
+
+	public final <T> T eachOverrider(T t, BiFunction<DerivedObject, T, T> f) {
+		return eachOverriderOf(new DerivedObject(getObject()), t, f);
 	}
 
 	public final ObjectType useBy(UserInfo user) {
@@ -466,6 +475,61 @@ public final class ObjectType implements UserInfo {
 		result.assertSameScope(getObject());
 
 		return result;
+	}
+
+	private <T> T eachDerivativeOf(
+			DerivedObject object,
+			T t,
+			BiFunction<DerivedObject, T, T> f) {
+
+		T result = f.apply(object, t);
+
+		if (object.isDone()) {
+			return t;
+		}
+		for (Derivative d : object.getDerivedObject().type().allDerivatives()) {
+
+			final Obj derived = d.getDerivedObject();
+
+			if (!derived.meta().isUpdated()) {
+				continue;
+			}
+			result = eachDerivativeOf(object.set(derived), result, f);
+			if (object.isDone()) {
+				break;
+			}
+		}
+
+		return t;
+	}
+
+	private <T> T eachOverriderOf(
+			DerivedObject object,
+			T t,
+			BiFunction<DerivedObject, T, T> f) {
+
+		T result = f.apply(object, t);
+
+		if (object.isDone()) {
+			return t;
+		}
+		for (Derivative d : object.getDerivedObject().type().allDerivatives()) {
+			if (!d.isSample()) {
+				continue;
+			}
+
+			final Obj derived = d.getDerivedObject();
+
+			if (!derived.meta().isUpdated()) {
+				continue;
+			}
+			result = eachOverriderOf(object.set(derived), result, f);
+			if (object.isDone()) {
+				break;
+			}
+		}
+
+		return t;
 	}
 
 }

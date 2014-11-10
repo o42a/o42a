@@ -56,6 +56,7 @@ import org.o42a.core.member.type.impl.DeclaredMemberTypeParameter;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.impl.*;
 import org.o42a.core.object.meta.Nesting;
+import org.o42a.core.object.meta.ObjectAnalysis;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.object.value.Statefulness;
@@ -290,6 +291,10 @@ public abstract class Obj
 		return this.value.get();
 	}
 
+	public final ObjectAnalysis analysis() {
+		return meta().analysis();
+	}
+
 	public final boolean hasDeps(Analyzer analyzer) {
 		return this.deps.isInitialized() && deps().hasDeps(analyzer);
 	}
@@ -303,9 +308,9 @@ public abstract class Obj
 	}
 
 	@Override
-	public Collection<? extends Member> getMembers() {
+	public final Collection<? extends Member> getMembers() {
 		resolveMembers(true);
-		return this.members.values();
+		return members().values();
 	}
 
 	public final MemberClause[] getExplicitClauses() {
@@ -365,7 +370,7 @@ public abstract class Obj
 			Obj declaredIn) {
 		resolveMembers(memberId.containsAdapterId());
 
-		final Symbol found = this.symbols.get(memberId);
+		final Symbol found = symbols().get(memberId);
 
 		if (found == null) {
 			return null;
