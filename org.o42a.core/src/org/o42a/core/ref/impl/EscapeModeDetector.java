@@ -160,7 +160,7 @@ public class EscapeModeDetector implements PathWalker {
 		if (object == null) {
 			return escape();
 		}
-		return escapeMode(() -> object.meta().ownEscapeMode());
+		return escapeMode(() -> object.analysis().ownEscapeMode());
 	}
 
 	private final boolean overridersEscapeMode(Obj object) {
@@ -170,7 +170,7 @@ public class EscapeModeDetector implements PathWalker {
 		if (this.isStatic) {
 			return ownEscapeMode(object);
 		}
-		return escapeMode(() -> object.meta().overridersEscapeMode());
+		return escapeMode(() -> object.analysis().overridersEscapeMode());
 	}
 
 	private final boolean derivativesEscapeMode(Obj object) {
@@ -180,7 +180,7 @@ public class EscapeModeDetector implements PathWalker {
 		if (this.isStatic) {
 			return ownEscapeMode(object);
 		}
-		return escapeMode(() -> object.meta().derivativesEscapeMode());
+		return escapeMode(() -> object.analysis().derivativesEscapeMode());
 	}
 
 	private final boolean escapeMode(Supplier<EscapeMode> escapeMode) {
