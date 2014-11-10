@@ -25,25 +25,67 @@ import static org.o42a.util.fn.FlagInit.flagInit;
 
 import java.util.IdentityHashMap;
 
+import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
-import org.o42a.core.object.Meta;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectMeta;
 import org.o42a.util.collect.Chain;
 import org.o42a.util.fn.DoOnce;
 import org.o42a.util.fn.FlagInit;
 
 
-public abstract class ObjectMeta {
+public abstract class ObjectMetaBase {
 
+	private final Obj object;
 	private IdentityHashMap<MetaDep, Boolean> tripped;
 	private Chain<MetaDep> deps;
 	private final DoOnce initialize = doOnce(this::doInitialize);
 	private final FlagInit updated = flagInit(
 			() -> !meta().getObject().isClone() || hasUpdates());
 
+	public ObjectMetaBase(Obj object) {
+		this.object = object;
+	}
+
+	public final Obj getObject() {
+		return this.object;
+	}
+
+	public final ObjectMeta getParentMeta() {
+
+		final Scope enclosingScope =
+				getObject().getScope().getEnclosingScope();
+		final Obj enclosingObject = enclosingScope.toObject();
+
+		if (enclosingObject != null) {
+			return enclosingObject.meta();
+		}
+
+		final Member enclosingMember = enclosingScope.toMember();
+
+		if (enclosingMember != null) {
+			return enclosingMember.getMemberOwner().meta();
+		}
+
+		return null;
+	}
+
 	public boolean isUpdated() {
 		return this.updated.isSet();
+	}
+
+	public final boolean is(ObjectMeta meta) {
+		return this == meta;
+	}
+
+	@Override
+	public String toString() {
+		if (this.object == null) {
+			return super.toString();
+		}
+		return "Meta[" + this.object + ']';
 	}
 
 	final Chain<MetaDep> deps() {
@@ -53,11 +95,11 @@ public abstract class ObjectMeta {
 	final void addDep(MetaDep dep) {
 
 		MetaDep currentDep = dep;
-		Meta currentMeta = meta();
+		ObjectMeta currentMeta = meta();
 
 		for (;;) {
 
-			final ObjectMeta objectMeta = currentMeta;
+			final ObjectMetaBase objectMeta = currentMeta;
 
 			if (objectMeta.deps == null) {
 				objectMeta.deps = newDeps();
@@ -77,7 +119,7 @@ public abstract class ObjectMeta {
 
 	final boolean checkUpdated(MetaDep dep) {
 
-		final Meta meta = meta();
+		final ObjectMeta meta = meta();
 
 		if (this.tripped == null) {
 			this.tripped = new IdentityHashMap<>();
@@ -114,7 +156,7 @@ public abstract class ObjectMeta {
 
 	private void importParentDeps() {
 
-		final ObjectMeta parentMeta = meta().getParentMeta();
+		final ObjectMetaBase parentMeta = meta().getParentMeta();
 
 		if (parentMeta == null) {
 			return;
@@ -170,7 +212,7 @@ public abstract class ObjectMeta {
 				continue;
 			}
 
-			final ObjectMeta nestedMeta = field.toObject().meta();
+			final ObjectMetaBase nestedMeta = field.toObject().meta();
 
 			nestedMeta.initTypeParameters();
 			nestedMeta.initNestedDeps();
@@ -181,8 +223,8 @@ public abstract class ObjectMeta {
 		return new MetaUpdatesChecker(meta()).hasUpdates();
 	}
 
-	private final Meta meta() {
-		return (Meta) this;
+	private final ObjectMeta meta() {
+		return (ObjectMeta) this;
 	}
 
 	private static Chain<MetaDep> newDeps() {

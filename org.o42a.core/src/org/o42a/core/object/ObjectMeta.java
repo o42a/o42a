@@ -30,15 +30,14 @@ import org.o42a.core.member.alias.MemberAlias;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.object.meta.Nesting;
-import org.o42a.core.object.meta.ObjectMeta;
+import org.o42a.core.object.meta.ObjectMetaBase;
 import org.o42a.core.object.type.Derivative;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.fn.Init;
 
 
-public final class Meta extends ObjectMeta {
+public final class ObjectMeta extends ObjectMetaBase {
 
-	private final Obj object;
 	private final Init<Nesting> nesting =
 			init(() -> getObject().createNesting());
 	private final Init<EscapeMode> ownEscapeMode =
@@ -48,31 +47,8 @@ public final class Meta extends ObjectMeta {
 	private final Init<EscapeMode> derivativesEscapeMode =
 			init(this::detectDerivativesEscapeMode);
 
-	Meta(Obj object) {
-		this.object = object;
-	}
-
-	public final Obj getObject() {
-		return this.object;
-	}
-
-	public final Meta getParentMeta() {
-
-		final Scope enclosingScope =
-				getObject().getScope().getEnclosingScope();
-		final Obj enclosingObject = enclosingScope.toObject();
-
-		if (enclosingObject != null) {
-			return enclosingObject.meta();
-		}
-
-		final Member enclosingMember = enclosingScope.toMember();
-
-		if (enclosingMember != null) {
-			return enclosingMember.getMemberOwner().meta();
-		}
-
-		return null;
+	ObjectMeta(Obj object) {
+		super(object);
 	}
 
 	@Override
@@ -117,18 +93,6 @@ public final class Meta extends ObjectMeta {
 		return getNesting().findObjectIn(enclosing);
 	}
 
-	public final boolean is(Meta meta) {
-		return this == meta;
-	}
-
-	@Override
-	public String toString() {
-		if (this.object == null) {
-			return super.toString();
-		}
-		return "Meta[" + this.object + ']';
-	}
-
 	private EscapeMode detectOverridersEscapeMode() {
 
 		final Obj sampleDeclaration = getObject().type().getSampleDeclaration();
@@ -147,7 +111,7 @@ public final class Meta extends ObjectMeta {
 				continue;
 			}
 
-			final Meta derivedMeta = derivative.getDerivedObject().meta();
+			final ObjectMeta derivedMeta = derivative.getDerivedObject().meta();
 
 			if (!derivedMeta.isUpdated()) {
 				continue;
@@ -177,7 +141,7 @@ public final class Meta extends ObjectMeta {
 		}
 		for (Derivative derivative : getObject().type().allDerivatives()) {
 
-			final Meta derivedMeta = derivative.getDerivedObject().meta();
+			final ObjectMeta derivedMeta = derivative.getDerivedObject().meta();
 
 			if (!derivedMeta.isUpdated()) {
 				continue;

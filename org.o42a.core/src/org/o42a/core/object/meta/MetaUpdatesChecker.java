@@ -22,18 +22,18 @@ package org.o42a.core.object.meta;
 import java.util.Iterator;
 
 import org.o42a.core.Scope;
-import org.o42a.core.object.Meta;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectMeta;
 import org.o42a.util.collect.Chain;
 
 
 final class MetaUpdatesChecker {
 
-	private final Meta meta;
+	private final ObjectMeta meta;
 	private Iterator<Scope> checkedAscendants;
 	private MetaDep checkedDep;
 
-	MetaUpdatesChecker(Meta meta) {
+	MetaUpdatesChecker(ObjectMeta meta) {
 		this.meta = meta;
 	}
 
@@ -70,7 +70,7 @@ final class MetaUpdatesChecker {
 				}
 			}
 
-			final ObjectMeta nextMeta = nextMetaWithDeps();
+			final ObjectMetaBase nextMeta = nextMetaWithDeps();
 
 			if (nextMeta == null) {
 				return null;
@@ -80,7 +80,7 @@ final class MetaUpdatesChecker {
 		}
 	}
 
-	private ObjectMeta nextMetaWithDeps() {
+	private ObjectMetaBase nextMetaWithDeps() {
 		while (this.checkedAscendants.hasNext()) {
 
 			final Scope nextAscendant = this.checkedAscendants.next();
@@ -90,7 +90,7 @@ final class MetaUpdatesChecker {
 				continue;
 			}
 
-			final ObjectMeta nextMeta = nextAscendant.toObject().meta();
+			final ObjectMetaBase nextMeta = nextAscendant.toObject().meta();
 
 			nextMeta.initialize();
 

@@ -19,14 +19,14 @@
 */
 package org.o42a.core.object.meta;
 
-import org.o42a.core.object.Meta;
+import org.o42a.core.object.ObjectMeta;
 
 
 public abstract class NestedMetaDep extends MetaDep {
 
 	private final MetaDep parent;
 
-	public NestedMetaDep(MetaDep parent, Meta declaredIn) {
+	public NestedMetaDep(MetaDep parent, ObjectMeta declaredIn) {
 		super(declaredIn);
 		assert parent.getDeclaredIn().is(declaredIn.getParentMeta()) :
 			parent.getDeclaredIn() + " is not a parent of " + declaredIn;
@@ -39,12 +39,12 @@ public abstract class NestedMetaDep extends MetaDep {
 	}
 
 	@Override
-	protected boolean triggered(Meta meta) {
+	protected boolean triggered(ObjectMeta meta) {
 		return parentDep().triggered(parentMeta(meta));
 	}
 
 	@Override
-	protected boolean changed(Meta meta) {
+	protected boolean changed(ObjectMeta meta) {
 		return parentDep().changed(parentMeta(meta));
 	}
 

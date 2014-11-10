@@ -19,14 +19,14 @@
 */
 package org.o42a.common.macro.type;
 
-import org.o42a.core.object.Meta;
+import org.o42a.core.object.ObjectMeta;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.object.meta.NestedMetaDep;
 
 
 final class TypeParametersUpdate extends NestedMetaDep {
 
-	TypeParametersUpdate(TypeParamMetaDep parent, Meta declaredIn) {
+	TypeParametersUpdate(TypeParamMetaDep parent, ObjectMeta declaredIn) {
 		super(parent, declaredIn);
 	}
 
@@ -36,7 +36,7 @@ final class TypeParametersUpdate extends NestedMetaDep {
 	}
 
 	@Override
-	protected boolean changed(Meta meta) {
+	protected boolean changed(ObjectMeta meta) {
 
 		final TypeParamMetaDep parent =
 				(TypeParamMetaDep) parentDep();

@@ -84,7 +84,7 @@ public abstract class Obj
 
 	private final Obj propagatedFrom;
 
-	private final Init<Meta> meta = init(() -> new Meta(this));
+	private final Init<ObjectMeta> meta = init(() -> new ObjectMeta(this));
 	private final Init<ObjectType> type = init(() -> new ObjectType(this));
 	private final Init<ObjectValue> value = init(() -> new ObjectValue(this));
 	private final Init<Deps> deps = init(() -> new Deps(this));
@@ -278,7 +278,7 @@ public abstract class Obj
 		return wrapped.mostWrapped();
 	}
 
-	public final Meta meta() {
+	public final ObjectMeta meta() {
 		return this.meta.get();
 	}
 

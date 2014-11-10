@@ -19,7 +19,7 @@
 */
 package org.o42a.common.macro.field;
 
-import org.o42a.core.object.Meta;
+import org.o42a.core.object.ObjectMeta;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
@@ -30,7 +30,7 @@ final class MacroFieldMetaDep extends MetaDep {
 	private final Ref macroRef;
 	private MetaDep parentDep;
 
-	MacroFieldMetaDep(Meta declaredIn, Ref macroRef) {
+	MacroFieldMetaDep(ObjectMeta declaredIn, Ref macroRef) {
 		super(declaredIn);
 		this.macroRef = macroRef;
 	}
@@ -46,7 +46,7 @@ final class MacroFieldMetaDep extends MetaDep {
 	}
 
 	@Override
-	protected boolean triggered(Meta meta) {
+	protected boolean triggered(ObjectMeta meta) {
 
 		final Resolution resolution =
 				this.macroRef.resolve(meta.getObject().getScope().resolver());
@@ -59,7 +59,7 @@ final class MacroFieldMetaDep extends MetaDep {
 	}
 
 	@Override
-	protected boolean changed(Meta meta) {
+	protected boolean changed(ObjectMeta meta) {
 		return true;
 	}
 

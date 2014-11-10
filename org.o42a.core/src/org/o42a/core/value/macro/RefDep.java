@@ -19,7 +19,7 @@
 */
 package org.o42a.core.value.macro;
 
-import org.o42a.core.object.Meta;
+import org.o42a.core.object.ObjectMeta;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathTemplate;
@@ -38,7 +38,7 @@ public interface RefDep<D extends MetaDep> {
 		return builder.buildDep();
 	}
 
-	D newDep(Meta meta, Ref ref, PathTemplate template);
+	D newDep(ObjectMeta meta, Ref ref, PathTemplate template);
 
 	void setParentDep(D dep, MetaDep parentDep);
 

@@ -22,8 +22,8 @@ package org.o42a.common.macro.type;
 import static org.o42a.util.fn.NullableInit.nullableInit;
 
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.object.Meta;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectMeta;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Ref;
@@ -45,7 +45,7 @@ final class TypeParamMetaDep extends MetaDep {
 			nullableInit(this::createNestedDep);
 
 	TypeParamMetaDep(
-			Meta declaredIn,
+			ObjectMeta declaredIn,
 			TypeParamMacroDep macroDep,
 			Ref macroRef,
 			PathTemplate template) {
@@ -66,7 +66,7 @@ final class TypeParamMetaDep extends MetaDep {
 	}
 
 	@Override
-	protected boolean triggered(Meta meta) {
+	protected boolean triggered(ObjectMeta meta) {
 
 		final Resolution resolution =
 				this.macroRef.resolve(meta.getObject().getScope().resolver());
@@ -79,7 +79,7 @@ final class TypeParamMetaDep extends MetaDep {
 	}
 
 	@Override
-	protected boolean changed(Meta meta) {
+	protected boolean changed(ObjectMeta meta) {
 		return typeParamChanged(findNestedMeta(meta));
 	}
 
@@ -87,7 +87,7 @@ final class TypeParamMetaDep extends MetaDep {
 		this.parentDep = parentDep;
 	}
 
-	final boolean typeParamChanged(Meta meta) {
+	final boolean typeParamChanged(ObjectMeta meta) {
 		return typeParamChanged(meta, this.macroDep.getParameterKey());
 	}
 
@@ -105,9 +105,9 @@ final class TypeParamMetaDep extends MetaDep {
 		return new TypeParametersUpdate(this, nested.meta());
 	}
 
-	private Meta findNestedMeta(Meta meta) {
+	private ObjectMeta findNestedMeta(ObjectMeta meta) {
 
-		final Meta nestedMeta = nestedMeta(meta);
+		final ObjectMeta nestedMeta = nestedMeta(meta);
 
 		if (nestedMeta != null) {
 			return nestedMeta;
@@ -117,7 +117,7 @@ final class TypeParamMetaDep extends MetaDep {
 	}
 
 	private final boolean typeParamChanged(
-			Meta meta,
+			ObjectMeta meta,
 			TypeParameterKey parameterKey) {
 
 		final MemberKey paramKey =
@@ -133,7 +133,7 @@ final class TypeParamMetaDep extends MetaDep {
 		return typeParamChanged(meta, typeRef, this.macroDep.getDepth());
 	}
 
-	private boolean typeParamChanged(Meta meta, TypeRef typeRef, int depth) {
+	private boolean typeParamChanged(ObjectMeta meta, TypeRef typeRef, int depth) {
 		if (depth > 0) {
 
 			final TypeParameter[] subTypeParams =

@@ -19,7 +19,7 @@
 */
 package org.o42a.common.macro.type;
 
-import org.o42a.core.object.Meta;
+import org.o42a.core.object.ObjectMeta;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Consumer;
@@ -73,7 +73,7 @@ public final class TypeParamMacroDep
 
 	@Override
 	public TypeParamMetaDep newDep(
-			Meta meta,
+			ObjectMeta meta,
 			Ref macroRef,
 			PathTemplate template) {
 		return new TypeParamMetaDep(meta, this, macroRef, template);

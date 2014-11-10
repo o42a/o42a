@@ -26,30 +26,30 @@ import static org.o42a.core.ref.path.PathResolver.pathResolver;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.object.Meta;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectMeta;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathResolution;
 
 
 public abstract class MetaDep {
 
-	private final Meta declaredIn;
+	private final ObjectMeta declaredIn;
 	private BoundPath parentPath;
 	private Nesting nesting;
 	private MetaDep next;
 
-	public MetaDep(Meta declaredIn) {
+	public MetaDep(ObjectMeta declaredIn) {
 		assert declaredIn != null :
 			"Meta the dependency declared in is not specified";
 		this.declaredIn = declaredIn;
 	}
 
-	public final Meta getDeclaredIn() {
+	public final ObjectMeta getDeclaredIn() {
 		return this.declaredIn;
 	}
 
-	public final boolean updated(Meta meta) {
+	public final boolean updated(ObjectMeta meta) {
 
 		final UpdatedMeta top = topMeta(meta);
 
@@ -64,7 +64,7 @@ public abstract class MetaDep {
 
 	public abstract MetaDep nestedDep();
 
-	public final Meta parentMeta(Meta meta) {
+	public final ObjectMeta parentMeta(ObjectMeta meta) {
 		meta.getObject().assertDerivedFrom(getDeclaredIn().getObject());
 
 		final BoundPath parentPath = parentPath();
@@ -75,7 +75,7 @@ public abstract class MetaDep {
 
 		final PathResolution parentResolution = parentPath.resolve(
 				pathResolver(meta.getObject().getScope(), dummyUser()));
-		final Meta parentMeta = parentResolution.getObject().meta();
+		final ObjectMeta parentMeta = parentResolution.getObject().meta();
 
 		if (!meta.getParentMeta().is(parentMeta)) {
 			// Out of scope.
@@ -85,7 +85,7 @@ public abstract class MetaDep {
 		return parentMeta;
 	}
 
-	public final Meta nestedMeta(Meta meta) {
+	public final ObjectMeta nestedMeta(ObjectMeta meta) {
 		meta.getObject().assertDerivedFrom(getDeclaredIn().getObject());
 
 		final Nesting nesting = nesting();
@@ -99,7 +99,7 @@ public abstract class MetaDep {
 
 	public final void register() {
 
-		final ObjectMeta declaredIn = getDeclaredIn();
+		final ObjectMetaBase declaredIn = getDeclaredIn();
 
 		declaredIn.addDep(this);
 	}
@@ -112,9 +112,9 @@ public abstract class MetaDep {
 		this.next = next;
 	}
 
-	protected abstract boolean triggered(Meta meta);
+	protected abstract boolean triggered(ObjectMeta meta);
 
-	protected abstract boolean changed(Meta meta);
+	protected abstract boolean changed(ObjectMeta meta);
 
 	private final BoundPath parentPath() {
 		if (this.parentPath != null) {
@@ -165,7 +165,7 @@ public abstract class MetaDep {
 			return null;
 		}
 
-		final Meta nestedMeta = nestedDep.getDeclaredIn();
+		final ObjectMeta nestedMeta = nestedDep.getDeclaredIn();
 		final Scope enclosingScope =
 				nestedMeta.getObject()
 				.getScope()
@@ -184,9 +184,9 @@ public abstract class MetaDep {
 				nestedMeta.getNesting());
 	}
 
-	private UpdatedMeta topMeta(Meta meta) {
+	private UpdatedMeta topMeta(ObjectMeta meta) {
 
-		Meta currentMeta = meta;
+		ObjectMeta currentMeta = meta;
 		MetaDep currentDep = this;
 
 		for (;;) {
@@ -197,7 +197,7 @@ public abstract class MetaDep {
 				return new UpdatedMeta(currentMeta, currentDep);
 			}
 
-			final Meta parentMeta = currentDep.parentMeta(currentMeta);
+			final ObjectMeta parentMeta = currentDep.parentMeta(currentMeta);
 
 			if (parentMeta == null) {
 				// Out of the scope. Trigger can no longer trip.
@@ -211,17 +211,17 @@ public abstract class MetaDep {
 
 	private static final class UpdatedMeta {
 
-		private final Meta meta;
+		private final ObjectMeta meta;
 		private final MetaDep dep;
 
-		UpdatedMeta(Meta meta, MetaDep dep) {
+		UpdatedMeta(ObjectMeta meta, MetaDep dep) {
 			this.meta = meta;
 			this.dep = dep;
 		}
 
 		public final boolean checkUpdated() {
 
-			final ObjectMeta meta = this.meta;
+			final ObjectMetaBase meta = this.meta;
 
 			return meta.checkUpdated(this.dep);
 		}

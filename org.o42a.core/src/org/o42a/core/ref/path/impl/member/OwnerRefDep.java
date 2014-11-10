@@ -24,7 +24,7 @@ import static org.o42a.core.value.macro.MacroConsumer.DEFAULT_CONSUMER;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.object.Meta;
+import org.o42a.core.object.ObjectMeta;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathTemplate;
@@ -60,7 +60,7 @@ final class OwnerRefDep implements RefDep<ObjectMetaDep> {
 	}
 
 	@Override
-	public ObjectMetaDep newDep(Meta meta, Ref ref, PathTemplate template) {
+	public ObjectMetaDep newDep(ObjectMeta meta, Ref ref, PathTemplate template) {
 		return new ObjectMetaDep(meta, ref);
 	}
 
