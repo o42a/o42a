@@ -162,6 +162,18 @@ public class VoidStep extends Step {
 			super(host, step);
 		}
 
+		private VoidOp(VoidOp proto, OpPresets presets) {
+			super(proto, presets);
+		}
+
+		@Override
+		public final VoidOp setPresets(OpPresets presets) {
+			if (presets.is(getPresets())) {
+				return this;
+			}
+			return new VoidOp(this, presets);
+		}
+
 		@Override
 		public HostValueOp value() {
 			return this;
@@ -184,19 +196,19 @@ public class VoidStep extends Step {
 
 		@Override
 		public HostOp pathTarget(CodeDirs dirs) {
-			return voidIR().exactOp(dirs);
+			return voidIR().exactOp(dirs).setPresets(getPresets());
 		}
 
 		@Override
 		public TargetStoreOp allocateStore(ID id, Code code) {
-			return voidIR().exactTargetStore(id);
+			return voidIR().exactTargetStore(id, getPresets());
 		}
 
 		@Override
 		public TargetStoreOp localStore(
 				ID id,
 				Function<CodeDirs, LocalIROp> getLocal) {
-			return voidIR().exactTargetStore(id);
+			return voidIR().exactTargetStore(id, getPresets());
 		}
 
 		private final ObjectIR voidIR() {

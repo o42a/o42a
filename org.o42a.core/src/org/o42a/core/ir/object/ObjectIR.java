@@ -206,8 +206,8 @@ public class ObjectIR implements Codegen {
 		return new ObjOp(builder, this, ptr, COMPATIBLE_OBJECT);
 	}
 
-	public final TargetStoreOp exactTargetStore(ID id) {
-		return new ExactObjectStoreOp(id, this);
+	public final TargetStoreOp exactTargetStore(ID id, OpPresets presets) {
+		return new ExactObjectStoreOp(id, this, presets);
 	}
 
 	@Override
@@ -252,10 +252,12 @@ public class ObjectIR implements Codegen {
 
 		private final ID id;
 		private final ObjectIR objectIR;
+		private final OpPresets presets;
 
-		ExactObjectStoreOp(ID id, ObjectIR objectIR) {
+		ExactObjectStoreOp(ID id, ObjectIR objectIR, OpPresets presets) {
 			this.id = id;
 			this.objectIR = objectIR;
+			this.presets = presets;
 		}
 
 		@Override
@@ -264,7 +266,7 @@ public class ObjectIR implements Codegen {
 
 		@Override
 		public HostOp loadTarget(CodeDirs dirs) {
-			return this.objectIR.exactOp(dirs);
+			return this.objectIR.exactOp(dirs).setPresets(this.presets);
 		}
 
 		@Override

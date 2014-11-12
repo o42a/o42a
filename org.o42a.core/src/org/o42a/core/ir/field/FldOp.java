@@ -39,8 +39,16 @@ public abstract class FldOp<F extends Fld.Op<F>, T extends Fld.Type<F>>
 		extends FldIROp<F, T>
 		implements HostOp {
 
+	private final OpPresets presets;
+
 	public FldOp(ObjOp host, Fld<F, T> fld, OpMeans<F> ptr) {
 		super(host, fld, ptr);
+		this.presets = host.getPresets();
+	}
+
+	public FldOp(FldOp<F, T> proto, OpPresets presets) {
+		super(proto.host(), proto.fld(), proto.means());
+		this.presets = presets;
 	}
 
 	public final boolean isOmitted() {
@@ -50,6 +58,14 @@ public abstract class FldOp<F extends Fld.Op<F>, T extends Fld.Type<F>>
 	public final boolean isStateless() {
 		return fld().isStateless();
 	}
+
+	@Override
+	public final OpPresets getPresets() {
+		return this.presets;
+	}
+
+	@Override
+	public abstract FldOp<F, T> setPresets(OpPresets presets);
 
 	@Override
 	public ID getId() {
@@ -147,7 +163,8 @@ public abstract class FldOp<F extends Fld.Op<F>, T extends Fld.Type<F>>
 		@Override
 		protected ObjectOp owner(CodeDirs dirs, Allocator allocator) {
 
-			final ObjOp owner = this.fld.host();
+			final ObjOp owner =
+					this.fld.host().setPresets(this.fld.getPresets());
 
 			if (allocator != null) {
 				// Ensure the owner not deallocated until the local exists.
@@ -159,7 +176,9 @@ public abstract class FldOp<F extends Fld.Op<F>, T extends Fld.Type<F>>
 
 		@Override
 		protected FldOp<F, T> op(CodeDirs dirs, ObjOp owner) {
-			return this.fld.fld().op(dirs.code(), owner);
+			return this.fld.fld()
+					.op(dirs.code(), owner)
+					.setPresets(this.fld.getPresets());
 		}
 
 	}

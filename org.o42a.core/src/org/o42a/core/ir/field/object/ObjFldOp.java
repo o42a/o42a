@@ -39,6 +39,7 @@ import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.object.vmt.VmtIRChain;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.HostValueOp;
+import org.o42a.core.ir.op.OpPresets;
 import org.o42a.core.member.MemberKey;
 
 
@@ -51,6 +52,18 @@ public class ObjFldOp extends RefFldOp<
 
 	ObjFldOp(ObjOp host, ObjFld fld, OpMeans<RefFld.StatefulOp> ptr) {
 		super(host, fld, ptr);
+	}
+
+	private ObjFldOp(ObjFldOp proto, OpPresets presets) {
+		super(proto, presets);
+	}
+
+	@Override
+	public final ObjFldOp setPresets(OpPresets presets) {
+		if (presets.is(getPresets())) {
+			return this;
+		}
+		return new ObjFldOp(this, presets);
 	}
 
 	@Override
@@ -77,6 +90,7 @@ public class ObjFldOp extends RefFldOp<
 	@Override
 	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
 		return target(dirs, tempObjHolder(dirs.getAllocator()))
+				.setPresets(getPresets())
 				.dereference(dirs, holder);
 	}
 
@@ -115,7 +129,8 @@ public class ObjFldOp extends RefFldOp<
 
 		return ir.compatibleOp(
 				getBuilder(),
-				code.means(c -> ptr.to(null, c, ir.getType())));
+				code.means(c -> ptr.to(null, c, ir.getType())))
+				.setPresets(getPresets());
 	}
 
 }

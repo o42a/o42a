@@ -258,6 +258,18 @@ public class DereferenceStep extends Step {
 			super(host, step);
 		}
 
+		private DereferenceOp(DereferenceOp proto, OpPresets presets) {
+			super(proto, presets);
+		}
+
+		@Override
+		public DereferenceOp setPresets(OpPresets presets) {
+			if (presets.is(getPresets())) {
+				return this;
+			}
+			return new DereferenceOp(this, presets);
+		}
+
 		@Override
 		public HostValueOp value() {
 			return pathValueOp();
@@ -284,7 +296,7 @@ public class DereferenceStep extends Step {
 		}
 
 		private ObjectOp deref(CodeDirs dirs, ObjHolder holder) {
-			return host().dereference(dirs, holder);
+			return host().setPresets(getPresets()).dereference(dirs, holder);
 		}
 
 	}

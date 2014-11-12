@@ -42,9 +42,7 @@ import org.o42a.core.ir.field.inst.InstFldOp;
 import org.o42a.core.ir.field.local.LocalIR;
 import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.vmt.VmtIRChain;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.TargetStoreOp;
-import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.type.StateOp;
@@ -88,6 +86,20 @@ public final class ObjOp extends ObjectOp {
 		this.ascendant = objectIR.getObject();
 		this.objectIR = objectIR;
 		assert validPrecision();
+	}
+
+	private ObjOp(ObjOp proto, OpPresets presets) {
+		super(proto, presets);
+		this.objectIR = proto.objectIR;
+		this.ascendant = proto.ascendant;
+	}
+
+	@Override
+	public ObjOp setPresets(OpPresets presets) {
+		if (presets.is(getPresets())) {
+			return this;
+		}
+		return new ObjOp(this, presets);
 	}
 
 	public final ObjectIR getObjectIR() {
@@ -175,7 +187,8 @@ public final class ObjOp extends ObjectOp {
 		final ObjOp host = cast(
 				hostId,
 				subDirs,
-				memberKey.getOrigin().toObject());
+				memberKey.getOrigin().toObject())
+				.setPresets(getPresets());
 		final FldOp<?, ?> op = fld.op(code, host);
 
 		if (!op.isOmitted()) {
@@ -198,7 +211,8 @@ public final class ObjOp extends ObjectOp {
 		final ObjOp host = cast(
 				DEP_HOST_ID.sub(dep),
 				subDirs,
-				dep.getDeclaredIn());
+				dep.getDeclaredIn())
+				.setPresets(getPresets());
 		final DepOp op = ir.op(code, host);
 
 		subDirs.done();
@@ -230,7 +244,7 @@ public final class ObjOp extends ObjectOp {
 	@Override
 	public TargetStoreOp allocateStore(ID id, Code code) {
 		if (getPrecision().isExact()) {
-			return getObjectIR().exactTargetStore(id);
+			return getObjectIR().exactTargetStore(id, getPresets());
 		}
 		return super.allocateStore(id, code);
 	}
@@ -240,7 +254,7 @@ public final class ObjOp extends ObjectOp {
 			ID id,
 			Function<CodeDirs, LocalIROp> getLocal) {
 		if (getPrecision().isExact()) {
-			return getObjectIR().exactTargetStore(id);
+			return getObjectIR().exactTargetStore(id, getPresets());
 		}
 		return super.localStore(id, getLocal);
 	}

@@ -29,11 +29,26 @@ import org.o42a.core.member.MemberKey;
 
 public abstract class PathOp implements HostOp {
 
+	private final OpPresets presets;
 	private final HostOp host;
 
 	public PathOp(HostOp host) {
+		this.presets = host.getPresets();
 		this.host = host;
 	}
+
+	public PathOp(PathOp proto, OpPresets presets) {
+		this.presets = presets;
+		this.host = proto.host;
+	}
+
+	@Override
+	public final OpPresets getPresets() {
+		return this.presets;
+	}
+
+	@Override
+	public abstract PathOp setPresets(OpPresets presets);
 
 	public final HostOp host() {
 		return this.host;

@@ -27,6 +27,7 @@ import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.op.ObjectFn;
 import org.o42a.core.ir.object.vmt.VmtIRChain;
 import org.o42a.core.ir.object.vmt.VmtIROp;
+import org.o42a.core.ir.op.OpPresets;
 
 
 public abstract class ConstructedRefFldOp<
@@ -41,6 +42,15 @@ public abstract class ConstructedRefFldOp<
 			OpMeans<F> ptr) {
 		super(host, fld, ptr);
 	}
+
+	public ConstructedRefFldOp(
+			ConstructedRefFldOp<F, T, C> proto,
+			OpPresets presets) {
+		super(proto, presets);
+	}
+
+	@Override
+	public abstract ConstructedRefFldOp<F, T, C> setPresets(OpPresets presets);
 
 	@Override
 	public ConstructedRefFld<F, T, C> fld() {

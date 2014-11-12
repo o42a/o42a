@@ -43,6 +43,22 @@ public final class RefOp {
 		return host().getBuilder();
 	}
 
+	public final OpPresets getPresets() {
+		return host().getPresets();
+	}
+
+	public final RefOp setPresets(OpPresets presets) {
+
+		final HostOp oldHost = host();
+		final HostOp newHost = oldHost.setPresets(presets);
+
+		if (oldHost == newHost) {
+			return this;
+		}
+
+		return new RefOp(newHost, getRef());
+	}
+
 	public final HostOp host() {
 		return this.host;
 	}

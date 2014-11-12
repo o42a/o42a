@@ -215,6 +215,18 @@ public abstract class ObjectConstructor
 			super(host);
 		}
 
+		private ConstructorOp(PathOp proto, OpPresets presets) {
+			super(proto, presets);
+		}
+
+		@Override
+		public final ConstructorOp setPresets(OpPresets presets) {
+			if (presets.is(getPresets())) {
+				return this;
+			}
+			return new ConstructorOp(this, presets);
+		}
+
 		@Override
 		public HostValueOp value() {
 			return pathValueOp();
@@ -258,7 +270,10 @@ public abstract class ObjectConstructor
 		private ObjectOp exactObject(CodeDirs dirs) {
 
 			final Obj sample = getConstructed();
-			final ObjOp target = sample.ir(dirs.getGenerator()).exactOp(dirs);
+			final ObjOp target =
+					sample.ir(dirs.getGenerator())
+					.exactOp(dirs)
+					.setPresets(getPresets());
 
 			dirs.code().dumpName("Static object: ", target);
 			target.fillDeps(dirs, host(), sample);
@@ -268,9 +283,10 @@ public abstract class ObjectConstructor
 
 		private ObjectOp newObject(CodeDirs dirs, ObjHolder holder) {
 
-			final ObjectOp host = host().materialize(
-					dirs,
-					tempObjHolder(dirs.getAllocator()));
+			final ObjectOp host =
+					host()
+					.setPresets(getPresets())
+					.materialize(dirs, tempObjHolder(dirs.getAllocator()));
 			final CodeDirs subDirs = dirs.begin(
 					NEW_OBJECT_ID,
 					"New object: sample=`" + getConstructed() + "`");

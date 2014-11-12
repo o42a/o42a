@@ -205,8 +205,20 @@ final class LocalStep extends Step {
 
 		private LocalOp op;
 
-		public LocalStepOp(HostOp host, LocalStep local) {
+		LocalStepOp(HostOp host, LocalStep local) {
 			super(host, local);
+		}
+
+		private LocalStepOp(LocalStepOp proto, OpPresets presets) {
+			super(proto, presets);
+		}
+
+		@Override
+		public final LocalStepOp setPresets(OpPresets presets) {
+			if (presets.is(getPresets())) {
+				return this;
+			}
+			return new LocalStepOp(this, presets);
 		}
 
 		@Override
@@ -240,7 +252,8 @@ final class LocalStep extends Step {
 			final LocalOp op =
 					getBuilder()
 					.localsOf(code.getAllocator())
-					.get(getStep().local());
+					.get(getStep().local())
+					.setPresets(getPresets());
 
 			return new LocalStoreOp(id, dirs -> op);
 		}
@@ -253,14 +266,18 @@ final class LocalStep extends Step {
 					id,
 					dirs -> getBuilder()
 					.localsOf(dirs.getAllocator())
-					.get(getStep().local()));
+					.get(getStep().local())
+					.setPresets(getPresets()));
 		}
 
 		private LocalOp op(CodeDirs dirs) {
 			if (this.op != null) {
 				return this.op;
 			}
-			return this.op = dirs.locals().get(getStep().local());
+			return this.op =
+					dirs.locals()
+					.get(getStep().local())
+					.setPresets(getPresets());
 		}
 
 	}

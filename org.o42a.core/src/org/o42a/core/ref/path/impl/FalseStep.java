@@ -177,6 +177,18 @@ public class FalseStep extends Step {
 			super(host, step);
 		}
 
+		private FalseOp(FalseOp proto, OpPresets presets) {
+			super(proto, presets);
+		}
+
+		@Override
+		public final FalseOp setPresets(OpPresets presets) {
+			if (presets.is(getPresets())) {
+				return this;
+			}
+			return new FalseOp(this, presets);
+		}
+
 		@Override
 		public HostValueOp value() {
 			return this;
@@ -209,19 +221,19 @@ public class FalseStep extends Step {
 
 		@Override
 		public ObjOp pathTarget(CodeDirs dirs) {
-			return falseIR().exactOp(dirs);
+			return falseIR().exactOp(dirs).setPresets(getPresets());
 		}
 
 		@Override
 		public TargetStoreOp allocateStore(ID id, Code code) {
-			return falseIR().exactTargetStore(id);
+			return falseIR().exactTargetStore(id, getPresets());
 		}
 
 		@Override
 		public TargetStoreOp localStore(
 				ID id,
 				Function<CodeDirs, LocalIROp> getLocal) {
-			return falseIR().exactTargetStore(id);
+			return falseIR().exactTargetStore(id, getPresets());
 		}
 
 		private final ObjectIR falseIR() {

@@ -51,6 +51,7 @@ public final class DepOp extends DefiniteIROp<DumpPtrOp>
 	private final DepIR depIR;
 	private final OpMeans<DepIR.Op> dep;
 	private final RefIROp ref;
+	private final OpPresets presets;
 
 	DepOp(Code code, ObjectOp host, DepIR depIR) {
 		this(
@@ -71,6 +72,16 @@ public final class DepOp extends DefiniteIROp<DumpPtrOp>
 		this.depIR = depIR;
 		this.dep = dep;
 		this.ref = depIR.refIR().op(code, this);
+		this.presets = host.getPresets();
+	}
+
+	private DepOp(DepOp proto, OpPresets presets) {
+		super(proto.getBuilder(), proto.means());
+		this.host = proto.host;
+		this.depIR = proto.depIR;
+		this.dep = proto.dep;
+		this.ref = proto.ref;
+		this.presets = presets;
 	}
 
 	public final DepIR.Op dep() {
@@ -85,6 +96,19 @@ public final class DepOp extends DefiniteIROp<DumpPtrOp>
 
 	public final DepIR depIR() {
 		return this.depIR;
+	}
+
+	@Override
+	public final OpPresets getPresets() {
+		return this.presets;
+	}
+
+	@Override
+	public final DepOp setPresets(OpPresets presets) {
+		if (presets.is(getPresets())) {
+			return this;
+		}
+		return new DepOp(this, presets);
 	}
 
 	@Override
@@ -152,7 +176,7 @@ public final class DepOp extends DefiniteIROp<DumpPtrOp>
 	}
 
 	private final HostOp loadDep(CodeDirs dirs) {
-		return this.ref.loadTarget(dirs);
+		return this.ref.loadTarget(dirs).setPresets(getPresets());
 	}
 
 	private static DumpPtrOp ptr(ObjectOp host, OpMeans<DepIR.Op> op){
@@ -187,7 +211,8 @@ public final class DepOp extends DefiniteIROp<DumpPtrOp>
 		@Override
 		protected ObjectOp owner(CodeDirs dirs, Allocator allocator) {
 
-			final ObjectOp owner = this.dep.host();
+			final ObjectOp owner =
+					this.dep.host().setPresets(this.dep.getPresets());
 
 			if (allocator != null) {
 				// Ensure the owner not deallocated until the local exists.
@@ -199,7 +224,8 @@ public final class DepOp extends DefiniteIROp<DumpPtrOp>
 
 		@Override
 		protected DepOp op(CodeDirs dirs, ObjOp owner) {
-			return this.dep.depIR().op(dirs.code(), owner);
+			return this.dep.depIR().op(dirs.code(), owner)
+					.setPresets(this.dep.getPresets());
 		}
 
 	}

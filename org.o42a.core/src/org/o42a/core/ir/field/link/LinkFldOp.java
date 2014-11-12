@@ -31,9 +31,7 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.object.op.ObjectRefFn;
 import org.o42a.core.ir.object.vmt.VmtIRChain.Op;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.HostOp;
-import org.o42a.core.ir.op.HostValueOp;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.member.MemberKey;
 
 
@@ -42,6 +40,18 @@ public class LinkFldOp
 
 	LinkFldOp(ObjOp host, LinkFld fld, OpMeans<StatelessOp> ptr) {
 		super(host, fld, ptr);
+	}
+
+	private LinkFldOp(LinkFldOp proto, OpPresets presets) {
+		super(proto, presets);
+	}
+
+	@Override
+	public final LinkFldOp setPresets(OpPresets presets) {
+		if (presets.is(getPresets())) {
+			return this;
+		}
+		return new LinkFldOp(this, presets);
 	}
 
 	@Override

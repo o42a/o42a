@@ -34,6 +34,7 @@ import org.o42a.core.ir.object.op.ObjectRefFn;
 import org.o42a.core.ir.object.vmt.VmtIRChain.Op;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.HostValueOp;
+import org.o42a.core.ir.op.OpPresets;
 import org.o42a.core.member.MemberKey;
 
 
@@ -42,6 +43,18 @@ final class AliasFldOp
 
 	AliasFldOp(ObjOp host, AliasFld fld, OpMeans<StatefulOp> ptr) {
 		super(host, fld, ptr);
+	}
+
+	private AliasFldOp(AliasFldOp proto, OpPresets presets) {
+		super(proto, presets);
+	}
+
+	@Override
+	public AliasFldOp setPresets(OpPresets presets) {
+		if (presets.is(getPresets())) {
+			return this;
+		}
+		return new AliasFldOp(this, presets);
 	}
 
 	@Override

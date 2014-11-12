@@ -31,6 +31,14 @@ public abstract class StepOp<S extends Step> extends PathOp {
 		this.step = step;
 	}
 
+	public StepOp(StepOp<S> proto, OpPresets presets) {
+		super(proto, presets);
+		this.step = proto.step;
+	}
+
+	@Override
+	public abstract StepOp<S> setPresets(OpPresets presets);
+
 	public final S getStep() {
 		return this.step;
 	}

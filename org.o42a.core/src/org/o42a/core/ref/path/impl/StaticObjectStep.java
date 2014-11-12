@@ -127,6 +127,18 @@ public class StaticObjectStep extends Step {
 			super(host, step);
 		}
 
+		private StaticObjectOp(StaticObjectOp proto, OpPresets presets) {
+			super(proto, presets);
+		}
+
+		@Override
+		public final StaticObjectOp setPresets(OpPresets presets) {
+			if (presets.is(getPresets())) {
+				return this;
+			}
+			return new StaticObjectOp(this, presets);
+		}
+
 		@Override
 		public HostValueOp value() {
 			return pathValueOp();
@@ -134,19 +146,19 @@ public class StaticObjectStep extends Step {
 
 		@Override
 		public ObjOp pathTarget(CodeDirs dirs) {
-			return objectIR().exactOp(dirs);
+			return objectIR().exactOp(dirs).setPresets(getPresets());
 		}
 
 		@Override
 		public TargetStoreOp allocateStore(ID id, Code code) {
-			return objectIR().exactTargetStore(id);
+			return objectIR().exactTargetStore(id, getPresets());
 		}
 
 		@Override
 		public TargetStoreOp localStore(
 				ID id,
 				Function<CodeDirs, LocalIROp> getLocal) {
-			return objectIR().exactTargetStore(id);
+			return objectIR().exactTargetStore(id, getPresets());
 		}
 
 		private final ObjectIR objectIR() {

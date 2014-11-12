@@ -47,6 +47,10 @@ public interface HostOp {
 
 	CodeBuilder getBuilder();
 
+	OpPresets getPresets();
+
+	HostOp setPresets(OpPresets presets);
+
 	HostValueOp value();
 
 	FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey);

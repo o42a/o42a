@@ -36,6 +36,7 @@ import org.o42a.core.ir.field.inst.InstFldOp;
 import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.OpPresets;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.core.ir.value.type.ValueOp;
 import org.o42a.core.member.MemberKey;
@@ -56,6 +57,19 @@ public final class ApproximateObjOp extends ObjectOp {
 		assert wellKnownType != null :
 			"Object type not specified";
 		this.wellKnownType = wellKnownType.getInterface();
+	}
+
+	private ApproximateObjOp(ApproximateObjOp proto, OpPresets presets) {
+		super(proto, presets);
+		this.wellKnownType = proto.wellKnownType;
+	}
+
+	@Override
+	public final ApproximateObjOp setPresets(OpPresets presets) {
+		if (presets.is(getPresets())) {
+			return this;
+		}
+		return new ApproximateObjOp(this, presets);
 	}
 
 	@Override
@@ -109,7 +123,7 @@ public final class ApproximateObjOp extends ObjectOp {
 				dirs,
 				memberKey.getOrigin().toObject());
 
-		return ascendant.field(dirs, memberKey);
+		return ascendant.setPresets(getPresets()).field(dirs, memberKey);
 	}
 
 	@Override
@@ -120,7 +134,7 @@ public final class ApproximateObjOp extends ObjectOp {
 				dirs,
 				dep.getDeclaredIn());
 
-		return ascendant.dep(dirs, dep);
+		return ascendant.setPresets(getPresets()).dep(dirs, dep);
 	}
 
 	@Override
