@@ -30,9 +30,7 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.object.op.ObjectRefFn;
 import org.o42a.core.ir.object.vmt.VmtIRChain.Op;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.HostOp;
-import org.o42a.core.ir.op.HostValueOp;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.member.MemberKey;
 
 
@@ -41,6 +39,18 @@ public class EagerLinkFldOp
 
 	EagerLinkFldOp(ObjOp host, EagerLinkFld fld, OpMeans<StatefulOp> ptr) {
 		super(host, fld, ptr);
+	}
+
+	private EagerLinkFldOp(EagerLinkFldOp proto, OpPresets presets) {
+		super(proto, presets);
+	}
+
+	@Override
+	public EagerLinkFldOp setPresets(OpPresets presets) {
+		if (presets.is(getPresets())) {
+			return this;
+		}
+		return new EagerLinkFldOp(this, presets);
 	}
 
 	@Override

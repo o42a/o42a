@@ -149,6 +149,19 @@ public final class Constant<T> extends ObjectConstructor {
 			this.constant = constant;
 		}
 
+		private ConstantOp(ConstantOp<T> proto, OpPresets presets) {
+			super(proto, presets);
+			this.constant = proto.constant;
+		}
+
+		@Override
+		public final ConstantOp<T> setPresets(OpPresets presets) {
+			if (presets.is(getPresets())) {
+				return this;
+			}
+			return new ConstantOp<>(this, presets);
+		}
+
 		@Override
 		public HostValueOp value() {
 			return this;
@@ -185,28 +198,28 @@ public final class Constant<T> extends ObjectConstructor {
 			final ObjectIR ir =
 					this.constant.getConstructed().ir(getGenerator());
 
-			return ir.exactOp(dirs);
+			return ir.exactOp(dirs).setPresets(getPresets());
 		}
 
 		@Override
 		public TargetStoreOp allocateStore(ID id, Code code) {
-			return new ConstantStoreOp(id, code, this.constant);
+			return new ConstantStoreOp(id, code, this);
 		}
 
 		@Override
 		public TargetStoreOp localStore(
 				ID id,
 				Function<CodeDirs, LocalIROp> getLocal) {
-			return new ConstantStoreOp(id, getLocal, this.constant);
+			return new ConstantStoreOp(id, getLocal, this);
 		}
 
 	}
 
 	private static final class ConstantStoreOp extends AbstractObjectStoreOp {
 
-		private final Constant<?> constant;
+		private final ConstantOp<?> constant;
 
-		ConstantStoreOp(ID id, Code code, Constant<?> constant) {
+		ConstantStoreOp(ID id, Code code, ConstantOp<?> constant) {
 			super(id, code);
 			this.constant = constant;
 		}
@@ -214,23 +227,24 @@ public final class Constant<T> extends ObjectConstructor {
 		ConstantStoreOp(
 				ID id,
 				Function<CodeDirs, LocalIROp> getLocal,
-				Constant<?> constant) {
+				ConstantOp<?> constant) {
 			super(id, getLocal);
 			this.constant = constant;
 		}
 
 		@Override
 		public Obj getWellKnownType() {
-			return this.constant.getConstructed();
+			return this.constant.constant.getConstructed();
 		}
 
 		@Override
 		protected ObjectOp object(CodeDirs dirs, Allocator allocator) {
 
 			final ObjectIR ir =
-					this.constant.getConstructed().ir(dirs.getGenerator());
+					this.constant.constant.getConstructed()
+					.ir(dirs.getGenerator());
 
-			return ir.exactOp(dirs);
+			return ir.exactOp(dirs).setPresets(this.constant.getPresets());
 		}
 
 	}

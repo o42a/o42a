@@ -36,6 +36,7 @@ import org.o42a.core.ir.object.op.ObjectFn;
 import org.o42a.core.ir.object.vmt.VmtIRChain;
 import org.o42a.core.ir.object.vmt.VmtIRChain.Op;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.OpPresets;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
@@ -51,6 +52,13 @@ public abstract class RefFldOp<
 	public RefFldOp(ObjOp host, RefFld<F, T, P, R> fld, OpMeans<F> ptr) {
 		super(host, fld, ptr);
 	}
+
+	public RefFldOp(RefFldOp<F, T, P, R, C> proto, OpPresets presets) {
+		super(proto, presets);
+	}
+
+	@Override
+	public abstract RefFldOp<F, T, P, R, C> setPresets(OpPresets presets);
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -74,7 +82,8 @@ public abstract class RefFldOp<
 
 			return holder.hold(
 					code,
-					targetIR.exactOp(getBuilder(), dirs.code()));
+					targetIR.exactOp(getBuilder(), dirs.code())
+					.setPresets(getPresets()));
 		}
 
 		final FldKind kind = fld().getKind();
@@ -82,7 +91,7 @@ public abstract class RefFldOp<
 		code.dumpName(kind + " field: ", this);
 		code.dumpName(kind + " host: ", host());
 
-		return findTarget(dirs, holder);
+		return findTarget(dirs, holder).setPresets(getPresets());
 	}
 
 	protected abstract ObjectOp findTarget(CodeDirs dirs, ObjHolder holder);
@@ -170,7 +179,8 @@ public abstract class RefFldOp<
 		final Obj hostAscendant = host().getAscendant();
 		final Obj targetType = fld().targetType(hostAscendant);
 
-		return approximateObject(getBuilder(), code, ptr, targetType);
+		return approximateObject(getBuilder(), code, ptr, targetType)
+				.setPresets(getPresets());
 	}
 
 	private BoolOp isNone(Block hasTarget, DataOp ptr) {

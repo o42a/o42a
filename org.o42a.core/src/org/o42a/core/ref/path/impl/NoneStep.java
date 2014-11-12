@@ -49,7 +49,6 @@ import org.o42a.util.string.ID;
 public class NoneStep extends Step {
 
 	private static final Inline INLINE_NONE = new Inline();
-	private static final NoneStoreOp NONE_STORE = new NoneStoreOp();
 
 	@Override
 	public PathKind getPathKind() {
@@ -130,12 +129,12 @@ public class NoneStep extends Step {
 		throw new UnsupportedOperationException();
 	}
 
-	private static ObjOp noneObject(CodeDirs dirs) {
+	private static ObjOp noneObject(CodeDirs dirs, OpPresets presets) {
 
 		final CodeBuilder builder = dirs.getBuilder();
 		final Obj none = builder.getContext().getNone();
 
-		return none.ir(dirs.getGenerator()).exactOp(dirs);
+		return none.ir(dirs.getGenerator()).exactOp(dirs).setPresets(presets);
 	}
 
 	private static final class Inline extends InlineStep {
@@ -186,6 +185,18 @@ public class NoneStep extends Step {
 			super(host, step);
 		}
 
+		private NoneOp(NoneOp proto, OpPresets presets) {
+			super(proto, presets);
+		}
+
+		@Override
+		public final NoneOp setPresets(OpPresets presets) {
+			if (presets.is(getPresets())) {
+				return this;
+			}
+			return new NoneOp(this, presets);
+		}
+
 		@Override
 		public HostValueOp value() {
 			return this;
@@ -219,24 +230,30 @@ public class NoneStep extends Step {
 		@Override
 		public HostOp pathTarget(CodeDirs dirs) {
 			dirs.code().go(dirs.falseDir());
-			return noneObject(dirs);
+			return noneObject(dirs, getPresets());
 		}
 
 		@Override
 		public TargetStoreOp allocateStore(ID id, Code code) {
-			return NONE_STORE;
+			return new NoneStoreOp(this);
 		}
 
 		@Override
 		public TargetStoreOp localStore(
 				ID id,
 				Function<CodeDirs, LocalIROp> getLocal) {
-			return NONE_STORE;
+			return new NoneStoreOp(this);
 		}
 
 	}
 
 	private static final class NoneStoreOp implements TargetStoreOp {
+
+		private final NoneOp op;
+
+		NoneStoreOp(NoneOp op) {
+			this.op = op;
+		}
 
 		@Override
 		public void storeTarget(CodeDirs dirs) {
@@ -246,7 +263,7 @@ public class NoneStep extends Step {
 		@Override
 		public HostOp loadTarget(CodeDirs dirs) {
 			dirs.code().go(dirs.falseDir());
-			return noneObject(dirs);
+			return noneObject(dirs, this.op.getPresets());
 		}
 
 		@Override

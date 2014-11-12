@@ -26,12 +26,15 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.field.owner.OwnerFld.Op;
+import org.o42a.core.ir.field.owner.OwnerFld.Type;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.HostValueOp;
+import org.o42a.core.ir.op.OpPresets;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 
@@ -40,6 +43,18 @@ public class OwnerFldOp extends FldOp<OwnerFld.Op, OwnerFld.Type> {
 
 	OwnerFldOp(ObjOp host, OwnerFld fld, OpMeans<OwnerFld.Op> ptr) {
 		super(host, fld, ptr);
+	}
+
+	private OwnerFldOp(FldOp<Op, Type> proto, OpPresets presets) {
+		super(proto, presets);
+	}
+
+	@Override
+	public final OwnerFldOp setPresets(OpPresets presets) {
+		if (presets.is(getPresets())) {
+			return this;
+		}
+		return new OwnerFldOp(this, presets);
 	}
 
 	@Override
@@ -75,7 +90,8 @@ public class OwnerFldOp extends FldOp<OwnerFld.Op, OwnerFld.Type> {
 			final Obj target = fld().getField().toObject();
 			final ObjectIR targetIR = target.ir(getGenerator());
 
-			return targetIR.exactOp(getBuilder(), dirs.code());
+			return targetIR.exactOp(getBuilder(), dirs.code())
+					.setPresets(getPresets());
 		}
 
 		final Block code = dirs.code();
@@ -83,7 +99,8 @@ public class OwnerFldOp extends FldOp<OwnerFld.Op, OwnerFld.Type> {
 
 		return holder.hold(
 				code,
-				approximateObject(dirs, targetPtr, fld().getAscendant()));
+				approximateObject(dirs, targetPtr, fld().getAscendant())
+				.setPresets(getPresets()));
 	}
 
 }

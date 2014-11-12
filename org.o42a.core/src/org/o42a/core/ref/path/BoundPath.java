@@ -871,17 +871,38 @@ public class BoundPath extends RefPath {
 	private static final class StaticHostOp
 			implements HostOp, HostValueOp {
 
-		private final HostOp start;
+		private final CodeBuilder builder;
+		private final OpPresets presets;
 		private final ObjectIR objectIR;
 
 		StaticHostOp(HostOp start, ObjectIR objectIR) {
-			this.start = start;
+			this.builder = start.getBuilder();
+			this.presets = start.getPresets();
 			this.objectIR = objectIR;
+		}
+
+		private StaticHostOp(StaticHostOp proto, OpPresets presets) {
+			this.builder = proto.getBuilder();
+			this.presets = presets;
+			this.objectIR = proto.objectIR;
 		}
 
 		@Override
 		public final CodeBuilder getBuilder() {
-			return this.start.getBuilder();
+			return this.builder;
+		}
+
+		@Override
+		public final OpPresets getPresets() {
+			return this.presets;
+		}
+
+		@Override
+		public final StaticHostOp setPresets(OpPresets presets) {
+			if (presets.is(getPresets())) {
+				return this;
+			}
+			return new StaticHostOp(this, presets);
 		}
 
 		@Override
@@ -921,14 +942,14 @@ public class BoundPath extends RefPath {
 
 		@Override
 		public TargetStoreOp allocateStore(ID id, Code code) {
-			return this.objectIR.exactTargetStore(id);
+			return this.objectIR.exactTargetStore(id, getPresets());
 		}
 
 		@Override
 		public TargetStoreOp localStore(
 				ID id,
 				Function<CodeDirs, LocalIROp> getLocal) {
-			return this.objectIR.exactTargetStore(id);
+			return this.objectIR.exactTargetStore(id, getPresets());
 		}
 
 		@Override
@@ -944,7 +965,8 @@ public class BoundPath extends RefPath {
 		}
 
 		private ObjOp object(Code code) {
-			return this.objectIR.exactOp(getBuilder(), code);
+			return this.objectIR.exactOp(getBuilder(), code)
+					.setPresets(getPresets());
 		}
 
 	}

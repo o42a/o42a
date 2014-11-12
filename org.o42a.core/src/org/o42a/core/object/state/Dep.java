@@ -398,6 +398,18 @@ public final class Dep extends Step implements SubID {
 			super(host, step);
 		}
 
+		private DepStepOp(StepOp<Dep> proto, OpPresets presets) {
+			super(proto, presets);
+		}
+
+		@Override
+		public final DepStepOp setPresets(OpPresets presets) {
+			if (presets.is(getPresets())) {
+				return this;
+			}
+			return new DepStepOp(this, presets);
+		}
+
 		@Override
 		public HostValueOp value() {
 			return pathValueOp();
@@ -433,7 +445,10 @@ public final class Dep extends Step implements SubID {
 		}
 
 		private DepOp dep(CodeDirs dirs, ObjHolder holder) {
-			return host().materialize(dirs, holder).dep(dirs, getStep());
+			return host()
+					.setPresets(getPresets())
+					.materialize(dirs, holder)
+					.dep(dirs, getStep());
 		}
 
 	}
@@ -445,6 +460,19 @@ public final class Dep extends Step implements SubID {
 		SyntheticDepOp(HostOp host, Dep dep) {
 			super(host, dep);
 			this.dep = dep;
+		}
+
+		private SyntheticDepOp(SyntheticDepOp proto, OpPresets presets) {
+			super(proto, presets);
+			this.dep = proto.dep;
+		}
+
+		@Override
+		public final SyntheticDepOp setPresets(OpPresets presets) {
+			if (presets.is(getPresets())) {
+				return this;
+			}
+			return new SyntheticDepOp(this, presets);
 		}
 
 		@Override
@@ -472,10 +500,11 @@ public final class Dep extends Step implements SubID {
 		private HostOp path() {
 
 			final Scope declaredIn = this.dep.getDeclaredIn().getScope();
+			final HostOp start = host().setPresets(getPresets());
 			final HostOp enclosing =
 					declaredIn.getEnclosingScopePath()
 					.bind(this.dep.ref(), declaredIn)
-					.op(host());
+					.op(start);
 
 			return this.dep.ref().op(enclosing).path();
 		}

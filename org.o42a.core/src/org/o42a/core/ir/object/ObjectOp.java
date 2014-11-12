@@ -125,6 +125,7 @@ public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
 		return result;
 	}
 
+	private final OpPresets presets;
 	private final ObjectPrecision precision;
 	private final Init<ValueOp> value = init(this::createValue);
 
@@ -133,8 +134,23 @@ public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
 			OpMeans<ObjectIROp> ptr,
 			ObjectPrecision precision) {
 		super(builder, ptr);
+		this.presets = builder.getDefaultPresets();
 		this.precision = precision;
 	}
+
+	protected ObjectOp(ObjectOp proto, OpPresets presets) {
+		super(proto.getBuilder(), proto.means());
+		this.presets = presets;
+		this.precision = proto.precision;
+	}
+
+	@Override
+	public final OpPresets getPresets() {
+		return this.presets;
+	}
+
+	@Override
+	public abstract ObjectOp setPresets(OpPresets presets);
 
 	public abstract Obj getWellKnownType();
 

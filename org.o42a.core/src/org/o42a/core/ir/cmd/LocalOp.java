@@ -60,15 +60,23 @@ public final class LocalOp {
 			fillDirs.done().code().go(dirs.code().tail());
 		}
 
-		return new LocalOp(local, targetStore);
+		return new LocalOp(local, targetStore, ref.getPresets());
 	}
 
 	private final Local local;
 	private final TargetStoreOp targetStore;
+	private final OpPresets presets;
 
-	private LocalOp(Local local, TargetStoreOp targetStore) {
+	private LocalOp(Local local, TargetStoreOp targetStore, OpPresets presets) {
 		this.local = local;
 		this.targetStore = targetStore;
+		this.presets = presets;
+	}
+
+	private LocalOp(LocalOp proto, OpPresets presets) {
+		this.local = proto.local;
+		this.targetStore = proto.targetStore;
+		this.presets = presets;
 	}
 
 	public final Local getLocal() {
@@ -77,6 +85,17 @@ public final class LocalOp {
 
 	public final TargetStoreOp getTargetStore() {
 		return this.targetStore;
+	}
+
+	public final OpPresets getPresets() {
+		return this.presets;
+	}
+
+	public final LocalOp setPresets(OpPresets presets) {
+		if (presets.is(getPresets())) {
+			return this;
+		}
+		return new LocalOp(this, presets);
 	}
 
 	public final ValOp writeValue(ValDirs dirs) {
@@ -88,7 +107,7 @@ public final class LocalOp {
 	}
 
 	public final HostOp target(CodeDirs dirs) {
-		return this.targetStore.loadTarget(dirs);
+		return this.targetStore.loadTarget(dirs).setPresets(getPresets());
 	}
 
 	@Override

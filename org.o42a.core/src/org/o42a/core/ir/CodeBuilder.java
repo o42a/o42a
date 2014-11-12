@@ -19,12 +19,15 @@
 */
 package org.o42a.core.ir;
 
+import static org.o42a.core.ir.op.OpPresets.DEFAULT_OP_PRESETS;
+
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.core.ir.cmd.LocalsCode;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.OpPresets;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
@@ -44,6 +47,7 @@ public abstract class CodeBuilder {
 	private final Function<?> function;
 	private final GCCode gc;
 	private final FunctionLocals locals;
+	private OpPresets defaultPresets = DEFAULT_OP_PRESETS;
 	private int nameSeq;
 
 	protected CodeBuilder(CompilerContext context, Function<?> function) {
@@ -67,6 +71,15 @@ public abstract class CodeBuilder {
 
 	public final ObjectSignature<?> getObjectSignature() {
 		return (ObjectSignature<?>) this.function.getSignature();
+	}
+
+	public final OpPresets getDefaultPresets() {
+		return this.defaultPresets;
+	}
+
+	public final void setDefaultPresets(OpPresets defaultPresets) {
+		this.defaultPresets =
+				defaultPresets != null ? defaultPresets : DEFAULT_OP_PRESETS;
 	}
 
 	public abstract ObjectOp host();

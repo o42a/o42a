@@ -166,6 +166,18 @@ public final class ModuleStep extends Step {
 			super(host, step);
 		}
 
+		private ModuleOp(ModuleOp proto, OpPresets presets) {
+			super(proto, presets);
+		}
+
+		@Override
+		public final ModuleOp setPresets(OpPresets presets) {
+			if (presets.is(getPresets())) {
+				return this;
+			}
+			return new ModuleOp(this, presets);
+		}
+
 		@Override
 		public HostValueOp value() {
 			return pathValueOp();
@@ -173,19 +185,19 @@ public final class ModuleStep extends Step {
 
 		@Override
 		public ObjOp pathTarget(CodeDirs dirs) {
-			return moduleIR().exactOp(dirs);
+			return moduleIR().exactOp(dirs).setPresets(getPresets());
 		}
 
 		@Override
 		public TargetStoreOp allocateStore(ID id, Code code) {
-			return moduleIR().exactTargetStore(id);
+			return moduleIR().exactTargetStore(id, getPresets());
 		}
 
 		@Override
 		public TargetStoreOp localStore(
 				ID id,
 				Function<CodeDirs, LocalIROp> getLocal) {
-			return moduleIR().exactTargetStore(id);
+			return moduleIR().exactTargetStore(id, getPresets());
 		}
 
 		private final ObjectIR moduleIR() {

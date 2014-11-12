@@ -151,6 +151,18 @@ public abstract class AbstractMemberStep extends Step {
 			super(host, step);
 		}
 
+		private MemberOp(MemberOp proto, OpPresets presets) {
+			super(proto, presets);
+		}
+
+		@Override
+		public final MemberOp setPresets(OpPresets presets) {
+			if (presets.is(getPresets())) {
+				return this;
+			}
+			return new MemberOp(this, presets);
+		}
+
 		@Override
 		public HostValueOp value() {
 			return pathValueOp();
@@ -158,7 +170,9 @@ public abstract class AbstractMemberStep extends Step {
 
 		@Override
 		public FldOp<?, ?> pathTarget(CodeDirs dirs) {
-			return host().field(dirs, getStep().getMemberKey());
+			return host()
+					.setPresets(getPresets())
+					.field(dirs, getStep().getMemberKey());
 		}
 
 		@Override
