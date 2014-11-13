@@ -215,9 +215,16 @@ public abstract class Code extends DebugCodeBase {
 			Allocatable<T> allocatable) {
 		assert assertIncomplete();
 
-		final Allocated<T> allocated = getAllocator().addAllocation(
-				opNames().nestedId(id),
-				allocatable);
+		final Allocator allocator;
+
+		if (allocatable.getAllocationMode().isNonDebug()) {
+			allocator = getAllocator().getNonDebugAllocator();
+		} else {
+			allocator = getAllocator();
+		}
+
+		final Allocated<T> allocated =
+				allocator.addAllocation(opNames().nestedId(id), allocatable);
 
 		allocated.init(this);
 

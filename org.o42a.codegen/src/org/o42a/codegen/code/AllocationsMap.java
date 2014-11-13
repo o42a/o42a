@@ -115,8 +115,17 @@ final class AllocationsMap {
 			return new MapAllocatedValue<>(allocated);
 		}
 
-		final Code enclosing =
-				mode.inAllocator() ? code.getAllocator().allocations() : code;
+		final Code enclosing;
+
+		if (!mode.inAllocator()) {
+			enclosing = code;
+		} else if (!mode.isNonDebug()) {
+			enclosing = code.getAllocator().allocations();
+		} else {
+			enclosing = code.getAllocator()
+					.getNonDebugAllocator()
+					.allocations();
+		}
 
 		return new Allocations.ImmediateAllocations<>(enclosing, allocated);
 	}

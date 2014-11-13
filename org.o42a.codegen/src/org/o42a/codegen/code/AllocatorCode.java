@@ -28,8 +28,8 @@ final class AllocatorCode extends Allocator {
 	private final Allocator enclosingAllocator;
 	private final BlockWriter writer;
 
-	AllocatorCode(Block enclosing, ID name) {
-		super(enclosing, name);
+	AllocatorCode(Block enclosing, ID name, boolean debugAllocator) {
+		super(enclosing, name, debugAllocator);
 		this.enclosingAllocator = enclosing.getAllocator();
 		this.writer = enclosing.writer().block(this);
 		initAllocations(enclosing.writer().startAllocation(this));
