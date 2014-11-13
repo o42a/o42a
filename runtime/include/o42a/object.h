@@ -456,6 +456,17 @@ void o42a_obj_vmtc_free(const o42a_obj_vmtc_t *);
 o42a_obj_t *o42a_obj_alloc(const o42a_obj_desc_t *);
 
 /**
+ * Initializes newly allocated object.
+ *
+ * This method is called instead of o42a_obj_alloc if memory for object
+ * is allocated by other means, e.g. on stack.
+ *
+ * \param object pointer to memory allocated for object.
+ * \param desc[in] object descriptor pointer.
+ */
+void o42a_obj_init(o42a_obj_t *, const o42a_obj_desc_t *);
+
+/**
  * Constructs previously allocated object.
  *
  * Disposes object construction if construction failed.
