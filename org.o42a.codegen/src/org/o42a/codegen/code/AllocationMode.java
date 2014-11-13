@@ -41,9 +41,19 @@ public enum AllocationMode {
 	ALLOCATOR_ALLOCATION,
 
 	/**
+	 * Allocate in first non-debug allocator when needed.
+	 */
+	NON_DEBUG_ALLOCATION,
+
+	/**
 	 * Always allocate in allocator.
 	 */
-	MANDATORY_ALLOCATION;
+	MANDATORY_ALLOCATION,
+
+	/**
+	 * Allocate in first non-debug allocator when needed.
+	 */
+	NON_DEBUG_MANDATORY_ALLOCATION,;
 
 	final boolean supportsAllocation() {
 		return this != NO_ALLOCATION;
@@ -54,7 +64,12 @@ public enum AllocationMode {
 	}
 
 	final boolean isMandatory() {
-		return this == MANDATORY_ALLOCATION;
+		return ordinal() >= MANDATORY_ALLOCATION.ordinal();
+	}
+
+	final boolean isNonDebug() {
+		return this == NON_DEBUG_ALLOCATION
+				|| this == NON_DEBUG_MANDATORY_ALLOCATION;
 	}
 
 }

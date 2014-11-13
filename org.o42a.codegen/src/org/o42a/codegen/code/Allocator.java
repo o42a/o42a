@@ -41,13 +41,16 @@ public abstract class Allocator extends Block {
 	private AllocationsMap allocationsMap;
 	private Code allocations;
 	private HashMap<Class<?>, Object> data;
+	private final boolean debugAllocator;
 
-	Allocator(Block enclosing, ID name) {
+	Allocator(Block enclosing, ID name, boolean debugAllocator) {
 		super(enclosing, name);
+		this.debugAllocator = debugAllocator;
 	}
 
 	Allocator(Generator generator, ID id) {
 		super(generator, id);
+		this.debugAllocator = false;
 	}
 
 	public final AllocPlace getAllocPlace() {
@@ -58,12 +61,23 @@ public abstract class Allocator extends Block {
 		allocate(DISPOSAL_ID, new AllocatableDisposal(disposal));
 	}
 
+	public final boolean isDebugAllocator() {
+		return this.debugAllocator;
+	}
+
 	@Override
 	public final Allocator getAllocator() {
 		return this;
 	}
 
 	public abstract Allocator getEnclosingAllocator();
+
+	public final Allocator getNonDebugAllocator() {
+		if (!isDebugAllocator()) {
+			return this;
+		}
+		return getEnclosingAllocator().getNonDebugAllocator();
+	}
 
 	public final Code allocations() {
 		assert this.allocations != null :

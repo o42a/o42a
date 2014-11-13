@@ -51,13 +51,16 @@ public abstract class DebugBlockBase extends OpBlockBase {
 			return new TaskBlock(block, block);
 		}
 
+		final DebugBlockBase debugBlock = block;
 		final Allocator code =
-				block.allocator(id != null ? id : DEBUG_BLOCK_ID);
+				debugBlock.debugAllocator(id != null ? id : DEBUG_BLOCK_ID);
 
 		code.allocate(STACK_FRAME_ID, new AllocatableStackFrame(comment));
 
 		return new TaskBlock(block, code);
 	}
+
+	protected abstract Allocator debugAllocator(ID name);
 
 	private final Block block() {
 		return (Block) this;

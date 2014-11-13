@@ -74,7 +74,7 @@ public abstract class Block extends DebugBlockBase {
 
 	public final Allocator allocator(ID name) {
 		assert assertIncomplete();
-		return new AllocatorCode(this, name);
+		return new AllocatorCode(this, name, false);
 	}
 
 	public final void go(CodePos pos) {
@@ -114,6 +114,12 @@ public abstract class Block extends DebugBlockBase {
 
 	@Override
 	public abstract BlockWriter writer();
+
+	@Override
+	protected Allocator debugAllocator(ID name) {
+		assert assertIncomplete();
+		return new AllocatorCode(this, name, true);
+	}
 
 	@Override
 	protected CodePos unwrapPos(CodePos pos) {
