@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.codegen.code.AllocationMode.MANDATORY_ALLOCATION;
+import static org.o42a.codegen.code.AllocationMode.NON_DEBUG_MANDATORY_ALLOCATION;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE_OBJECT;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT_OBJECT;
 import static org.o42a.core.ir.object.desc.ObjectDescIR.objectDescIR;
@@ -265,7 +265,7 @@ public class ObjectIR implements Codegen {
 
 		@Override
 		public AllocationMode getAllocationMode() {
-			return MANDATORY_ALLOCATION;
+			return NON_DEBUG_MANDATORY_ALLOCATION;
 		}
 
 		@Override
