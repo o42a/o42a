@@ -740,6 +740,8 @@ inline void o42a_obj_init(
 	data->fld_ctrs = NULL;
 
 	O42A(obj_mutex_init(data));
+
+	O42A_RETURN;
 }
 
 o42a_obj_t *o42a_obj_alloc(const o42a_obj_desc_t *const desc) {
