@@ -19,9 +19,11 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.codegen.code.AllocationMode.MANDATORY_ALLOCATION;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE_OBJECT;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT_OBJECT;
 import static org.o42a.core.ir.object.desc.ObjectDescIR.objectDescIR;
+import static org.o42a.core.ir.object.op.InitObjectFn.INIT_OBJECT;
 import static org.o42a.core.ir.object.vmt.VmtIR.deriveVmtIR;
 import static org.o42a.core.ir.object.vmt.VmtIR.newVmtIR;
 import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
@@ -31,7 +33,7 @@ import static org.o42a.util.fn.ReInit.reInit;
 
 import org.o42a.codegen.Codegen;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.CodeBuilder;
@@ -184,6 +186,10 @@ public class ObjectIR implements Codegen {
 		return this;
 	}
 
+	public final ObjectIROp allocate(ID id, Code code) {
+		return code.allocate(id, new AllocatableObjectIR(this)).get(code);
+	}
+
 	public final ObjOp exactOp(BuilderCode code) {
 		return exactOp(code.getBuilder(), code.code());
 	}
@@ -246,6 +252,43 @@ public class ObjectIR implements Codegen {
 						.pointer(getGenerator())
 						.op(null, c)),
 				precision);
+	}
+
+	private static final class AllocatableObjectIR
+			implements Allocatable<ObjectIROp> {
+
+		private final ObjectIR objectIR;
+
+		AllocatableObjectIR(ObjectIR objectIR) {
+			this.objectIR = objectIR;
+		}
+
+		@Override
+		public AllocationMode getAllocationMode() {
+			return MANDATORY_ALLOCATION;
+		}
+
+		@Override
+		public ObjectIROp allocate(
+				Allocations code,
+				Allocated<ObjectIROp> allocated) {
+			return code.allocate(this.objectIR.getType());
+		}
+
+		@Override
+		public void init(Code code, ObjectIROp allocated) {
+			code.getGenerator()
+			.externalFunction()
+			.noSideEffects()
+			.link("o42a_obj_init", INIT_OBJECT)
+			.op(null, code)
+			.initObject(code, allocated, this.objectIR.getDescIR());
+		}
+
+		@Override
+		public void dispose(Code code, Allocated<ObjectIROp> allocated) {
+		}
+
 	}
 
 	private static final class ExactObjectStoreOp implements TargetStoreOp {

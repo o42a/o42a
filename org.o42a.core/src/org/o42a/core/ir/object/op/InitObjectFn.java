@@ -25,26 +25,31 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.ExtSignature;
 import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.op.DataOp;
+import org.o42a.core.ir.object.ObjectIROp;
 import org.o42a.core.ir.object.desc.ObjectDescIR;
 
 
-public class AllocateObjectFn extends Fn<AllocateObjectFn> {
+public class InitObjectFn extends Fn<InitObjectFn> {
 
-	public static final ExtSignature<DataOp, AllocateObjectFn> ALLOCATE_OBJECT =
-			customSignature("AllocateObjectF", 1)
+	public static final ExtSignature<Void, InitObjectFn> INIT_OBJECT =
+			customSignature("InitObjectF", 1)
+			.addData("object")
 			.addPtr("desc", OBJECT_DESC_TYPE)
-			.returnData(c -> new AllocateObjectFn(c));
+			.returnVoid(c -> new InitObjectFn(c));
 
-	private AllocateObjectFn(FuncCaller<AllocateObjectFn> caller) {
+	private InitObjectFn(FuncCaller<InitObjectFn> caller) {
 		super(caller);
 	}
 
-	public DataOp allocateObject(Code code, ObjectDescIR descIR) {
-		return invoke(
+	public void initObject(
+			Code code,
+			ObjectIROp object,
+			ObjectDescIR descIR) {
+		invoke(
 				null,
 				code,
-				ALLOCATE_OBJECT.result(),
+				INIT_OBJECT.result(),
+				object.toData(null, code),
 				descIR.ptr().op(null, code));
 	}
 

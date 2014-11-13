@@ -44,7 +44,6 @@ import org.o42a.core.ir.field.object.VmtChainAllocFn;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.ObjectValueIR;
-import org.o42a.core.ir.object.desc.ObjectDescIR;
 import org.o42a.core.ir.object.vmt.VmtIR;
 import org.o42a.core.ir.object.vmt.VmtIRChain;
 import org.o42a.core.ir.op.*;
@@ -63,6 +62,7 @@ public class CtrOp extends IROp<CtrOp.Op> {
 			new AllocatableCtr();
 
 	public static final ID CTR_ID = ID.id("ctr");
+	private static final ID NEW_OBJECT_ID = ID.id("new_object");
 
 	public static final CtrOp allocateCtr(BuilderCode code) {
 		return allocateCtr(code.getBuilder(), code.code());
@@ -119,6 +119,16 @@ public class CtrOp extends IROp<CtrOp.Op> {
 		return getSample().value().getStatefulness().isExplicitEager();
 	}
 
+	public final boolean isStackAllocated() {
+		if (!host().getPresets().isStackAllocationAllowed()) {
+			return false;
+		}
+		return !getSample()
+				.analysis()
+				.overridersEscapeMode()
+				.isEscapePossible();
+	}
+
 	@Override
 	public final Op ptr(Code code) {
 		return this.ptr.apply(code);
@@ -157,12 +167,20 @@ public class CtrOp extends IROp<CtrOp.Op> {
 
 	public final CtrOp allocateObject(CodeDirs dirs) {
 
-		final ObjectDescIR descIR = getSample().ir(getGenerator()).getDescIR();
+		final ObjectIR sampleIR = getSample().ir(getGenerator());
 		final Block code = dirs.code();
 
-		this.objectPtr =
-				allocFn().op(null, code).allocateObject(code, descIR);
-		this.objectPtr.isNull(null, code).go(code, dirs.falseDir());
+		if (isStackAllocated()) {
+			this.objectPtr =
+					sampleIR.allocate(NEW_OBJECT_ID, code)
+					.toData(null, code);
+		} else {
+			this.objectPtr =
+					allocFn()
+					.op(null, code)
+					.allocateObject(code, sampleIR.getDescIR());
+			this.objectPtr.isNull(null, code).go(code, dirs.falseDir());
+		}
 		ptr(code).object(code).store(code, this.objectPtr);
 
 		return this;
