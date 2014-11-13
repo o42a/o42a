@@ -718,15 +718,10 @@ static void derive_ancestor_bodies(
 	O42A_RETURN;
 }
 
-o42a_obj_t *o42a_obj_alloc(const o42a_obj_desc_t *const desc) {
-	O42A_ENTER(return NULL);
-
-	o42a_obj_t *const object =
-			O42A(o42a_gc_alloc(&o42a_obj_gc_desc, desc->object_size));
-
-	if (!object) {
-		O42A_RETURN NULL;
-	}
+inline void o42a_obj_init(
+		o42a_obj_t *const object,
+		const o42a_obj_desc_t *const desc) {
+	O42A_ENTER(return);
 
 #ifndef NDEBUG
 
@@ -745,10 +740,22 @@ o42a_obj_t *o42a_obj_alloc(const o42a_obj_desc_t *const desc) {
 	data->fld_ctrs = NULL;
 
 	O42A(obj_mutex_init(data));
+}
+
+o42a_obj_t *o42a_obj_alloc(const o42a_obj_desc_t *const desc) {
+	O42A_ENTER(return NULL);
+
+	o42a_obj_t *const object =
+			O42A(o42a_gc_alloc(&o42a_obj_gc_desc, desc->object_size));
+
+	if (!object) {
+		O42A_RETURN NULL;
+	}
+
+	O42A(o42a_obj_init(object, desc));
 
 	O42A_RETURN object;
 }
-
 
 o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	O42A_ENTER(return NULL);
