@@ -20,14 +20,14 @@
 package org.o42a.core.ref.impl;
 
 import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
-import static org.o42a.core.object.meta.EscapeMode.ESCAPE_POSSIBLE;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.CommandTargets;
@@ -53,8 +53,8 @@ final class YieldCommand extends RefCommand {
 	}
 
 	@Override
-	public EscapeMode escapeMode(Scope scope) {
-		return ESCAPE_POSSIBLE;
+	public EscapeFlag escapeFlag(EscapeAnalyzer analyzer, Scope scope) {
+		return analyzer.escapePossible();
 	}
 
 	@Override

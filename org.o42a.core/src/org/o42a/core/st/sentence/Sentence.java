@@ -19,7 +19,6 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.object.meta.EscapeMode.ESCAPE_IMPOSSIBLE;
 import static org.o42a.core.st.Command.exitCommand;
 import static org.o42a.core.st.Command.noCommands;
 import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
@@ -32,7 +31,8 @@ import java.util.List;
 import org.o42a.core.Contained;
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.CommandTargets;
 import org.o42a.core.st.Reproducer;
@@ -98,16 +98,16 @@ public abstract class Sentence extends Contained {
 		return getKind().isInterrogative() || getBlock().isInterrogation();
 	}
 
-	public final EscapeMode escapeMode(Scope scope) {
+	public final EscapeFlag escapeFlag(EscapeAnalyzer analyzer, Scope scope) {
 
 		final Sentence prerequisite = getPrerequisite();
 
 		if (prerequisite != null) {
-			return prerequisite.escapeMode(scope)
-					.combine(() -> altsEscapeMode(scope));
+			return prerequisite.escapeFlag(analyzer, scope)
+					.combine(() -> altsEscapeFlag(analyzer, scope));
 		}
 
-		return altsEscapeMode(scope);
+		return altsEscapeFlag(analyzer, scope);
 	}
 
 	public final List<Statements> getAlternatives() {
@@ -417,18 +417,17 @@ public abstract class Sentence extends Contained {
 		return result.add(exitCommand(getLocation()));
 	}
 
-	private EscapeMode altsEscapeMode(Scope scope) {
-
-		EscapeMode escapeMode = ESCAPE_IMPOSSIBLE;
-
+	private EscapeFlag altsEscapeFlag(EscapeAnalyzer analyzer, Scope scope) {
 		for (Statements alt : getAlternatives()) {
-			escapeMode.combine(alt.escapeMode(scope));
-			if (escapeMode.isEscapePossible()) {
-				break;
+
+			final EscapeFlag escapeFlag = alt.escapeFlag(analyzer, scope);
+
+			if (!escapeFlag.isEscapeImpossible()) {
+				return escapeFlag;
 			}
 		}
 
-		return escapeMode;
+		return analyzer.escapeImpossible();
 	}
 
 }

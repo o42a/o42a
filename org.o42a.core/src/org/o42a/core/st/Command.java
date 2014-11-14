@@ -28,7 +28,8 @@ import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.Location;
 import org.o42a.core.st.action.Action;
@@ -108,7 +109,7 @@ public abstract class Command implements ContainerInfo {
 
 	public abstract Action action(Resolver resolver);
 
-	public abstract EscapeMode escapeMode(Scope scope);
+	public abstract EscapeFlag escapeFlag(EscapeAnalyzer analyzer, Scope scope);
 
 	public abstract Instruction toInstruction(Resolver resolver);
 

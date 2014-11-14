@@ -40,7 +40,8 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Accessor;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
@@ -64,8 +65,10 @@ final class ConcatStrings extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public EscapeMode escapeMode(Scope scope) {
-		return what().escapeMode(scope).combine(() -> with().escapeMode(scope));
+	public EscapeFlag escapeFlag(EscapeAnalyzer analyzer, Scope scope) {
+		return what()
+				.escapeFlag(analyzer, scope)
+				.combine(() -> with().escapeFlag(analyzer, scope));
 	}
 
 	@Override

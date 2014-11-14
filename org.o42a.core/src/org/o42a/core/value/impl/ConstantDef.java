@@ -19,7 +19,6 @@
 */
 package org.o42a.core.value.impl;
 
-import static org.o42a.core.object.meta.EscapeMode.ESCAPE_IMPOSSIBLE;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 import static org.o42a.core.st.DefValue.defValue;
 
@@ -29,7 +28,8 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.object.def.Def;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.TypeParameters;
@@ -59,8 +59,8 @@ final class ConstantDef<T> extends Def {
 	}
 
 	@Override
-	public EscapeMode getEscapeMode() {
-		return ESCAPE_IMPOSSIBLE;
+	public EscapeFlag escapeFlag(EscapeAnalyzer analyzer) {
+		return analyzer.escapeImpossible();
 	}
 
 	@Override

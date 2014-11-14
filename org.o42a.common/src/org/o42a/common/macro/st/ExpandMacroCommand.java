@@ -30,7 +30,8 @@ import org.o42a.core.ir.cmd.EvalCmd;
 import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.*;
@@ -85,8 +86,8 @@ final class ExpandMacroCommand extends Command {
 	}
 
 	@Override
-	public EscapeMode escapeMode(Scope scope) {
-		return valueAdapter(scope).getAdaptedRef().escapeMode(scope);
+	public EscapeFlag escapeFlag(EscapeAnalyzer analyzer, Scope scope) {
+		return valueAdapter(scope).getAdaptedRef().escapeFlag(analyzer, scope);
 	}
 
 	@Override

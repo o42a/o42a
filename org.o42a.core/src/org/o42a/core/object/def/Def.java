@@ -30,7 +30,8 @@ import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.object.type.Derivation;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.Location;
@@ -151,7 +152,7 @@ public abstract class Def implements SourceInfo {
 		return false;
 	}
 
-	public abstract EscapeMode getEscapeMode();
+	public abstract EscapeFlag escapeFlag(EscapeAnalyzer analyzer);
 
 	public final Def upgradeScope(Scope toScope) {
 		if (toScope.is(getScope())) {

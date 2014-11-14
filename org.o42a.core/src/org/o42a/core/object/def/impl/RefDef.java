@@ -29,7 +29,8 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.def.RefOpEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.def.Def;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.TypeParameters;
@@ -56,8 +57,8 @@ public final class RefDef extends Def {
 	}
 
 	@Override
-	public EscapeMode getEscapeMode() {
-		return this.ref.escapeMode(getScope());
+	public EscapeFlag escapeFlag(EscapeAnalyzer analyzer) {
+		return this.ref.escapeFlag(analyzer, getScope());
 	}
 
 	@Override

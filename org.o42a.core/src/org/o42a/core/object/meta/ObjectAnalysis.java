@@ -20,12 +20,11 @@
 package org.o42a.core.object.meta;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.object.meta.DetectEscapeMode.OWN_ESCAPE_MODE;
+import static org.o42a.core.object.meta.DetectEscapeFlag.OWN_ESCAPE_MODE;
 import static org.o42a.core.object.meta.EscapeDetectionMethod.ALWAYS_ESCAPE;
 import static org.o42a.core.object.meta.EscapeDetectionMethod.ANCESTOR_ESCAPE;
 import static org.o42a.core.object.meta.EscapeDetectionMethod.OBJECT_ESCAPE;
-import static org.o42a.core.object.meta.EscapeMode.ESCAPE_IMPOSSIBLE;
-import static org.o42a.core.object.meta.EscapeMode.ESCAPE_POSSIBLE;
+import static org.o42a.core.object.meta.EscapeInit.escapeInit;
 import static org.o42a.util.fn.Init.init;
 
 import org.o42a.core.member.Member;
@@ -42,12 +41,12 @@ public final class ObjectAnalysis {
 
 	private final Init<EscapeDetectionMethod> escapeDetectionMethod =
 			init(this::chooseEscapeDetectionMethod);
-	private final Init<EscapeMode> ownEscapeMode =
-			init(this::detectOwnEscapeMode);
-	private final Init<EscapeMode> overridersEscapeMode =
-			init(() -> overridersEscapeMode(OWN_ESCAPE_MODE));
-	private final Init<EscapeMode> derivativesEscapeMode =
-			init(() -> derivativesEscapeMode(OWN_ESCAPE_MODE));
+	private final EscapeInit ownEscapeMode =
+			escapeInit(this::detectOwnEscapeMode);
+	private final EscapeInit overridersEscapeMode =
+			escapeInit(a -> overridersEscapeFlag(a, OWN_ESCAPE_MODE));
+	private final EscapeInit derivativesEscapeMode =
+			escapeInit(a -> derivativesEscapeFlag(a, OWN_ESCAPE_MODE));
 
 	ObjectAnalysis(Obj object) {
 		this.object = object;
@@ -60,60 +59,92 @@ public final class ObjectAnalysis {
 	/**
 	 * Detects an escape mode of object ancestor expression.
 	 *
+	 * @param analyzer escape mode analyzer.
+	 *
 	 * @return escape mode of ancestor access operation.
 	 */
-	public final EscapeMode ancestorEscapeMode() {
+	public final EscapeMode ancestorEscapeMode(EscapeAnalyzer analyzer) {
+		return ancestorEscapeFlag(analyzer).getEscapeMode();
+	}
+
+	public final EscapeFlag ancestorEscapeFlag(EscapeAnalyzer analyzer) {
 		if (!escapeDetectionMethod().alwaysEscapes()) {
-			return ESCAPE_IMPOSSIBLE;
+			return analyzer.escapeImpossible();
 		}
 		if (!escapeDetectionMethodByAncestor().alwaysEscapes()) {
-			return ESCAPE_IMPOSSIBLE;
+			return analyzer.escapeImpossible();
 		}
-		return ESCAPE_POSSIBLE;
+		return analyzer.escapePossible();
 	}
 
 	/**
 	 * Detect an escape mode of object value definition.
 	 *
+	 * @param analyzer escape mode analyzer.
+	 *
 	 * @return escape mode of value definition statements.
 	 */
-	public final EscapeMode valueEscapeMode() {
+	public final EscapeMode valueEscapeMode(EscapeAnalyzer analyzer) {
+		return valueEscapeFlag(analyzer).getEscapeMode();
+	}
+
+	public final EscapeFlag valueEscapeFlag(EscapeAnalyzer analyzer) {
 		if (escapeDetectionMethod().alwaysEscapes()) {
-			return ESCAPE_POSSIBLE;
+			return analyzer.escapePossible();
 		}
 		return getObject()
 				.type()
 				.getValueType()
 				.valueEscapeMode()
-				.valueEscapeMode(getObject());
+				.valueEscapeFlag(analyzer, getObject());
 	}
 
 	/**
 	 * An escape mode of the object itself.
 	 *
+	 * @param analyzer escape mode analyzer.
+	 *
 	 * @return escape mode depending on ancestor purity, value definition
 	 * escape mode, and members escape modes.
 	 */
-	public final EscapeMode ownEscapeMode() {
-		return this.ownEscapeMode.get();
+	public final EscapeMode ownEscapeMode(EscapeAnalyzer analyzer) {
+		return this.ownEscapeMode.escapeMode(analyzer);
 	}
 
-	public final EscapeMode overridersEscapeMode() {
-		return this.overridersEscapeMode.get();
+	public final EscapeFlag ownEscapeFlag(EscapeAnalyzer analyzer) {
+		return this.ownEscapeMode.escapeFlag(analyzer);
 	}
 
-	public EscapeMode overridersEscapeMode(DetectEscapeMode detect) {
-		return escapeDetectionMethod(detect).overridersEscapeMode(
+	public final EscapeMode overridersEscapeMode(EscapeAnalyzer analyzer) {
+		return this.overridersEscapeMode.escapeMode(analyzer);
+	}
+
+	public final EscapeFlag overridersEscapeFlag(EscapeAnalyzer analyzer) {
+		return this.overridersEscapeMode.escapeFlag(analyzer);
+	}
+
+	public final EscapeFlag overridersEscapeFlag(
+			EscapeAnalyzer analyzer,
+			DetectEscapeFlag detect) {
+		return escapeDetectionMethod(detect).overridersEscapeFlag(
+				analyzer,
 				getObject(),
 				detect);
 	}
 
-	public final EscapeMode derivativesEscapeMode() {
-		return this.derivativesEscapeMode.get();
+	public final EscapeMode derivativesEscapeMode(EscapeAnalyzer analyzer) {
+		return this.derivativesEscapeMode.escapeMode(analyzer);
 	}
 
-	public EscapeMode derivativesEscapeMode(DetectEscapeMode detect) {
-		return escapeDetectionMethod(detect).derivativesEscapeMode(
+	public final EscapeFlag derivativesEscapeFlag(EscapeAnalyzer analyzer) {
+		return this.derivativesEscapeMode.escapeFlag(analyzer);
+	}
+
+	public EscapeFlag derivativesEscapeFlag(
+			EscapeAnalyzer analyzer,
+			DetectEscapeFlag detect) {
+		return escapeDetectionMethod(detect).derivativesEscapeFlag(
+				analyzer,
 				getObject(),
 				detect);
 	}
@@ -123,7 +154,7 @@ public final class ObjectAnalysis {
 	}
 
 	private final EscapeDetectionMethod escapeDetectionMethod(
-			DetectEscapeMode detect) {
+			DetectEscapeFlag detect) {
 
 		final EscapeDetectionMethod method = escapeDetectionMethod();
 
@@ -174,57 +205,49 @@ public final class ObjectAnalysis {
 		return OBJECT_ESCAPE;
 	}
 
-	private EscapeMode detectOwnEscapeMode() {
-
-		final EscapeMode valueEscapeMode = valueEscapeMode();
-
-		if (valueEscapeMode.isEscapePossible()) {
-			return valueEscapeMode;
+	private EscapeFlag detectOwnEscapeMode(EscapeAnalyzer analyzer) {
+		if (this.ownEscapeMode.escapeBy(this::valueEscapeFlag)) {
+			return this.ownEscapeMode.lastEscapeFlag();
 		}
-
-		return membersEscapeMode();
+		if (this.ownEscapeMode.escapeBy(a -> membersEscapeFlag())) {
+			return this.ownEscapeMode.lastEscapeFlag();
+		}
+		return analyzer.escapeImpossible();
 	}
 
-	private EscapeMode membersEscapeMode() {
-
-		EscapeMode escapeMode = ESCAPE_IMPOSSIBLE;
-
+	private EscapeFlag membersEscapeFlag() {
 		for (Member member : getObject().getMembers()) {
-
-			final MemberField field = member.toField();
-
-			if (field != null) {
-				escapeMode = escapeMode.combine(memberEscapeMode(member));
-				if (escapeMode.isEscapePossible()) {
-					break;
-				}
+			if (memberEscapeFlag(member)) {
+				break;
 			}
 		}
-
-		return escapeMode;
+		return this.ownEscapeMode.lastEscapeFlag();
 	}
 
-	private EscapeMode memberEscapeMode(Member member) {
+	private boolean memberEscapeFlag(Member member) {
 
 		final MemberField field = member.toField();
 
 		if (field != null) {
-			return field.field(dummyUser())
+			if (this.ownEscapeMode.escapeBy(
+					a -> field.field(dummyUser())
 					.toObject()
 					.analysis()
-					.ownEscapeMode();
+					.ownEscapeFlag(a))) {
+				return true;
+			}
 		}
 
 		final MemberAlias alias = member.toAlias();
 
 		if (alias != null) {
 			if (alias.getRef().purity(getObject().getScope()).isPure()) {
-				return ESCAPE_IMPOSSIBLE;
+				return false;
 			}
-			return ESCAPE_POSSIBLE;
+			return this.ownEscapeMode.escape();
 		}
 
-		return ESCAPE_IMPOSSIBLE;
+		return false;
 	}
 
 }

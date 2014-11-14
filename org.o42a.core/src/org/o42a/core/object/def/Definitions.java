@@ -23,7 +23,6 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
 import static org.o42a.core.object.def.DefTarget.UNKNOWN_DEF_TARGET;
 import static org.o42a.core.object.def.impl.DefTargetFinder.defTarget;
-import static org.o42a.core.object.meta.EscapeMode.ESCAPE_POSSIBLE;
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.ref.ScopeUpgrade.wrapScope;
 import static org.o42a.core.value.TypeParameters.typeParameters;
@@ -35,7 +34,8 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.impl.InlineDefinitions;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.source.LocationInfo;
@@ -127,18 +127,17 @@ public class Definitions extends Scoped {
 		return this.constant.get();
 	}
 
-	public final EscapeMode getEscapeMode() {
-
-		EscapeMode escapeMode = ESCAPE_POSSIBLE;
-
+	public final EscapeFlag escapeFlag(EscapeAnalyzer analyzer) {
 		for (Def def : defs().get()) {
-			escapeMode = escapeMode.combine(def.getEscapeMode());
-			if (escapeMode.isEscapePossible()) {
-				break;
+
+			final EscapeFlag escapeFlag = def.escapeFlag(analyzer);
+
+			if (!escapeFlag.isEscapeImpossible()) {
+				return escapeFlag;
 			}
 		}
 
-		return escapeMode;
+		return analyzer.escapeImpossible();
 	}
 
 	public final Defs defs() {

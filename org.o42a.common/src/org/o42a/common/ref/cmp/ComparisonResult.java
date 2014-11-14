@@ -38,7 +38,8 @@ import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.common.ObjectMemberRegistry;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.value.Statefulness;
 import org.o42a.core.ref.*;
@@ -58,8 +59,8 @@ final class ComparisonResult extends BuiltinObject {
 	}
 
 	@Override
-	public EscapeMode escapeMode(Scope scope) {
-		return this.cmp.escapeMode(scope);
+	public EscapeFlag escapeFlag(EscapeAnalyzer analyzer, Scope scope) {
+		return this.cmp.escapeFlag(analyzer, scope);
 	}
 
 	@Override

@@ -22,7 +22,6 @@ package org.o42a.root;
 import static org.o42a.core.ir.def.Eval.VOID_EVAL;
 import static org.o42a.core.ir.def.InlineEval.voidInlineEval;
 import static org.o42a.core.object.OwnerPath.NO_OWNER_PATH;
-import static org.o42a.core.object.meta.EscapeMode.ESCAPE_IMPOSSIBLE;
 import static org.o42a.core.value.TypeParameters.typeParameters;
 
 import org.o42a.codegen.Generator;
@@ -36,7 +35,8 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.OwnerPath;
 import org.o42a.core.object.common.StandaloneObjectScope;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.FullResolver;
@@ -61,8 +61,8 @@ public final class VoidObject extends BuiltinObject {
 	}
 
 	@Override
-	public EscapeMode escapeMode(Scope scope) {
-		return ESCAPE_IMPOSSIBLE;
+	public EscapeFlag escapeFlag(EscapeAnalyzer analyzer, Scope scope) {
+		return analyzer.escapeImpossible();
 	}
 
 	@Override

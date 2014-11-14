@@ -27,7 +27,8 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Def;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.TypeParameters;
@@ -57,8 +58,8 @@ public class BuiltinDef extends Def {
 	}
 
 	@Override
-	public EscapeMode getEscapeMode() {
-		return this.builtin.escapeMode(getScope());
+	public EscapeFlag escapeFlag(EscapeAnalyzer analyzer) {
+		return this.builtin.escapeFlag(analyzer, getScope());
 	}
 
 	@Override

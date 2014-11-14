@@ -19,8 +19,6 @@
 */
 package org.o42a.core.object.meta;
 
-import java.util.function.Supplier;
-
 
 public enum EscapeMode {
 
@@ -29,20 +27,6 @@ public enum EscapeMode {
 
 	public final boolean isEscapePossible() {
 		return this == ESCAPE_POSSIBLE;
-	}
-
-	public final EscapeMode combine(EscapeMode other) {
-		if (isEscapePossible()) {
-			return this;
-		}
-		return other;
-	}
-
-	public final EscapeMode combine(Supplier<EscapeMode> other) {
-		if (isEscapePossible()) {
-			return this;
-		}
-		return other.get();
 	}
 
 }

@@ -19,7 +19,6 @@
 */
 package org.o42a.compiler.ip.st.assignment;
 
-import static org.o42a.core.object.meta.EscapeMode.ESCAPE_POSSIBLE;
 import static org.o42a.core.ref.RefUsage.ASSIGNABLE_REF_USAGE;
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.value.link.LinkValueType.VARIABLE;
@@ -28,7 +27,8 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
@@ -103,8 +103,8 @@ final class VariableAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public EscapeMode escapeMode(Scope scope) {
-		return ESCAPE_POSSIBLE;
+	public EscapeFlag escapeFlag(EscapeAnalyzer analyzer, Scope scope) {
+		return analyzer.escapePossible();
 	}
 
 	@Override

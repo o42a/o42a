@@ -21,9 +21,9 @@ package org.o42a.core.ref;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.AdapterId.adapterId;
-import static org.o42a.core.object.meta.DetectEscapeMode.OWN_ESCAPE_MODE;
+import static org.o42a.core.object.meta.DetectEscapeFlag.OWN_ESCAPE_MODE;
 import static org.o42a.core.ref.RefUsage.TYPE_PARAMETER_REF_USAGE;
-import static org.o42a.core.ref.impl.EscapeModeDetector.detectEscapeMode;
+import static org.o42a.core.ref.impl.EscapeModeDetector.detectEscapeFlag;
 import static org.o42a.core.ref.impl.RefPurityDetector.detectPurity;
 import static org.o42a.core.ref.path.Path.FALSE_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
@@ -47,8 +47,9 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.object.meta.DetectEscapeMode;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.DetectEscapeFlag;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.impl.ReturnCommand;
 import org.o42a.core.ref.impl.YieldStatement;
 import org.o42a.core.ref.path.*;
@@ -135,15 +136,16 @@ public class Ref extends Statement implements RefBuilder {
 		return detectPurity(this, scope);
 	}
 
-	public final EscapeMode escapeMode(Scope scope) {
-		return escapeMode(scope, OWN_ESCAPE_MODE);
+	public final EscapeFlag escapeFlag(EscapeAnalyzer analyzer, Scope scope) {
+		return escapeFlag(analyzer, scope, OWN_ESCAPE_MODE);
 	}
 
-	public final EscapeMode escapeMode(
+	public final EscapeFlag escapeFlag(
+			EscapeAnalyzer analyzer,
 			Scope scope,
-			DetectEscapeMode detect) {
+			DetectEscapeFlag detect) {
 		assert assertCompatible(scope);
-		return detectEscapeMode(this, scope, detect);
+		return detectEscapeFlag(analyzer, this, scope, detect);
 	}
 
 	public final Ref setLocation(LocationInfo location) {

@@ -19,7 +19,6 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.object.meta.EscapeMode.ESCAPE_IMPOSSIBLE;
 import static org.o42a.core.st.Command.noCommands;
 import static org.o42a.core.st.impl.SentenceErrors.*;
 
@@ -34,7 +33,8 @@ import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.ref.impl.cond.RefCondition;
@@ -99,18 +99,17 @@ public final class Statements extends Contained {
 		return this.targets = determineTargets();
 	}
 
-	public final EscapeMode escapeMode(Scope scope) {
-
-		EscapeMode escapeMode = ESCAPE_IMPOSSIBLE;
-
+	public final EscapeFlag escapeFlag(EscapeAnalyzer analyzer, Scope scope) {
 		for (Command cmd : getCommands()) {
-			escapeMode = escapeMode.combine(cmd.escapeMode(scope));
-			if (escapeMode.isEscapePossible()) {
-				break;
+
+			final EscapeFlag escapeFlag = cmd.escapeFlag(analyzer, scope);
+
+			if (!escapeFlag.isEscapeImpossible()) {
+				return escapeFlag;
 			}
 		}
 
-		return escapeMode;
+		return analyzer.escapeImpossible();
 	}
 
 	public final void expression(RefBuilder expression) {

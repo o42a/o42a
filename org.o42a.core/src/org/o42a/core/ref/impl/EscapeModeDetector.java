@@ -20,10 +20,8 @@
 package org.o42a.core.ref.impl;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.object.meta.EscapeMode.ESCAPE_IMPOSSIBLE;
-import static org.o42a.core.object.meta.EscapeMode.ESCAPE_POSSIBLE;
 
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
@@ -31,8 +29,9 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.alias.MemberAlias;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.meta.DetectEscapeMode;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.DetectEscapeFlag;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.object.state.Dep;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ReversePath;
@@ -45,25 +44,31 @@ import org.o42a.core.value.link.Link;
 
 public class EscapeModeDetector implements PathWalker {
 
-	public static EscapeMode detectEscapeMode(
+	public static EscapeFlag detectEscapeFlag(
+			EscapeAnalyzer analyzer,
 			Ref ref,
 			Scope scope,
-			DetectEscapeMode detect) {
+			DetectEscapeFlag detect) {
 
-		final EscapeModeDetector detector = new EscapeModeDetector(detect);
+		final EscapeModeDetector detector =
+				new EscapeModeDetector(analyzer, detect);
 
 		if (!ref.resolve(scope.walkingResolver(detector)).isResolved()) {
-			return ESCAPE_POSSIBLE;
+			return analyzer.escapePossible();
 		}
 
-		return detector.escapeMode.get();
+		return detector.escapeFlag.apply(analyzer);
 	}
 
-	private final DetectEscapeMode detect;
+	private final EscapeAnalyzer analyzer;
+	private final DetectEscapeFlag detect;
 	private boolean isStatic;
-	private Supplier<EscapeMode> escapeMode;
+	private Function<EscapeAnalyzer, EscapeFlag> escapeFlag;
 
-	private EscapeModeDetector(DetectEscapeMode detect) {
+	private EscapeModeDetector(
+			EscapeAnalyzer analyzer,
+			DetectEscapeFlag detect) {
+		this.analyzer = analyzer;
 		this.detect = detect;
 	}
 
@@ -119,13 +124,13 @@ public class EscapeModeDetector implements PathWalker {
 	@Override
 	public boolean dereference(Obj linkObject, Step step, Link link) {
 
-		final EscapeMode linkEscapeMode = this.escapeMode.get();
+		final EscapeFlag linkEscapeFlag = this.escapeFlag.apply(this.analyzer);
 
-		if (linkEscapeMode.isEscapePossible()) {
-			return escape();
+		if (!linkEscapeFlag.isEscapeImpossible()) {
+			return escapeFlag(a -> linkEscapeFlag);
 		}
 
-		return escapeMode(() -> ESCAPE_IMPOSSIBLE);
+		return escapeFlag(a -> a.escapeImpossible());
 	}
 
 	@Override
@@ -158,7 +163,7 @@ public class EscapeModeDetector implements PathWalker {
 	}
 
 	private final boolean escape() {
-		this.escapeMode = null;
+		this.escapeFlag = null;
 		return false;
 	}
 
@@ -166,7 +171,7 @@ public class EscapeModeDetector implements PathWalker {
 		if (object == null) {
 			return escape();
 		}
-		return escapeMode(() -> object.analysis().ownEscapeMode());
+		return escapeFlag(a -> object.analysis().ownEscapeFlag(a));
 	}
 
 	private final boolean overridersEscapeMode(Obj object) {
@@ -176,8 +181,8 @@ public class EscapeModeDetector implements PathWalker {
 		if (this.isStatic) {
 			return ownEscapeMode(object);
 		}
-		return escapeMode(
-				() -> object.analysis().overridersEscapeMode(this.detect));
+		return escapeFlag(
+				a -> object.analysis().overridersEscapeFlag(a, this.detect));
 	}
 
 	private final boolean derivativesEscapeMode(Obj object) {
@@ -187,12 +192,13 @@ public class EscapeModeDetector implements PathWalker {
 		if (this.isStatic) {
 			return ownEscapeMode(object);
 		}
-		return escapeMode(
-				() -> object.analysis().derivativesEscapeMode(this.detect));
+		return escapeFlag(
+				a -> object.analysis().derivativesEscapeFlag(a, this.detect));
 	}
 
-	private final boolean escapeMode(Supplier<EscapeMode> escapeMode) {
-		this.escapeMode = escapeMode;
+	private final boolean escapeFlag(
+			Function<EscapeAnalyzer, EscapeFlag> escapeFlag) {
+		this.escapeFlag = escapeFlag;
 		return true;
 	}
 
