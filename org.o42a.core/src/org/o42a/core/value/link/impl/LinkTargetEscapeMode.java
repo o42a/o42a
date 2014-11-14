@@ -20,7 +20,8 @@
 package org.o42a.core.value.link.impl;
 
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.value.ValueEscapeMode;
 
 
@@ -33,11 +34,11 @@ public class LinkTargetEscapeMode implements ValueEscapeMode {
 	}
 
 	@Override
-	public EscapeMode valueEscapeMode(Obj object) {
+	public EscapeFlag valueEscapeFlag(EscapeAnalyzer analyzer, Obj object) {
 		return object.value()
 				.getDefinitions()
 				.target()
-				.escapeMode(object.getScope().getEnclosingScope());
+				.escapeFlag(analyzer, object.getScope().getEnclosingScope());
 	}
 
 	@Override

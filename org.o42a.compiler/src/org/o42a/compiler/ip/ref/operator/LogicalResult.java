@@ -27,7 +27,8 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.value.Statefulness;
 import org.o42a.core.ref.*;
@@ -48,8 +49,8 @@ final class LogicalResult extends BuiltinObject {
 	}
 
 	@Override
-	public EscapeMode escapeMode(Scope scope) {
-		return operand().escapeMode(scope);
+	public EscapeFlag escapeFlag(EscapeAnalyzer analyzer, Scope scope) {
+		return operand().escapeFlag(analyzer, scope);
 	}
 
 	@Override

@@ -20,7 +20,6 @@
 package org.o42a.core.member.clause.impl;
 
 import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
-import static org.o42a.core.object.meta.EscapeMode.ESCAPE_IMPOSSIBLE;
 import static org.o42a.util.fn.Init.init;
 
 import org.o42a.core.Scope;
@@ -29,7 +28,8 @@ import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.member.DeclarationCommand;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
@@ -64,8 +64,8 @@ final class ClauseCommand extends Command {
 	}
 
 	@Override
-	public EscapeMode escapeMode(Scope scope) {
-		return command().escapeMode(scope);
+	public EscapeFlag escapeFlag(EscapeAnalyzer analyzer, Scope scope) {
+		return command().escapeFlag(analyzer, scope);
 	}
 
 	@Override
@@ -174,8 +174,8 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public EscapeMode escapeMode(Scope scope) {
-			return ESCAPE_IMPOSSIBLE;
+		public EscapeFlag escapeFlag(EscapeAnalyzer analyzer, Scope scope) {
+			return analyzer.escapeImpossible();
 		}
 
 		@Override
@@ -237,8 +237,8 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public EscapeMode escapeMode(Scope scope) {
-			return ESCAPE_IMPOSSIBLE;
+		public EscapeFlag escapeFlag(EscapeAnalyzer analyzer, Scope scope) {
+			return analyzer.escapeImpossible();
 		}
 
 		@Override
@@ -303,8 +303,8 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public EscapeMode escapeMode(Scope scope) {
-			return ESCAPE_IMPOSSIBLE;
+		public EscapeFlag escapeFlag(EscapeAnalyzer analyzer, Scope scope) {
+			return analyzer.escapeImpossible();
 		}
 
 		@Override

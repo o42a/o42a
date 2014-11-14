@@ -28,7 +28,8 @@ import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.HostOp;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.TypeParameters;
@@ -58,8 +59,8 @@ final class ToVoidDef extends Def {
 	}
 
 	@Override
-	public EscapeMode getEscapeMode() {
-		return this.def.getEscapeMode();
+	public EscapeFlag escapeFlag(EscapeAnalyzer analyzer) {
+		return this.def.escapeFlag(analyzer);
 	}
 
 	@Override

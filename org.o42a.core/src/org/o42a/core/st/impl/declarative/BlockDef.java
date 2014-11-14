@@ -34,7 +34,8 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.CommandTargets;
@@ -95,8 +96,8 @@ final class BlockDef extends Def {
 	}
 
 	@Override
-	public EscapeMode getEscapeMode() {
-		return this.sentences.escapeMode(getScope());
+	public EscapeFlag escapeFlag(EscapeAnalyzer analyzer) {
+		return this.sentences.escapeFlag(analyzer, getScope());
 	}
 
 	public final List<Sentence> getSentences() {

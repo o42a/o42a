@@ -37,7 +37,8 @@ import org.o42a.core.member.Accessor;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.TypeParameters;
@@ -91,10 +92,10 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public EscapeMode escapeMode(Scope scope) {
+	public EscapeFlag escapeFlag(EscapeAnalyzer analyzer, Scope scope) {
 		return leftOperand()
-				.escapeMode(scope)
-				.combine(() -> rightOperand().escapeMode(scope));
+				.escapeFlag(analyzer, scope)
+				.combine(() -> rightOperand().escapeFlag(analyzer, scope));
 	}
 
 	@Override

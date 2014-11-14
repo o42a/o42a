@@ -33,7 +33,8 @@ import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.ir.value.array.ArrayIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Def;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.TypeParameters;
@@ -64,8 +65,8 @@ final class ArrayConstantDef extends Def {
 	}
 
 	@Override
-	public EscapeMode getEscapeMode() {
-		return getArray().getEscapeMode();
+	public EscapeFlag escapeFlag(EscapeAnalyzer analyzer) {
+		return getArray().escapeFlag(analyzer);
 	}
 
 	public final Array getArray() {

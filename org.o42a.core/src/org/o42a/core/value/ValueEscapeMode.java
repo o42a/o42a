@@ -19,11 +19,10 @@
 */
 package org.o42a.core.value;
 
-import static org.o42a.core.object.meta.EscapeMode.ESCAPE_POSSIBLE;
-
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 
 
 /**
@@ -38,8 +37,10 @@ public interface ValueEscapeMode {
 	ValueEscapeMode VALUE_ESCAPE_POSSIBLE = new ValueEscapeMode() {
 
 		@Override
-		public EscapeMode valueEscapeMode(Obj object) {
-			return ESCAPE_POSSIBLE;
+		public EscapeFlag valueEscapeFlag(
+				EscapeAnalyzer analyzer,
+				Obj object) {
+			return analyzer.escapePossible();
 		}
 
 		@Override
@@ -51,13 +52,15 @@ public interface ValueEscapeMode {
 
 	/**
 	 * The object references escaping is possible only if the value
-	 * definition {@link Definitions#getEscapeMode()} allows value escaping.
+	 * definition {@link Definitions#escapeFlag(EscapeAnalyzer)} allows value escaping.
 	 */
 	ValueEscapeMode DEFINITIONS_VALUE_ESCAPE = new ValueEscapeMode() {
 
 		@Override
-		public EscapeMode valueEscapeMode(Obj object) {
-			return object.value().getDefinitions().getEscapeMode();
+		public EscapeFlag valueEscapeFlag(
+				EscapeAnalyzer analyzer,
+				Obj object) {
+			return object.value().getDefinitions().escapeFlag(analyzer);
 		}
 
 		@Override
@@ -69,11 +72,11 @@ public interface ValueEscapeMode {
 
 	/**
 	 * Detects an escape mode of the object value.
-	 *
+	 * @param analyzer TODO
 	 * @param object an object, which value's escape mode to detect.
 	 *
 	 * @return value escape mode.
 	 */
-	EscapeMode valueEscapeMode(Obj object);
+	EscapeFlag valueEscapeFlag(EscapeAnalyzer analyzer, Obj object);
 
 }

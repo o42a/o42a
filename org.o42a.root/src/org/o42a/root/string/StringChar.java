@@ -45,7 +45,8 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Accessor;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
@@ -78,10 +79,10 @@ final class StringChar extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public EscapeMode escapeMode(Scope scope) {
+	public EscapeFlag escapeFlag(EscapeAnalyzer analyzer, Scope scope) {
 		return string()
-				.escapeMode(scope)
-				.combine(() -> index().escapeMode(scope));
+				.escapeFlag(analyzer, scope)
+				.combine(() -> index().escapeFlag(analyzer, scope));
 	}
 
 	@Override

@@ -19,12 +19,11 @@
 */
 package org.o42a.core.object.def;
 
-import static org.o42a.core.object.meta.DetectEscapeMode.ANCESTOR_ESCAPE_MODE;
-import static org.o42a.core.object.meta.EscapeMode.ESCAPE_IMPOSSIBLE;
-import static org.o42a.core.object.meta.EscapeMode.ESCAPE_POSSIBLE;
+import static org.o42a.core.object.meta.DetectEscapeFlag.ANCESTOR_ESCAPE_MODE;
 
 import org.o42a.core.Scope;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.Ref;
 
 
@@ -51,14 +50,14 @@ public final class DefTarget {
 		return this.ref;
 	}
 
-	public final EscapeMode escapeMode(Scope scope) {
+	public final EscapeFlag escapeFlag(EscapeAnalyzer analyzer, Scope scope) {
 		if (!exists()) {
-			return ESCAPE_POSSIBLE;
+			return analyzer.escapePossible();
 		}
 		if (isUnknown()) {
-			return ESCAPE_IMPOSSIBLE;
+			return analyzer.escapePossible();
 		}
-		return getRef().escapeMode(scope, ANCESTOR_ESCAPE_MODE);
+		return getRef().escapeFlag(analyzer, scope, ANCESTOR_ESCAPE_MODE);
 	}
 
 	@Override

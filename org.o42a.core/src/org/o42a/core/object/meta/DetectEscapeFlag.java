@@ -19,16 +19,18 @@
 */
 package org.o42a.core.object.meta;
 
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 import org.o42a.core.object.Obj;
 
 
-public interface DetectEscapeMode extends Function<Obj, EscapeMode> {
+public interface DetectEscapeFlag
+		extends BiFunction<EscapeAnalyzer, Obj, EscapeFlag> {
 
-	DetectEscapeMode OWN_ESCAPE_MODE = obj -> obj.analysis().ownEscapeMode();
+	DetectEscapeFlag OWN_ESCAPE_MODE =
+			(analyzer, obj) -> obj.analysis().ownEscapeFlag(analyzer);
 
-	DetectEscapeMode ANCESTOR_ESCAPE_MODE = new DetectEscapeMode() {
+	DetectEscapeFlag ANCESTOR_ESCAPE_MODE = new DetectEscapeFlag() {
 
 		@Override
 		public boolean objectDefinitionsIgnored() {
@@ -36,8 +38,8 @@ public interface DetectEscapeMode extends Function<Obj, EscapeMode> {
 		}
 
 		@Override
-		public EscapeMode apply(Obj t) {
-			return t.analysis().ancestorEscapeMode();
+		public EscapeFlag apply(EscapeAnalyzer analyzer, Obj object) {
+			return object.analysis().ancestorEscapeFlag(analyzer);
 		}
 
 		@Override

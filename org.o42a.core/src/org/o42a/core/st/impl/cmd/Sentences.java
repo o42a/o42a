@@ -20,8 +20,6 @@
 package org.o42a.core.st.impl.cmd;
 
 import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
-import static org.o42a.core.object.meta.EscapeMode.ESCAPE_IMPOSSIBLE;
-import static org.o42a.core.object.meta.EscapeMode.ESCAPE_POSSIBLE;
 import static org.o42a.core.st.impl.cmd.InlineSentence.inlineSentence;
 
 import java.util.List;
@@ -30,7 +28,8 @@ import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.Command;
 import org.o42a.core.st.CommandTargets;
@@ -112,21 +111,21 @@ public abstract class Sentences {
 		return new ExecuteCommand(location, Condition.TRUE);
 	}
 
-	public EscapeMode escapeMode(Scope scope) {
+	public EscapeFlag escapeFlag(EscapeAnalyzer analyzer, Scope scope) {
 		if (getTargets().yielding()) {
-			return ESCAPE_POSSIBLE;
+			return analyzer.escapePossible();
 		}
 
-		EscapeMode escapeMode = ESCAPE_IMPOSSIBLE;
-
 		for (Sentence sentence : getSentences()) {
-			escapeMode = escapeMode.combine(sentence.escapeMode(scope));
-			if (escapeMode.isEscapePossible()) {
-				break;
+
+			final EscapeFlag escapeFlag = sentence.escapeFlag(analyzer, scope);
+
+			if (!escapeFlag.isEscapeImpossible()) {
+				return escapeFlag;
 			}
 		}
 
-		return escapeMode;
+		return analyzer.escapeImpossible();
 	}
 
 	public DefTarget target(Scope origin) {

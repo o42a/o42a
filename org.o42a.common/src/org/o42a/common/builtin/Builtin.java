@@ -23,7 +23,8 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
@@ -40,7 +41,7 @@ public interface Builtin extends LocationInfo {
 
 	Obj toObject();
 
-	EscapeMode escapeMode(Scope scope);
+	EscapeFlag escapeFlag(EscapeAnalyzer analyzer, Scope scope);
 
 	Value<?> calculateBuiltin(Resolver resolver);
 

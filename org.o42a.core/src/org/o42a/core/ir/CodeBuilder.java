@@ -31,6 +31,7 @@ import org.o42a.core.ir.op.OpPresets;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.meta.EscapeAnalyzer;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.ValueType;
 import org.o42a.core.value.Void;
@@ -59,6 +60,11 @@ public abstract class CodeBuilder {
 
 	public final Generator getGenerator() {
 		return this.function.getGenerator();
+	}
+
+	public final EscapeAnalyzer getEscapeAnalyzer() {
+		// TODO Construct escape analyzer.
+		return null;
 	}
 
 	public final CompilerContext getContext() {

@@ -19,14 +19,13 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.core.object.meta.EscapeMode.ESCAPE_IMPOSSIBLE;
-
 import org.o42a.core.Scope;
 import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.ir.cmd.Control;
 import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
@@ -62,8 +61,8 @@ abstract class LoopCommand extends Command {
 	}
 
 	@Override
-	public EscapeMode escapeMode(Scope scope) {
-		return ESCAPE_IMPOSSIBLE;
+	public EscapeFlag escapeFlag(EscapeAnalyzer analyzer, Scope scope) {
+		return analyzer.escapeImpossible();
 	}
 
 	@Override

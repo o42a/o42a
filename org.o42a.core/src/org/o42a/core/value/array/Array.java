@@ -19,8 +19,6 @@
 */
 package org.o42a.core.value.array;
 
-import static org.o42a.core.object.meta.EscapeMode.ESCAPE_IMPOSSIBLE;
-import static org.o42a.core.object.meta.EscapeMode.ESCAPE_POSSIBLE;
 import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 import static org.o42a.core.value.ValueKnowledge.*;
@@ -33,7 +31,8 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.value.array.ArrayIR;
 import org.o42a.core.ir.value.array.ArrayIRGenerator;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -116,22 +115,22 @@ public final class Array extends Contained {
 		return this.arrayKnowledge.get().hasStaticItems;
 	}
 
-	public final EscapeMode getEscapeMode() {
+	public final EscapeFlag escapeFlag(EscapeAnalyzer analyzer) {
 		if (isVariable()) {
-			return ESCAPE_POSSIBLE;
+			return analyzer.escapePossible();
 		}
 
-		EscapeMode escapeMode = ESCAPE_IMPOSSIBLE;
-
 		for (ArrayItem item : getItems()) {
-			escapeMode = escapeMode.combine(
-					item.getValueRef().escapeMode(getScope()));
-			if (escapeMode.isEscapePossible()) {
-				break;
+
+			final EscapeFlag escapeFlag =
+					item.getValueRef().escapeFlag(analyzer, getScope());
+
+			if (!escapeFlag.isEscapeImpossible()) {
+				return escapeFlag;
 			}
 		}
 
-		return escapeMode;
+		return analyzer.escapeImpossible();
 	}
 
 	public final ArrayItem[] getItems() {

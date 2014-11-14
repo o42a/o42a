@@ -19,9 +19,6 @@
 */
 package org.o42a.core.object.meta;
 
-import static org.o42a.core.object.meta.EscapeMode.ESCAPE_IMPOSSIBLE;
-import static org.o42a.core.object.meta.EscapeMode.ESCAPE_POSSIBLE;
-
 import org.o42a.core.object.Obj;
 
 
@@ -35,17 +32,19 @@ enum EscapeDetectionMethod {
 		}
 
 		@Override
-		EscapeMode overridersEscapeMode(
+		EscapeFlag overridersEscapeFlag(
+				EscapeAnalyzer analyzer,
 				Obj object,
-				DetectEscapeMode detect) {
-			return ESCAPE_POSSIBLE;
+				DetectEscapeFlag detect) {
+			return analyzer.escapePossible();
 		}
 
 		@Override
-		EscapeMode derivativesEscapeMode(
+		EscapeFlag derivativesEscapeFlag(
+				EscapeAnalyzer analyzer,
 				Obj object,
-				DetectEscapeMode detect) {
-			return ESCAPE_IMPOSSIBLE;
+				DetectEscapeFlag detect) {
+			return analyzer.escapePossible();
 		}
 
 	},
@@ -58,17 +57,18 @@ enum EscapeDetectionMethod {
 		}
 
 		@Override
-		EscapeMode overridersEscapeMode(
+		EscapeFlag overridersEscapeFlag(
+				EscapeAnalyzer analyzer,
 				Obj object,
-				DetectEscapeMode detect) {
+				DetectEscapeFlag detect) {
 			return object.type().eachOverrider(
-					ESCAPE_IMPOSSIBLE,
-					(d, em) -> {
+					analyzer.escapeImpossible(),
+					(d, ef) -> {
 
-						final EscapeMode result = em.combine(
-								detect.apply(d.getDerivedObject()));
+						final EscapeFlag result =
+								detect.apply(analyzer, d.getDerivedObject());
 
-						if (result.isEscapePossible()) {
+						if (!result.isEscapeImpossible()) {
 							d.done();
 						}
 
@@ -77,17 +77,18 @@ enum EscapeDetectionMethod {
 		}
 
 		@Override
-		EscapeMode derivativesEscapeMode(
+		EscapeFlag derivativesEscapeFlag(
+				EscapeAnalyzer analyzer,
 				Obj object,
-				DetectEscapeMode detect) {
+				DetectEscapeFlag detect) {
 			return object.type().eachDerivative(
-					ESCAPE_IMPOSSIBLE,
-					(d, em) -> {
+					analyzer.escapeImpossible(),
+					(d, ef) -> {
 
-						final EscapeMode result = em.combine(
-								detect.apply(d.getDerivedObject()));
+						final EscapeFlag result =
+								detect.apply(analyzer, d.getDerivedObject());
 
-						if (result.isEscapePossible()) {
+						if (!result.isEscapeImpossible()) {
 							d.done();
 						}
 
@@ -105,26 +106,28 @@ enum EscapeDetectionMethod {
 		}
 
 		@Override
-		EscapeMode overridersEscapeMode(
+		EscapeFlag overridersEscapeFlag(
+				EscapeAnalyzer analyzer,
 				Obj object,
-				DetectEscapeMode detect) {
+				DetectEscapeFlag detect) {
 			// Yes, derivatives!
 			return object.type()
 					.getAncestor()
 					.getType()
 					.analysis()
-					.derivativesEscapeMode(detect);
+					.derivativesEscapeFlag(analyzer, detect);
 		}
 
 		@Override
-		EscapeMode derivativesEscapeMode(
+		EscapeFlag derivativesEscapeFlag(
+				EscapeAnalyzer analyzer,
 				Obj object,
-				DetectEscapeMode detect) {
+				DetectEscapeFlag detect) {
 			return object.type()
 					.getAncestor()
 					.getType()
 					.analysis()
-					.derivativesEscapeMode(detect);
+					.derivativesEscapeFlag(analyzer, detect);
 		}
 
 	};
@@ -135,12 +138,14 @@ enum EscapeDetectionMethod {
 
 	abstract EscapeDetectionMethod ignoreObjectDefinitions();
 
-	abstract EscapeMode overridersEscapeMode(
+	abstract EscapeFlag overridersEscapeFlag(
+			EscapeAnalyzer analyzer,
 			Obj object,
-			DetectEscapeMode detect);
+			DetectEscapeFlag detect);
 
-	abstract EscapeMode derivativesEscapeMode(
+	abstract EscapeFlag derivativesEscapeFlag(
+			EscapeAnalyzer analyzer,
 			Obj object,
-			DetectEscapeMode detect);
+			DetectEscapeFlag detect);
 
 }

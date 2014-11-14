@@ -40,7 +40,8 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Accessor;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.meta.EscapeMode;
+import org.o42a.core.object.meta.EscapeAnalyzer;
+import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
@@ -68,8 +69,8 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public EscapeMode escapeMode(Scope scope) {
-		return text().escapeMode(scope);
+	public EscapeFlag escapeFlag(EscapeAnalyzer analyzer, Scope scope) {
+		return text().escapeFlag(analyzer, scope);
 	}
 
 	@Override
