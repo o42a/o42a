@@ -74,6 +74,22 @@ public final class ObjectAnalysis {
 	}
 
 	/**
+	 * Detect an escape mode of object value definition.
+	 *
+	 * @return escape mode of value definition statements.
+	 */
+	public final EscapeMode valueEscapeMode() {
+		if (escapeDetectionMethod().alwaysEscapes()) {
+			return ESCAPE_POSSIBLE;
+		}
+		return getObject()
+				.type()
+				.getValueType()
+				.valueEscapeMode()
+				.valueEscapeMode(getObject());
+	}
+
+	/**
 	 * An escape mode of the object itself.
 	 *
 	 * @return escape mode depending on ancestor purity, value definition
@@ -160,16 +176,8 @@ public final class ObjectAnalysis {
 	}
 
 	private EscapeMode detectOwnEscapeMode() {
-		if (escapeDetectionMethod().alwaysEscapes()) {
-			return ESCAPE_POSSIBLE;
-		}
 
-		final EscapeMode valueEscapeMode =
-				getObject()
-				.type()
-				.getValueType()
-				.valueEscapeMode()
-				.valueEscapeMode(getObject());
+		final EscapeMode valueEscapeMode = valueEscapeMode();
 
 		if (valueEscapeMode.isEscapePossible()) {
 			return valueEscapeMode;

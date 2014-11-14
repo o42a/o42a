@@ -31,11 +31,10 @@ import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
 import static org.o42a.util.fn.Init.init;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.FuncPtr;
-import org.o42a.codegen.code.Function;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.object.op.ObjectFn;
 import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
@@ -145,8 +144,8 @@ public final class ObjectValueIR {
 	final ObjBuilder createBuilder(Function<ObjectValueFn> function) {
 
 		final Block failure = function.addBlock("failure");
-		final ObjBuilder builder =
-				new ObjBuilder(
+		final ValueCodeBuilder builder =
+				new ValueCodeBuilder(
 				function,
 				failure.head(),
 				getObjectIR(),
@@ -406,6 +405,37 @@ public final class ObjectValueIR {
 				return super.toString();
 			}
 			return this.ptr.toString();
+		}
+
+	}
+
+	private static final class ValueCodeBuilder extends ObjBuilder {
+
+		ValueCodeBuilder(
+				Function<? extends ObjectFn<?>> function,
+				CodePos exit,
+				ObjectIR hostIR,
+				ObjectPrecision hostPrecision) {
+			super(function, exit, hostIR, hostPrecision);
+		}
+
+		@Override
+		protected ObjOp host(
+				Block code,
+				CodePos exit,
+				ObjectIR hostIR,
+				ObjectPrecision hostPrecision) {
+			/*
+			 * TODO Deal with infinite recursion during escape mode resolution.
+			   if (!hostIR.getObject()
+					.analysis()
+					.valueEscapeMode()
+					.isEscapePossible()) {
+				setDefaultPresets(
+						getDefaultPresets()
+						.setStackAllocationAllowed(true));
+			}*/
+			return super.host(code, exit, hostIR, hostPrecision);
 		}
 
 	}
