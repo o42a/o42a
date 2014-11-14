@@ -30,7 +30,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.op.ObjectFn;
 
 
-public final class ObjBuilder extends CodeBuilder {
+public class ObjBuilder extends CodeBuilder {
 
 	private final ObjOp host;
 
@@ -39,12 +39,13 @@ public final class ObjBuilder extends CodeBuilder {
 			CodePos exit,
 			ObjectIR hostIR,
 			ObjectPrecision hostPrecision) {
-		super(hostIR.getSampleDeclaration().getContext(), function);
+		super(hostIR.getObject().getContext(), function);
 		this.host = host(
 				function,
 				exit,
 				hostIR,
-				hostIR.isExact() ? EXACT_OBJECT : hostPrecision);
+				hostIR.isExact() ? EXACT_OBJECT : hostPrecision)
+				.setPresets(getDefaultPresets());
 		initFunction();
 	}
 
@@ -53,7 +54,7 @@ public final class ObjBuilder extends CodeBuilder {
 		return this.host;
 	}
 
-	private ObjOp host(
+	protected ObjOp host(
 			Block code,
 			CodePos exit,
 			ObjectIR hostIR,
