@@ -19,6 +19,8 @@
 */
 package org.o42a.analysis.use;
 
+import java.util.function.Function;
+
 
 public class UseTracker {
 
@@ -72,11 +74,27 @@ public class UseTracker {
 		return true;
 	}
 
+	public final <U extends Usage<U>> boolean useBy(
+			Function<UseCase, UseFlag> detect) {
+
+		final UseCase useCase = this.useFlag.getUseCase();
+		final UseFlag used = detect.apply(useCase);
+
+		if (!used.isUsed()) {
+			this.hasUnknown |= !used.isKnown();
+			return false;
+		}
+
+		useCase.end(this);
+		this.useFlag = used;
+
+		return true;
+	}
+
 	public final <U extends Usage<U>> boolean useBy(Uses<U> use) {
 
-		final AllUsages<U> allUsages = use.allUsages();
 		final UseCase useCase = this.useFlag.getUseCase();
-		final UseFlag used = use.selectUse(useCase, allUsages);
+		final UseFlag used = use.selectUse(useCase, use.allUsages());
 
 		if (!used.isUsed()) {
 			this.hasUnknown |= !used.isKnown();
