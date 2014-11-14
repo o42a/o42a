@@ -19,11 +19,11 @@
 */
 package org.o42a.core.value;
 
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
+import static org.o42a.core.object.meta.EscapeMode.ESCAPE_POSSIBLE;
 
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.object.def.EscapeMode;
+import org.o42a.core.object.meta.EscapeMode;
 
 
 /**

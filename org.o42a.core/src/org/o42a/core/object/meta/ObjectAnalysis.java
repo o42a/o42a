@@ -20,19 +20,18 @@
 package org.o42a.core.object.meta;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
 import static org.o42a.core.object.meta.DetectEscapeMode.OWN_ESCAPE_MODE;
 import static org.o42a.core.object.meta.EscapeDetectionMethod.ALWAYS_ESCAPE;
 import static org.o42a.core.object.meta.EscapeDetectionMethod.ANCESTOR_ESCAPE;
 import static org.o42a.core.object.meta.EscapeDetectionMethod.OBJECT_ESCAPE;
+import static org.o42a.core.object.meta.EscapeMode.ESCAPE_IMPOSSIBLE;
+import static org.o42a.core.object.meta.EscapeMode.ESCAPE_POSSIBLE;
 import static org.o42a.util.fn.Init.init;
 
 import org.o42a.core.member.Member;
 import org.o42a.core.member.alias.MemberAlias;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.fn.Init;
 

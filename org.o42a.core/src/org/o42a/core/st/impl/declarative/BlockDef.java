@@ -34,7 +34,7 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.HostOp;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.def.EscapeMode;
+import org.o42a.core.object.meta.EscapeMode;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.CommandTargets;

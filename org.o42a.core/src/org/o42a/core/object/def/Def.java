@@ -30,6 +30,7 @@ import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.meta.EscapeMode;
 import org.o42a.core.object.type.Derivation;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.Location;

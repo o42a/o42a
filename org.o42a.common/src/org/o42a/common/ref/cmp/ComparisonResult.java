@@ -38,7 +38,7 @@ import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.common.ObjectMemberRegistry;
-import org.o42a.core.object.def.EscapeMode;
+import org.o42a.core.object.meta.EscapeMode;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.value.Statefulness;
 import org.o42a.core.ref.*;

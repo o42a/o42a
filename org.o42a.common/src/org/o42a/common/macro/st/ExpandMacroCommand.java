@@ -30,7 +30,7 @@ import org.o42a.core.ir.cmd.EvalCmd;
 import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.def.EscapeMode;
+import org.o42a.core.object.meta.EscapeMode;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.*;

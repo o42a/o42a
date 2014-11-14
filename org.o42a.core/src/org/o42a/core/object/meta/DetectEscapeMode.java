@@ -22,7 +22,6 @@ package org.o42a.core.object.meta;
 import java.util.function.Function;
 
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.def.EscapeMode;
 
 
 public interface DetectEscapeMode extends Function<Obj, EscapeMode> {
