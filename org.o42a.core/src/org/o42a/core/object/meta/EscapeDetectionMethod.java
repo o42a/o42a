@@ -19,11 +19,10 @@
 */
 package org.o42a.core.object.meta;
 
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
+import static org.o42a.core.object.meta.EscapeMode.ESCAPE_IMPOSSIBLE;
+import static org.o42a.core.object.meta.EscapeMode.ESCAPE_POSSIBLE;
 
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.def.EscapeMode;
 
 
 enum EscapeDetectionMethod {

@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
+import static org.o42a.core.object.meta.EscapeMode.ESCAPE_IMPOSSIBLE;
 import static org.o42a.core.st.Command.exitCommand;
 import static org.o42a.core.st.Command.noCommands;
 import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
@@ -32,7 +32,7 @@ import java.util.List;
 import org.o42a.core.Contained;
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.object.def.EscapeMode;
+import org.o42a.core.object.meta.EscapeMode;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.CommandTargets;
 import org.o42a.core.st.Reproducer;

@@ -20,7 +20,7 @@
 package org.o42a.core.value.link.impl;
 
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.def.EscapeMode;
+import org.o42a.core.object.meta.EscapeMode;
 import org.o42a.core.value.ValueEscapeMode;
 
 

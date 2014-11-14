@@ -20,7 +20,7 @@
 package org.o42a.core.member.clause.impl;
 
 import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
+import static org.o42a.core.object.meta.EscapeMode.ESCAPE_IMPOSSIBLE;
 import static org.o42a.util.fn.Init.init;
 
 import org.o42a.core.Scope;
@@ -29,7 +29,7 @@ import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.member.DeclarationCommand;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.def.EscapeMode;
+import org.o42a.core.object.meta.EscapeMode;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;

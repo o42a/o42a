@@ -19,11 +19,12 @@
 */
 package org.o42a.core.object.def;
 
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
 import static org.o42a.core.object.meta.DetectEscapeMode.ANCESTOR_ESCAPE_MODE;
+import static org.o42a.core.object.meta.EscapeMode.ESCAPE_IMPOSSIBLE;
+import static org.o42a.core.object.meta.EscapeMode.ESCAPE_POSSIBLE;
 
 import org.o42a.core.Scope;
+import org.o42a.core.object.meta.EscapeMode;
 import org.o42a.core.ref.Ref;
 
 

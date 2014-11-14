@@ -20,8 +20,8 @@
 package org.o42a.core.ref.impl;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_IMPOSSIBLE;
-import static org.o42a.core.object.def.EscapeMode.ESCAPE_POSSIBLE;
+import static org.o42a.core.object.meta.EscapeMode.ESCAPE_IMPOSSIBLE;
+import static org.o42a.core.object.meta.EscapeMode.ESCAPE_POSSIBLE;
 
 import java.util.function.Supplier;
 
@@ -31,8 +31,8 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.alias.MemberAlias;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.def.EscapeMode;
 import org.o42a.core.object.meta.DetectEscapeMode;
+import org.o42a.core.object.meta.EscapeMode;
 import org.o42a.core.object.state.Dep;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ReversePath;
