@@ -55,7 +55,7 @@ public class FieldUses implements Uses<SimpleUsage> {
 			return uc.usedFlag();
 		}
 		if (!this.tracker.start(uc)) {
-			return this.tracker.getUseFlag();
+			return this.tracker.lastFlag();
 		}
 
 		for (Member member : getContainer().getMembers()) {
@@ -65,8 +65,8 @@ public class FieldUses implements Uses<SimpleUsage> {
 			if (field == null) {
 				continue;
 			}
-			if (this.tracker.useBy(field.getAnalysis().uses())) {
-				return this.tracker.getUseFlag();
+			if (this.tracker.check(field.getAnalysis().uses())) {
+				return this.tracker.lastFlag();
 			}
 		}
 
