@@ -21,21 +21,14 @@ package org.o42a.analysis.escape;
 
 import java.util.function.Supplier;
 
-import org.o42a.analysis.use.UseFlag;
-
 
 public final class EscapeFlag {
 
 	private final EscapeAnalyzer analyzer;
-	private final UseFlag useFlag;
 	private final EscapeMode escapeMode;
 
-	EscapeFlag(
-			EscapeAnalyzer analyzer,
-			UseFlag useFlag,
-			EscapeMode escapeMode) {
+	EscapeFlag(EscapeAnalyzer analyzer, EscapeMode escapeMode) {
 		this.analyzer = analyzer;
-		this.useFlag = useFlag;
 		this.escapeMode = escapeMode;
 	}
 
@@ -57,10 +50,6 @@ public final class EscapeFlag {
 
 	public final boolean isEscapeImpossible() {
 		return isKnown() && !getEscapeMode().isEscapePossible();
-	}
-
-	public final UseFlag toUseFlag() {
-		return this.useFlag;
 	}
 
 	public final EscapeFlag combine(EscapeFlag other) {

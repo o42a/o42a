@@ -30,7 +30,7 @@ public final class UseCase
 	private final UseFlag usedFlag;
 	private final UseFlag unusedFlag;
 	private final UseFlag checkUseFlag;
-	private UseTracker topLevelTracker;
+	private FlagTracker<?, ?> topLevelTracker;
 	private int updateRev;
 	private int checkRev;
 	private final boolean steady;
@@ -78,7 +78,7 @@ public final class UseCase
 	}
 
 	public final boolean caseFlag(UseFlag flag) {
-		return flag != null && flag.getUseCase() == this;
+		return flag != null && flag.getUseCase().is(this);
 	}
 
 	public final UseFlag useFlag(boolean used) {
@@ -87,6 +87,10 @@ public final class UseCase
 
 	public final int update() {
 		return ++this.updateRev;
+	}
+
+	public final boolean is(UseCase other) {
+		return this == other;
 	}
 
 	@Override
@@ -112,7 +116,7 @@ public final class UseCase
 		return this.updateRev;
 	}
 
-	final int start(UseTracker tracker) {
+	final int start(FlagTracker<?, ?> tracker) {
 		if (this.topLevelTracker != null) {
 			return this.checkRev;
 		}
@@ -120,7 +124,7 @@ public final class UseCase
 		return ++this.checkRev;
 	}
 
-	final boolean end(UseTracker tracker) {
+	final boolean end(FlagTracker<?, ?> tracker) {
 		if (this.topLevelTracker != tracker) {
 			return false;
 		}

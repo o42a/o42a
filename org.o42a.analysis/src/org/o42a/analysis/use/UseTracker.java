@@ -22,100 +22,48 @@ package org.o42a.analysis.use;
 import java.util.function.Function;
 
 
-public class UseTracker {
-
-	private UseFlag useFlag;
-	private int updateRev;
-	private int checkRev;
-	private boolean hasUnknown;
+public class UseTracker extends FlagTracker<UseCase, UseFlag> {
 
 	public final UseFlag getUseFlag() {
-		return this.useFlag;
+		return lastFlag();
 	}
 
-	public final boolean start(UseCase useCase) {
-		if (!useCase.caseFlag(this.useFlag)) {
-			// Use flag belongs to another use case.
-			// Evaluate the use status.
-			this.useFlag = useCase.checkUseFlag();
-			this.updateRev = useCase.getUpdateRev();
-			this.checkRev = useCase.start(this);
-			this.hasUnknown = false;
-			return true;
-		}
-
-		final int updateRev = useCase.getUpdateRev();
-
-		if (this.updateRev != updateRev) {
-			// Use graph updated since last check.
-			// Re-evaluate the use status.
-			this.useFlag = useCase.checkUseFlag();
-			this.updateRev = updateRev;
-			this.checkRev = useCase.start(this);
-			this.hasUnknown = false;
-			return true;
-		}
-
-		// No use graph updates since last check.
-		if (this.useFlag.isKnown()) {
-			// Use status already evaluated.
-			return false;
-		}
-
-		final int checkRev = useCase.start(this);
-
-		if (this.checkRev == checkRev) {
-			// Use status evaluation is already in progress.
-			return false;
-		}
-		this.checkRev = checkRev;
-		this.hasUnknown = false;
-
-		return true;
-	}
-
-	public final <U extends Usage<U>> boolean useBy(
-			Function<UseCase, UseFlag> detect) {
-
-		final UseCase useCase = this.useFlag.getUseCase();
-		final UseFlag used = detect.apply(useCase);
-
-		if (!used.isUsed()) {
-			this.hasUnknown |= !used.isKnown();
-			return false;
-		}
-
-		useCase.end(this);
-		this.useFlag = used;
-
-		return true;
+	public final boolean useBy(Function<UseCase, UseFlag> detect) {
+		return check(detect);
 	}
 
 	public final <U extends Usage<U>> boolean useBy(Uses<U> use) {
-
-		final UseCase useCase = this.useFlag.getUseCase();
-		final UseFlag used = use.selectUse(useCase, use.allUsages());
-
-		if (!used.isUsed()) {
-			this.hasUnknown |= !used.isKnown();
-			return false;
-		}
-
-		useCase.end(this);
-		this.useFlag = used;
-
-		return true;
+		return check(uc -> use.selectUse(uc, use.allUsages()));
 	}
 
-	public final UseFlag unused() {
+	@Override
+	protected UseCase useCaseOf(UseFlag flag) {
+		return flag.getUseCase();
+	}
 
-		final UseCase useCase = this.useFlag.getUseCase();
+	@Override
+	protected boolean flagIsActual(UseCase useCase, UseFlag flag) {
+		return useCase.caseFlag(flag);
+	}
 
-		if (useCase.end(this) || !this.hasUnknown) {
-			return this.useFlag = useCase.unusedFlag();
-		}
+	@Override
+	protected boolean flagIsKnown(UseFlag flag) {
+		return flag.isKnown();
+	}
 
-		return this.useFlag;
+	@Override
+	protected boolean flagIsUsed(UseFlag flag) {
+		return flag.isUsed();
+	}
+
+	@Override
+	protected UseFlag checkFlag(UseCase useCase) {
+		return useCase.checkUseFlag();
+	}
+
+	@Override
+	protected UseFlag unusedFlag(UseCase useCase) {
+		return useCase.unusedFlag();
 	}
 
 }

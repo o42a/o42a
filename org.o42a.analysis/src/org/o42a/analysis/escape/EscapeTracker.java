@@ -21,45 +21,52 @@ package org.o42a.analysis.escape;
 
 import java.util.function.Function;
 
-import org.o42a.analysis.use.UseFlag;
-import org.o42a.analysis.use.UseTracker;
+import org.o42a.analysis.use.FlagTracker;
 
 
-public class EscapeTracker extends UseTracker {
-
-	private EscapeAnalyzer analyzer;
-
-	public final EscapeAnalyzer getAnalyzer() {
-		assert this.analyzer != null :
-			"Escape mode analyzer isn't known yet";
-		assert this.analyzer.toUseCase().equals(getUseFlag().getUseCase()) :
-			"Wrong escape mode analyzer";
-		return this.analyzer;
-	}
+public class EscapeTracker extends FlagTracker<EscapeAnalyzer, EscapeFlag> {
 
 	public final EscapeFlag getEscapeFlag() {
-
-		final UseFlag useFlag = getUseFlag();
-
-		if (useFlag == null) {
-			return null;
-		}
-
-		return getAnalyzer().escapeFlag(useFlag);
-	}
-
-	public final boolean start(EscapeAnalyzer analyzer) {
-		this.analyzer = analyzer;
-		return start(analyzer.toUseCase());
+		return lastFlag();
 	}
 
 	public final boolean escapeBy(
 			Function<EscapeAnalyzer, EscapeFlag> detect) {
-		return useBy(uc -> detect.apply(getAnalyzer()).toUseFlag());
+		return check(detect);
 	}
 
 	public final EscapeFlag noEscape() {
-		return getAnalyzer().escapeFlag(unused());
+		return unused();
+	}
+
+	@Override
+	protected EscapeAnalyzer useCaseOf(EscapeFlag flag) {
+		return flag.getAnalyzer();
+	}
+
+	@Override
+	protected boolean flagIsActual(EscapeAnalyzer analyzer, EscapeFlag flag) {
+		return analyzer.analyzerFlag(flag);
+	}
+
+	@Override
+	protected boolean flagIsKnown(EscapeFlag flag) {
+		return flag.isKnown();
+	}
+
+	@Override
+	protected boolean flagIsUsed(EscapeFlag flag) {
+		return flag.isEscapePossible();
+	}
+
+	@Override
+	protected EscapeFlag checkFlag(EscapeAnalyzer analyzer) {
+		return analyzer.checkEscape();
+	}
+
+	@Override
+	protected EscapeFlag unusedFlag(EscapeAnalyzer analyzer) {
+		return analyzer.escapeImpossible();
 	}
 
 }
