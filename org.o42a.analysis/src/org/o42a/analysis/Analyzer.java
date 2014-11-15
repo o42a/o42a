@@ -22,6 +22,7 @@ package org.o42a.analysis;
 import static org.o42a.analysis.use.User.steadyUseCase;
 import static org.o42a.analysis.use.User.useCase;
 
+import org.o42a.analysis.escape.EscapeAnalyzer;
 import org.o42a.analysis.use.UseCase;
 import org.o42a.analysis.use.UseCaseInfo;
 import org.o42a.analysis.use.User;
@@ -30,6 +31,7 @@ import org.o42a.util.collect.Chain;
 
 public class Analyzer implements UseCaseInfo {
 
+	private final EscapeAnalyzer escapeAnalyzer = new EscapeAnalyzer(this);
 	private final Chain<Doubt> doubts =
 			new Chain<>(Doubt::getNext, Doubt::setNext);
 	private UseCase useCase;
@@ -37,6 +39,10 @@ public class Analyzer implements UseCaseInfo {
 
 	public Analyzer(String name) {
 		this.useCase = useCase(name);
+	}
+
+	public final EscapeAnalyzer getEscapeAnalyzer() {
+		return this.escapeAnalyzer;
 	}
 
 	public final boolean isUsesAnalysed() {

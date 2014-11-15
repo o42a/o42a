@@ -36,6 +36,8 @@ import static org.o42a.core.value.link.TargetRef.targetRef;
 import static org.o42a.util.fn.Init.init;
 
 import org.o42a.analysis.Analyzer;
+import org.o42a.analysis.escape.EscapeAnalyzer;
+import org.o42a.analysis.escape.EscapeFlag;
 import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -48,8 +50,6 @@ import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.meta.DetectEscapeFlag;
-import org.o42a.core.object.meta.EscapeAnalyzer;
-import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.impl.ReturnCommand;
 import org.o42a.core.ref.impl.YieldStatement;
 import org.o42a.core.ref.path.*;

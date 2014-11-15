@@ -125,7 +125,7 @@ public class CtrOp extends IROp<CtrOp.Op> {
 		}
 		return !getSample()
 				.analysis()
-				.overridersEscapeMode(getBuilder().getEscapeAnalyzer())
+				.overridersEscapeMode(getGenerator().getEscapeAnalyzer())
 				.isEscapePossible();
 	}
 

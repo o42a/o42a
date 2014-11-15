@@ -26,6 +26,8 @@ import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.member.field.VisibilityMode.PRIVATE_VISIBILITY;
 import static org.o42a.core.st.CommandEnv.defaultEnv;
 
+import org.o42a.analysis.escape.EscapeAnalyzer;
+import org.o42a.analysis.escape.EscapeFlag;
 import org.o42a.common.builtin.BuiltinObject;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -38,8 +40,6 @@ import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.common.ObjectMemberRegistry;
-import org.o42a.core.object.meta.EscapeAnalyzer;
-import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.value.Statefulness;
 import org.o42a.core.ref.*;
