@@ -51,26 +51,21 @@ public final class EscapeInit {
 			return analyzer.escapePossible();
 		}
 		if (this.tracker.start(analyzer)) {
-			return this.tracker.getEscapeFlag();
+			return this.tracker.lastFlag();
 		}
-		if (escapeBy(this.detect)) {
-			return this.tracker.getEscapeFlag();
+		if (check(this.detect)) {
+			return this.tracker.lastFlag();
 		}
 
 		return this.tracker.noEscape();
 	}
 
-	public final EscapeFlag lastEscapeFlag() {
-		return this.tracker.getEscapeFlag();
+	public final EscapeFlag lastFlag() {
+		return this.tracker.lastFlag();
 	}
 
-	public final boolean escapeBy(
-			Function<EscapeAnalyzer, EscapeFlag> detect) {
-		return this.tracker.escapeBy(detect);
-	}
-
-	public final boolean escape() {
-		return escapeBy(a -> a.escapePossible());
+	public final boolean check(Function<EscapeAnalyzer, EscapeFlag> detect) {
+		return this.tracker.check(detect);
 	}
 
 	@Override
@@ -78,7 +73,7 @@ public final class EscapeInit {
 		if (this.tracker == null) {
 			return super.toString();
 		}
-		return Objects.toString(this.tracker.getEscapeFlag());
+		return Objects.toString(this.tracker.lastFlag());
 	}
 
 }

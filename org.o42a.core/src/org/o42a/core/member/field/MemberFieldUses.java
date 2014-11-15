@@ -193,11 +193,11 @@ final class MemberFieldUses implements UserInfo, Uses<FieldUsage> {
 
 		public UseFlag selectUse(UseCaseInfo useCase) {
 			if (!start(useCase.toUseCase())) {
-				return getUseFlag();
+				return lastFlag();
 			}
 			for (Uses<?> uses : getUsedBy()) {
-				if (useBy(uses)) {
-					return getUseFlag();
+				if (check(uses)) {
+					return lastFlag();
 				}
 			}
 			return unused();

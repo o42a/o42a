@@ -207,45 +207,48 @@ public final class ObjectAnalysis {
 	}
 
 	private EscapeFlag detectOwnEscapeMode(EscapeAnalyzer analyzer) {
-		if (this.ownEscapeMode.escapeBy(this::valueEscapeFlag)) {
-			return this.ownEscapeMode.lastEscapeFlag();
+		if (this.ownEscapeMode.check(this::valueEscapeFlag)) {
+			return this.ownEscapeMode.lastFlag();
 		}
-		if (this.ownEscapeMode.escapeBy(a -> membersEscapeFlag())) {
-			return this.ownEscapeMode.lastEscapeFlag();
+		if (checkMembersEscape()) {
+			return this.ownEscapeMode.lastFlag();
 		}
 		return analyzer.escapeImpossible();
 	}
 
-	private EscapeFlag membersEscapeFlag() {
+	private boolean checkMembersEscape() {
 		for (Member member : getObject().getMembers()) {
-			if (memberEscapeFlag(member)) {
-				break;
+			if (checkMemberEscape(member)) {
+				return true;
 			}
 		}
-		return this.ownEscapeMode.lastEscapeFlag();
+		return false;
 	}
 
-	private boolean memberEscapeFlag(Member member) {
+	private boolean checkMemberEscape(Member member) {
 
 		final MemberField field = member.toField();
 
 		if (field != null) {
-			if (this.ownEscapeMode.escapeBy(
-					a -> field.field(dummyUser())
-					.toObject()
-					.analysis()
-					.ownEscapeFlag(a))) {
-				return true;
+
+			final Obj object = field.field(dummyUser()).toObject();
+
+			if (field.isPrototype()) {
+				// Prototype values do not affect parent escape mode.
+				return this.ownEscapeMode.check(
+						object.analysis()::ancestorEscapeFlag);
 			}
+
+			return this.ownEscapeMode.check(object.analysis()::ownEscapeFlag);
 		}
 
 		final MemberAlias alias = member.toAlias();
 
 		if (alias != null) {
-			if (alias.getRef().purity(getObject().getScope()).isPure()) {
-				return false;
-			}
-			return this.ownEscapeMode.escape();
+			return this.ownEscapeMode.check(
+					a -> alias.getRef().purity(getObject().getScope()).isPure()
+					? a.escapeImpossible()
+					: a.escapePossible());
 		}
 
 		return false;

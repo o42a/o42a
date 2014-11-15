@@ -19,20 +19,10 @@
 */
 package org.o42a.analysis.use;
 
-import java.util.function.Function;
-
 
 public class UseTracker extends FlagTracker<UseCase, UseFlag> {
 
-	public final UseFlag getUseFlag() {
-		return lastFlag();
-	}
-
-	public final boolean useBy(Function<UseCase, UseFlag> detect) {
-		return check(detect);
-	}
-
-	public final <U extends Usage<U>> boolean useBy(Uses<U> use) {
+	public final <U extends Usage<U>> boolean check(Uses<U> use) {
 		return check(uc -> use.selectUse(uc, use.allUsages()));
 	}
 

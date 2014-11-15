@@ -178,12 +178,12 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 
 		public UseFlag selectUse(UseCaseInfo useCase) {
 			if (!start(useCase.toUseCase())) {
-				return getUseFlag();
+				return lastFlag();
 			}
 			for (Map.Entry<User<?>, BooleanSupplier> e :
 					this.usedBy.entrySet()) {
-				if (e.getValue().getAsBoolean() && useBy(e.getKey())) {
-					return getUseFlag();
+				if (e.getValue().getAsBoolean() && check(e.getKey())) {
+					return lastFlag();
 				}
 			}
 			return unused();

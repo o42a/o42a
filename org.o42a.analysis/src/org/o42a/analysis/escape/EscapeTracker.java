@@ -19,21 +19,10 @@
 */
 package org.o42a.analysis.escape;
 
-import java.util.function.Function;
-
 import org.o42a.analysis.use.FlagTracker;
 
 
 public class EscapeTracker extends FlagTracker<EscapeAnalyzer, EscapeFlag> {
-
-	public final EscapeFlag getEscapeFlag() {
-		return lastFlag();
-	}
-
-	public final boolean escapeBy(
-			Function<EscapeAnalyzer, EscapeFlag> detect) {
-		return check(detect);
-	}
 
 	public final EscapeFlag noEscape() {
 		return unused();
