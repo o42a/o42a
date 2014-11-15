@@ -35,15 +35,12 @@ public final class EscapeAnalyzer implements UseCaseInfo {
 
 	public EscapeAnalyzer(Analyzer analyzer) {
 		this.analyzer = analyzer;
-
-		final UseCase useCase = analyzer.toUseCase();
-
 		this.escapePossible =
-				new EscapeFlag(this, useCase.usedFlag(), ESCAPE_POSSIBLE);
+				new EscapeFlag(this, ESCAPE_POSSIBLE);
 		this.escapeImpossible =
-				new EscapeFlag(this, useCase.unusedFlag(), ESCAPE_IMPOSSIBLE);
+				new EscapeFlag(this, ESCAPE_IMPOSSIBLE);
 		this.checkEscape =
-				new EscapeFlag(this, useCase.checkUseFlag(), null);
+				new EscapeFlag(this, null);
 	}
 
 	public final Analyzer getAnalyzer() {
@@ -72,6 +69,10 @@ public final class EscapeAnalyzer implements UseCaseInfo {
 		return escapeImpossible();
 	}
 
+	public final boolean analyzerFlag(EscapeFlag flag) {
+		return flag != null && flag.getAnalyzer().is(this);
+	}
+
 	@Override
 	public final User<?> toUser() {
 		return getAnalyzer().toUser();
@@ -80,6 +81,10 @@ public final class EscapeAnalyzer implements UseCaseInfo {
 	@Override
 	public final UseCase toUseCase() {
 		return getAnalyzer().toUseCase();
+	}
+
+	public final boolean is(EscapeAnalyzer other) {
+		return this == other;
 	}
 
 	@Override

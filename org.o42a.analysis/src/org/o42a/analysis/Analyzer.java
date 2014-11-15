@@ -31,7 +31,7 @@ import org.o42a.util.collect.Chain;
 
 public class Analyzer implements UseCaseInfo {
 
-	private final EscapeAnalyzer escapeAnalyzer = new EscapeAnalyzer(this);
+	private final EscapeAnalyzer escapeAnalyzer;
 	private final Chain<Doubt> doubts =
 			new Chain<>(Doubt::getNext, Doubt::setNext);
 	private UseCase useCase;
@@ -39,6 +39,7 @@ public class Analyzer implements UseCaseInfo {
 
 	public Analyzer(String name) {
 		this.useCase = useCase(name);
+		this.escapeAnalyzer = new EscapeAnalyzer(this);
 	}
 
 	public final EscapeAnalyzer getEscapeAnalyzer() {
