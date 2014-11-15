@@ -24,14 +24,14 @@ import static org.o42a.util.fn.Cache.cache;
 
 import java.util.IdentityHashMap;
 
+import org.o42a.analysis.escape.EscapeAnalyzer;
+import org.o42a.analysis.escape.EscapeFlag;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.ir.cmd.EvalCmd;
 import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.meta.EscapeAnalyzer;
-import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.*;

@@ -25,14 +25,14 @@ import static org.o42a.core.value.ValueKnowledge.*;
 import static org.o42a.util.fn.CondInit.condInit;
 import static org.o42a.util.fn.Init.init;
 
+import org.o42a.analysis.escape.EscapeAnalyzer;
+import org.o42a.analysis.escape.EscapeFlag;
 import org.o42a.core.Contained;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.value.array.ArrayIR;
 import org.o42a.core.ir.value.array.ArrayIRGenerator;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.meta.EscapeAnalyzer;
-import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;

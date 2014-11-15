@@ -26,6 +26,8 @@ import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.member.MemberIdKind.FIELD_NAME;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
+import org.o42a.analysis.escape.EscapeAnalyzer;
+import org.o42a.analysis.escape.EscapeFlag;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int32op;
@@ -45,8 +47,6 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Accessor;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.meta.EscapeAnalyzer;
-import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;

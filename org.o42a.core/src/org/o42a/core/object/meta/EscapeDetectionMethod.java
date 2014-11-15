@@ -19,6 +19,8 @@
 */
 package org.o42a.core.object.meta;
 
+import org.o42a.analysis.escape.EscapeAnalyzer;
+import org.o42a.analysis.escape.EscapeFlag;
 import org.o42a.core.object.Obj;
 
 

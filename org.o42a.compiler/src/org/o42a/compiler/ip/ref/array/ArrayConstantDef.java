@@ -23,6 +23,8 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 import static org.o42a.core.st.DefValue.defValue;
 
+import org.o42a.analysis.escape.EscapeAnalyzer;
+import org.o42a.analysis.escape.EscapeFlag;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
@@ -33,8 +35,6 @@ import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.ir.value.array.ArrayIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Def;
-import org.o42a.core.object.meta.EscapeAnalyzer;
-import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.TypeParameters;

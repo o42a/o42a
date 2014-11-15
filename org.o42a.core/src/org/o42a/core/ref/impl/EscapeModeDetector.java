@@ -23,6 +23,8 @@ import static org.o42a.analysis.use.User.dummyUser;
 
 import java.util.function.Function;
 
+import org.o42a.analysis.escape.EscapeAnalyzer;
+import org.o42a.analysis.escape.EscapeFlag;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
@@ -30,8 +32,6 @@ import org.o42a.core.member.alias.MemberAlias;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.DetectEscapeFlag;
-import org.o42a.core.object.meta.EscapeAnalyzer;
-import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.object.state.Dep;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ReversePath;

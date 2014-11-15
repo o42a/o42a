@@ -21,6 +21,8 @@ package org.o42a.core.st;
 
 import static org.o42a.core.st.CommandTargets.*;
 
+import org.o42a.analysis.escape.EscapeAnalyzer;
+import org.o42a.analysis.escape.EscapeFlag;
 import org.o42a.core.Container;
 import org.o42a.core.ContainerInfo;
 import org.o42a.core.Scope;
@@ -28,8 +30,6 @@ import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.ir.cmd.InlineCmd;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.meta.EscapeAnalyzer;
-import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.Location;
 import org.o42a.core.st.action.Action;

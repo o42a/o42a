@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compilation Analysis
     Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,10 +17,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.meta;
+package org.o42a.analysis.escape;
 
-import static org.o42a.core.object.meta.EscapeMode.ESCAPE_IMPOSSIBLE;
-import static org.o42a.core.object.meta.EscapeMode.ESCAPE_POSSIBLE;
+import static org.o42a.analysis.escape.EscapeMode.ESCAPE_IMPOSSIBLE;
+import static org.o42a.analysis.escape.EscapeMode.ESCAPE_POSSIBLE;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.*;

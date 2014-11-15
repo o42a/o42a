@@ -22,6 +22,7 @@ package org.o42a.codegen;
 import java.util.HashMap;
 
 import org.o42a.analysis.Analyzer;
+import org.o42a.analysis.escape.EscapeAnalyzer;
 import org.o42a.analysis.use.UseCase;
 import org.o42a.analysis.use.UseCaseInfo;
 import org.o42a.analysis.use.User;
@@ -53,6 +54,10 @@ public abstract class Generator implements UseCaseInfo {
 	}
 
 	public abstract Analyzer getAnalyzer();
+
+	public final EscapeAnalyzer getEscapeAnalyzer() {
+		return getAnalyzer().getEscapeAnalyzer();
+	}
 
 	public final Functions getFunctions() {
 		return this.functions;

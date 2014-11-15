@@ -24,12 +24,12 @@ import static org.o42a.core.st.impl.cmd.InlineSentence.inlineSentence;
 
 import java.util.List;
 
+import org.o42a.analysis.escape.EscapeAnalyzer;
+import org.o42a.analysis.escape.EscapeFlag;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.cmd.Cmd;
 import org.o42a.core.object.def.DefTarget;
-import org.o42a.core.object.meta.EscapeAnalyzer;
-import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.Command;
 import org.o42a.core.st.CommandTargets;

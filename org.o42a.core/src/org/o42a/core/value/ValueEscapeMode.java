@@ -19,10 +19,10 @@
 */
 package org.o42a.core.value;
 
+import org.o42a.analysis.escape.EscapeAnalyzer;
+import org.o42a.analysis.escape.EscapeFlag;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.object.meta.EscapeAnalyzer;
-import org.o42a.core.object.meta.EscapeFlag;
 
 
 /**

@@ -26,6 +26,8 @@ import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.root.array.IndexedItem.indexPath;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
+import org.o42a.analysis.escape.EscapeAnalyzer;
+import org.o42a.analysis.escape.EscapeFlag;
 import org.o42a.common.builtin.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
@@ -37,8 +39,6 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.meta.EscapeAnalyzer;
-import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.value.Value;

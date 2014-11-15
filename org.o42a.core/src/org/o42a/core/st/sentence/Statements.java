@@ -25,6 +25,8 @@ import static org.o42a.core.st.impl.SentenceErrors.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.o42a.analysis.escape.EscapeAnalyzer;
+import org.o42a.analysis.escape.EscapeFlag;
 import org.o42a.core.*;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.ClauseBuilder;
@@ -33,8 +35,6 @@ import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.object.meta.EscapeAnalyzer;
-import org.o42a.core.object.meta.EscapeFlag;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefBuilder;
 import org.o42a.core.ref.impl.cond.RefCondition;
