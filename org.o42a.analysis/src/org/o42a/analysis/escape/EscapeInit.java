@@ -50,7 +50,7 @@ public final class EscapeInit {
 		if (uc.isSteady()) {
 			return analyzer.escapePossible();
 		}
-		if (this.tracker.start(analyzer)) {
+		if (!this.tracker.start(analyzer)) {
 			return this.tracker.lastFlag();
 		}
 		if (check(this.detect)) {
