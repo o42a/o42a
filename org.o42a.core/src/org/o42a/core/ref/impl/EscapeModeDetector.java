@@ -140,7 +140,7 @@ public class EscapeModeDetector implements PathWalker {
 
 	@Override
 	public boolean dep(Obj object, Dep dep) {
-		return nested(dep.ref(), object.getScope());
+		return nested(dep.ref(), object.getScope().getEnclosingScope());
 	}
 
 	@Override
