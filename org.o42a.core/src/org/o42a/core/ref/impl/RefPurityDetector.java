@@ -115,7 +115,8 @@ public class RefPurityDetector implements PathWalker {
 
 	@Override
 	public boolean dep(Obj object, Dep dep) {
-		return setPurity(dep.ref().purity(object.getScope()));
+		return setPurity(
+				dep.ref().purity(object.getScope().getEnclosingScope()));
 	}
 
 	@Override
