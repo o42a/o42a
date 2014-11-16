@@ -48,8 +48,7 @@ public abstract class ObjHolder {
 	}
 
 	public final <O extends ObjectOp> O set(Block code, O object) {
-		if (object.getPrecision().isExact()) {
-			// No need to hold exactly known objects.
+		if (!holdableObject(object)) {
 			return object;
 		}
 		setObject(code, object);
@@ -57,8 +56,7 @@ public abstract class ObjHolder {
 	}
 
 	public final <O extends ObjectOp> O hold(Block code, O object) {
-		if (object.getPrecision().isExact()) {
-			// No need to hold exactly known objects.
+		if (!holdableObject(object)) {
 			return object;
 		}
 		holdObject(code, object);
@@ -66,8 +64,7 @@ public abstract class ObjHolder {
 	}
 
 	public final <O extends ObjectOp> O holdVolatile(Block code, O object) {
-		if (object.getPrecision().isExact()) {
-			// No need to hold exactly known objects.
+		if (!holdableObject(object)) {
 			return object;
 		}
 		holdVolatileObject(code, object);
@@ -84,5 +81,8 @@ public abstract class ObjHolder {
 
 	protected abstract void holdVolatileObject(Block code, ObjectOp object);
 
+	private final boolean holdableObject(ObjectOp object) {
+		return !object.isStackAllocated() && !object.getPrecision().isExact();
+	}
 
 }

@@ -148,7 +148,8 @@ public class CtrOp extends IROp<CtrOp.Op> {
 		return ir.compatibleOp(
 				getBuilder(),
 				code.means(c -> this.objectPtr.to(null, c, ir.getType())))
-				.setPresets(host().getPresets());
+				.setPresets(host().getPresets())
+				.setStackAllocated(isStackAllocated());
 	}
 
 	public final ValOp objectValue(

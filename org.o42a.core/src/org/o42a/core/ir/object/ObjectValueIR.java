@@ -425,16 +425,14 @@ public final class ObjectValueIR {
 				CodePos exit,
 				ObjectIR hostIR,
 				ObjectPrecision hostPrecision) {
-			/*
-			 * TODO Deal with infinite recursion during escape mode resolution.
-			   if (!hostIR.getObject()
+		   if (!hostIR.getObject()
 					.analysis()
-					.valueEscapeMode()
+					.valueEscapeMode(getGenerator().getEscapeAnalyzer())
 					.isEscapePossible()) {
 				setDefaultPresets(
 						getDefaultPresets()
 						.setStackAllocationAllowed(true));
-			}*/
+			}
 			return super.host(code, exit, hostIR, hostPrecision);
 		}
 
