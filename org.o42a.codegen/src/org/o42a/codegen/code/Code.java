@@ -217,10 +217,10 @@ public abstract class Code extends DebugCodeBase {
 
 		final Allocator allocator;
 
-		if (allocatable.getAllocationMode().isNonDebug()) {
-			allocator = getAllocator().getNonDebugAllocator();
-		} else {
+		if (allocatable.getAllocationMode().isDebug()) {
 			allocator = getAllocator();
+		} else {
+			allocator = getAllocator().getNonDebugAllocator();
 		}
 
 		final Allocated<T> allocated =

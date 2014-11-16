@@ -19,7 +19,7 @@
 */
 package org.o42a.codegen.debug;
 
-import static org.o42a.codegen.code.AllocationMode.MANDATORY_ALLOCATION;
+import static org.o42a.codegen.code.AllocationMode.DEBUG_ALLOCATION;
 import static org.o42a.codegen.debug.DebugDoFn.DEBUG_DO;
 import static org.o42a.codegen.debug.DebugDoneFn.DEBUG_DONE;
 import static org.o42a.codegen.debug.DebugStackFrameOp.DEBUG_STACK_FRAME_TYPE;
@@ -77,7 +77,7 @@ public abstract class DebugBlockBase extends OpBlockBase {
 
 		@Override
 		public AllocationMode getAllocationMode() {
-			return MANDATORY_ALLOCATION;
+			return DEBUG_ALLOCATION;
 		}
 
 		@Override

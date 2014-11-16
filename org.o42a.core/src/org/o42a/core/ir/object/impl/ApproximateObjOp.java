@@ -64,12 +64,25 @@ public final class ApproximateObjOp extends ObjectOp {
 		this.wellKnownType = proto.wellKnownType;
 	}
 
+	private ApproximateObjOp(ApproximateObjOp proto, boolean stackAllocated) {
+		super(proto, stackAllocated);
+		this.wellKnownType = proto.wellKnownType;
+	}
+
 	@Override
 	public final ApproximateObjOp setPresets(OpPresets presets) {
 		if (presets.is(getPresets())) {
 			return this;
 		}
 		return new ApproximateObjOp(this, presets);
+	}
+
+	@Override
+	public ObjectOp setStackAllocated(boolean stackAllocated) {
+		if (isStackAllocated() == stackAllocated) {
+			return this;
+		}
+		return new ApproximateObjOp(this, stackAllocated);
 	}
 
 	@Override
