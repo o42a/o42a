@@ -41,7 +41,7 @@ public enum AllocClass {
 
 		@Override
 		public AllocPlace allocPlace(Code code) {
-			return code.getAllocator().getAllocPlace();
+			return code.getClosestAllocator().getAllocPlace();
 		}
 
 	},

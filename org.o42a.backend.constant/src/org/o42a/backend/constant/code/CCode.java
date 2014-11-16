@@ -482,7 +482,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 			O allocated(O op) {
 
 		final CBlock<?> allocator =
-				(CBlock<?>) code().getAllocator().writer();
+				(CBlock<?>) code().getClosestAllocator().writer();
 
 		allocator.allocate(op);
 

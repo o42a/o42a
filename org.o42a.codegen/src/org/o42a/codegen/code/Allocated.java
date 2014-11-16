@@ -63,7 +63,7 @@ public final class Allocated<T> implements Comparable<Allocated<T>> {
 	public final T get(Code code) {
 		assert this.value != null :
 			"Allocations can not be done";
-		return this.value.get(code.getAllocator());
+		return this.value.get(code.getClosestAllocator());
 	}
 
 	@Override

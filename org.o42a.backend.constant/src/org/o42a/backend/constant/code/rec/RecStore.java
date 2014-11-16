@@ -51,7 +51,7 @@ public abstract class RecStore {
 	}
 
 	public static RecStore autoRecStore(Code code) {
-		return new AllocRecStore(code.getAllocator().getAllocPlace());
+		return new AllocRecStore(code.getClosestAllocator().getAllocPlace());
 	}
 
 	public static RecStore allocRecStore(AllocPlace allocPlace) {

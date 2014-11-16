@@ -67,17 +67,18 @@ public abstract class Allocator extends Block {
 
 	@Override
 	public final Allocator getAllocator() {
+		if (!isDebugAllocator()) {
+			return this;
+		}
+		return getEnclosingAllocator().getAllocator();
+	}
+
+	@Override
+	public final Allocator getClosestAllocator() {
 		return this;
 	}
 
 	public abstract Allocator getEnclosingAllocator();
-
-	public final Allocator getNonDebugAllocator() {
-		if (!isDebugAllocator()) {
-			return this;
-		}
-		return getEnclosingAllocator().getNonDebugAllocator();
-	}
 
 	public final Code allocations() {
 		assert this.allocations != null :

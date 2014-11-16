@@ -182,8 +182,8 @@ public abstract class Block extends DebugBlockBase {
 			return pos;
 		}
 
-		final Allocator from = getAllocator();
-		final Allocator to = pos.code().getAllocator();
+		final Allocator from = getClosestAllocator();
+		final Allocator to = pos.code().getClosestAllocator();
 
 		if (from == to) {
 			return pos;

@@ -120,11 +120,9 @@ final class AllocationsMap {
 		if (!mode.inAllocator()) {
 			enclosing = code;
 		} else if (mode.isDebug()) {
-			enclosing = code.getAllocator().allocations();
+			enclosing = code.getClosestAllocator().allocations();
 		} else {
-			enclosing = code.getAllocator()
-					.getNonDebugAllocator()
-					.allocations();
+			enclosing = code.getAllocator().allocations();
 		}
 
 		return new Allocations.ImmediateAllocations<>(enclosing, allocated);
@@ -171,7 +169,7 @@ final class AllocationsMap {
 
 	public final void allocate(Code code, CodePos target) {
 		this.writer.allocate(code, target);
-		entryTo(target.code().getAllocator()).allocateIn(code);
+		entryTo(target.code().getClosestAllocator()).allocateIn(code);
 	}
 
 	public AnyRecOp allocatePtr(

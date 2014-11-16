@@ -49,7 +49,7 @@ public abstract class StructStore {
 	}
 
 	public static StructStore autoStructStore(Code code) {
-		return new AutoStructStore(code.getAllocator().getAllocPlace());
+		return new AutoStructStore(code.getClosestAllocator().getAllocPlace());
 	}
 
 	public static StructStore allocStructStore(AllocPlace allocPlace) {
