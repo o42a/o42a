@@ -119,7 +119,7 @@ final class AllocationsMap {
 
 		if (!mode.inAllocator()) {
 			enclosing = code;
-		} else if (!mode.isNonDebug()) {
+		} else if (mode.isDebug()) {
 			enclosing = code.getAllocator().allocations();
 		} else {
 			enclosing = code.getAllocator()
