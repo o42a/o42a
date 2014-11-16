@@ -195,11 +195,11 @@ public final class ObjectType implements UserInfo {
 	}
 
 	public final <T> T eachDerivative(T t, BiFunction<DerivedObject, T, T> f) {
-		return eachDerivativeOf(new DerivedObject(getObject()), t, f);
+		return objectAndEachDerivativeOf(new DerivedObject(getObject()), t, f);
 	}
 
 	public final <T> T eachOverrider(T t, BiFunction<DerivedObject, T, T> f) {
-		return eachOverriderOf(new DerivedObject(getObject()), t, f);
+		return objectAndEachOverriderOf(new DerivedObject(getObject()), t, f);
 	}
 
 	public final ObjectType useBy(UserInfo user) {
@@ -477,24 +477,37 @@ public final class ObjectType implements UserInfo {
 		return result;
 	}
 
+	private <T> T objectAndEachDerivativeOf(
+			DerivedObject object,
+			T t,
+			BiFunction<DerivedObject, T, T> f) {
+
+		final T result = f.apply(object, t);
+
+		if (object.isDone()) {
+			return result;
+		}
+
+		return eachDerivativeOf(object, result, f);
+	}
+
 	private <T> T eachDerivativeOf(
 			DerivedObject object,
 			T t,
 			BiFunction<DerivedObject, T, T> f) {
 
-		T result = f.apply(object, t);
+		T result = t;
 
-		if (object.isDone()) {
-			return result;
-		}
 		for (Derivative d : object.getDerivedObject().type().allDerivatives()) {
 
 			final Obj derived = d.getDerivedObject();
 
-			if (!derived.meta().isUpdated()) {
-				continue;
+			object.set(derived);
+			if (derived.meta().isUpdated()) {
+				result = objectAndEachDerivativeOf(object, result, f);
+			} else {
+				result = eachDerivativeOf(object.set(derived), result, f);
 			}
-			result = eachDerivativeOf(object.set(derived), result, f);
 			if (object.isDone()) {
 				break;
 			}
@@ -503,16 +516,27 @@ public final class ObjectType implements UserInfo {
 		return result;
 	}
 
+	private <T> T objectAndEachOverriderOf(
+			DerivedObject object,
+			T t,
+			BiFunction<DerivedObject, T, T> f) {
+
+		final T result = f.apply(object, t);
+
+		if (object.isDone()) {
+			return result;
+		}
+
+		return eachOverriderOf(object, result, f);
+	}
+
 	private <T> T eachOverriderOf(
 			DerivedObject object,
 			T t,
 			BiFunction<DerivedObject, T, T> f) {
 
-		T result = f.apply(object, t);
+		T result = t;
 
-		if (object.isDone()) {
-			return result;
-		}
 		for (Derivative d : object.getDerivedObject().type().allDerivatives()) {
 			if (!d.isSample()) {
 				continue;
@@ -520,10 +544,12 @@ public final class ObjectType implements UserInfo {
 
 			final Obj derived = d.getDerivedObject();
 
-			if (!derived.meta().isUpdated()) {
-				continue;
+			object.set(derived);
+			if (derived.meta().isUpdated()) {
+				result = objectAndEachOverriderOf(object, result, f);
+			} else {
+				result = eachOverriderOf(object, result, f);
 			}
-			result = eachOverriderOf(object.set(derived), result, f);
 			if (object.isDone()) {
 				break;
 			}
