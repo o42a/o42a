@@ -279,7 +279,6 @@ public class ObjectIR implements Codegen {
 		public void init(Code code, ObjectIROp allocated) {
 			code.getGenerator()
 			.externalFunction()
-			.noSideEffects()
 			.link("o42a_obj_init", INIT_OBJECT)
 			.op(null, code)
 			.initObject(code, allocated, this.objectIR.getDescIR());
