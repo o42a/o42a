@@ -41,7 +41,11 @@ public abstract class Code extends DebugCodeBase {
 		this.id = id;
 	}
 
-	public abstract Allocator getAllocator();
+	public Allocator getAllocator() {
+		return getClosestAllocator().getAllocator();
+	}
+
+	public abstract Allocator getClosestAllocator();
 
 	public abstract Block getBlock();
 
@@ -218,9 +222,9 @@ public abstract class Code extends DebugCodeBase {
 		final Allocator allocator;
 
 		if (allocatable.getAllocationMode().isDebug()) {
-			allocator = getAllocator();
+			allocator = getClosestAllocator();
 		} else {
-			allocator = getAllocator().getNonDebugAllocator();
+			allocator = getAllocator();
 		}
 
 		final Allocated<T> allocated =

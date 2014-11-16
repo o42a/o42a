@@ -67,7 +67,7 @@ final class AllocEntry {
 
 	public final boolean reallocatedIn(Allocator allocator) {
 		for (Code realloc : this.reallocs) {
-			if (realloc.getAllocator() == allocator) {
+			if (realloc.getClosestAllocator() == allocator) {
 				return true;
 			}
 		}

@@ -38,7 +38,7 @@ final class DisposeBeforeReturn implements BeforeReturn {
 
 	private static void disposeAll(Code code) {
 
-		Allocator allocator = code.getAllocator();
+		Allocator allocator = code.getClosestAllocator();
 
 		do {
 			allocator.dispose(code);

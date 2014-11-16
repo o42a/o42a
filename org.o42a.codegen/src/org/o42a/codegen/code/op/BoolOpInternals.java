@@ -31,9 +31,9 @@ final class BoolOpInternals {
 
 	static final Allocator allocatorOf(Block source, CodePos pos) {
 		if (pos == null) {
-			return source.getAllocator();
+			return source.getClosestAllocator();
 		}
-		return pos.code().getAllocator();
+		return pos.code().getClosestAllocator();
 	}
 
 	static boolean contains(Allocator allocator1, Allocator allocator2) {

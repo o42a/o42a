@@ -287,7 +287,7 @@ public abstract class LLCode implements CodeWriter {
 
 		return type.getType().op(new LLStruct<>(
 				id,
-				code().getAllocator().getAllocPlace(),
+				code().getClosestAllocator().getAllocPlace(),
 				type,
 				nextPtr,
 				instr(allocateStruct(
@@ -307,7 +307,7 @@ public abstract class LLCode implements CodeWriter {
 
 		return new AnyRecLLOp(
 				id,
-				code().getAllocator().getAllocPlace(),
+				code().getClosestAllocator().getAllocPlace(),
 				nextPtr,
 				instr(allocatePtr(
 						nextPtr,
@@ -324,7 +324,7 @@ public abstract class LLCode implements CodeWriter {
 
 		return new DataRecLLOp(
 				id,
-				code().getAllocator().getAllocPlace(),
+				code().getClosestAllocator().getAllocPlace(),
 				nextPtr,
 				instr(allocatePtr(
 						nextPtr,
@@ -345,7 +345,7 @@ public abstract class LLCode implements CodeWriter {
 
 		return new StructRecLLOp<>(
 				id,
-				code().getAllocator().getAllocPlace(),
+				code().getClosestAllocator().getAllocPlace(),
 				alloc.getType(),
 				nextPtr,
 				instr(allocateStructPtr(

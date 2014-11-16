@@ -40,12 +40,12 @@ public abstract class OpBlockBase extends Code {
 			ID falseName);
 
 	protected boolean disposeUpTo(CodePos pos) {
-		return disposeFromTo(getAllocator(), pos);
+		return disposeFromTo(getClosestAllocator(), pos);
 	}
 
 	protected boolean disposeFromTo(Allocator fromAllocator, CodePos pos) {
 
-		final Allocator toAllocator = pos.code().getAllocator();
+		final Allocator toAllocator = pos.code().getClosestAllocator();
 
 		if (toAllocator.ptr().is(pos)) {
 			// Go to the allocator's head?

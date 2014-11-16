@@ -30,7 +30,7 @@ final class AllocatorCode extends Allocator {
 
 	AllocatorCode(Block enclosing, ID name, boolean debugAllocator) {
 		super(enclosing, name, debugAllocator);
-		this.enclosingAllocator = enclosing.getAllocator();
+		this.enclosingAllocator = enclosing.getClosestAllocator();
 		this.writer = enclosing.writer().block(this);
 		initAllocations(enclosing.writer().startAllocation(this));
 

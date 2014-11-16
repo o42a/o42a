@@ -92,7 +92,7 @@ public final class AllocPlace {
 			return true;
 		}
 
-		final Allocator codeAllocator = code.getAllocator();
+		final Allocator codeAllocator = code.getClosestAllocator();
 
 		if (codeAllocator == placeAllocator) {
 			return true;

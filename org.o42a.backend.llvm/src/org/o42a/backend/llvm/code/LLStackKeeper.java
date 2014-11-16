@@ -45,7 +45,8 @@ final class LLStackKeeper implements AllocatorWriter {
 	@Override
 	public void combine(Code code, Code originalCode) {
 
-		final StackPtrs ptrs = this.stackPtrs.get(originalCode.getAllocator());
+		final StackPtrs ptrs =
+				this.stackPtrs.get(originalCode.getClosestAllocator());
 
 		assert ptrs != null :
 			"Can not combine allocations that never made";
@@ -56,7 +57,8 @@ final class LLStackKeeper implements AllocatorWriter {
 	@Override
 	public void dispose(Code code, Code originalCode) {
 
-		final StackPtrs ptrs = this.stackPtrs.get(originalCode.getAllocator());
+		final StackPtrs ptrs =
+				this.stackPtrs.get(originalCode.getClosestAllocator());
 
 		if (ptrs != null) {
 			ptrs.dispose(code);
@@ -65,7 +67,7 @@ final class LLStackKeeper implements AllocatorWriter {
 
 	private StackPtrs ptrs(CodePos target) {
 
-		final Allocator allocator = target.code().getAllocator();
+		final Allocator allocator = target.code().getClosestAllocator();
 		final StackPtrs existing = this.stackPtrs.get(allocator);
 
 		if (existing != null) {
@@ -124,8 +126,9 @@ final class LLStackKeeper implements AllocatorWriter {
 
 		void combine(Code code, Code originalCode) {
 
-			final StackPtrs enclosingPtrs =
-					find(originalCode.getAllocator().getEnclosingAllocator());
+			final StackPtrs enclosingPtrs = find(
+					originalCode.getClosestAllocator()
+					.getEnclosingAllocator());
 			final LLCode llvm = llvm(code);
 
 			if (enclosingPtrs == null) {

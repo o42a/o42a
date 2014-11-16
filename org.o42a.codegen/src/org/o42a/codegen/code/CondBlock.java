@@ -48,8 +48,8 @@ public class CondBlock extends Block {
 	}
 
 	@Override
-	public final Allocator getAllocator() {
-		return getEnclosing().getAllocator();
+	public final Allocator getClosestAllocator() {
+		return getEnclosing().getClosestAllocator();
 	}
 
 	@Override

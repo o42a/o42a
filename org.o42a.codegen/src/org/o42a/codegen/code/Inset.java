@@ -38,8 +38,8 @@ final class Inset extends Code implements CodeAssetsSource {
 	}
 
 	@Override
-	public final Allocator getAllocator() {
-		return getBlock().getAllocator();
+	public final Allocator getClosestAllocator() {
+		return getBlock().getClosestAllocator();
 	}
 
 	@Override
