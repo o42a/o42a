@@ -485,7 +485,7 @@ public final class ObjectType implements UserInfo {
 		T result = f.apply(object, t);
 
 		if (object.isDone()) {
-			return t;
+			return result;
 		}
 		for (Derivative d : object.getDerivedObject().type().allDerivatives()) {
 
@@ -500,7 +500,7 @@ public final class ObjectType implements UserInfo {
 			}
 		}
 
-		return t;
+		return result;
 	}
 
 	private <T> T eachOverriderOf(
@@ -511,7 +511,7 @@ public final class ObjectType implements UserInfo {
 		T result = f.apply(object, t);
 
 		if (object.isDone()) {
-			return t;
+			return result;
 		}
 		for (Derivative d : object.getDerivedObject().type().allDerivatives()) {
 			if (!d.isSample()) {
@@ -529,7 +529,7 @@ public final class ObjectType implements UserInfo {
 			}
 		}
 
-		return t;
+		return result;
 	}
 
 }
