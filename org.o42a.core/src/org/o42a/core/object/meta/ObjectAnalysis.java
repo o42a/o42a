@@ -230,16 +230,7 @@ public final class ObjectAnalysis {
 		final MemberField field = member.toField();
 
 		if (field != null) {
-
-			final Obj object = field.field(dummyUser()).toObject();
-
-			if (field.isPrototype()) {
-				// Prototype values do not affect parent escape mode.
-				return this.ownEscapeMode.check(
-						object.analysis()::ancestorEscapeFlag);
-			}
-
-			return this.ownEscapeMode.check(object.analysis()::ownEscapeFlag);
+			return checkFieldEscape(field);
 		}
 
 		final MemberAlias alias = member.toAlias();
@@ -252,6 +243,22 @@ public final class ObjectAnalysis {
 		}
 
 		return false;
+	}
+
+	private boolean checkFieldEscape(MemberField field) {
+		if (!field.isUpdated()) {
+			return checkFieldEscape(field.getOverridden().toField());
+		}
+
+		final Obj object = field.field(dummyUser()).toObject();
+
+		if (field.isPrototype()) {
+			// Prototype values do not affect parent escape mode.
+			return this.ownEscapeMode.check(
+					object.analysis()::ancestorEscapeFlag);
+		}
+
+		return this.ownEscapeMode.check(object.analysis()::ownEscapeFlag);
 	}
 
 }
