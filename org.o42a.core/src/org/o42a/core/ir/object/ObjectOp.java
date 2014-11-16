@@ -128,6 +128,7 @@ public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
 	private final OpPresets presets;
 	private final ObjectPrecision precision;
 	private final Init<ValueOp> value = init(this::createValue);
+	private final boolean stackAllocated;
 
 	protected ObjectOp(
 			CodeBuilder builder,
@@ -136,12 +137,21 @@ public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
 		super(builder, ptr);
 		this.presets = builder.getDefaultPresets();
 		this.precision = precision;
+		this.stackAllocated = false;
 	}
 
 	protected ObjectOp(ObjectOp proto, OpPresets presets) {
 		super(proto.getBuilder(), proto.means());
 		this.presets = presets;
 		this.precision = proto.precision;
+		this.stackAllocated = proto.stackAllocated;
+	}
+
+	protected ObjectOp(ObjectOp proto, boolean stackAllocated) {
+		super(proto.getBuilder(), proto.means());
+		this.presets = proto.presets;
+		this.precision = proto.precision;
+		this.stackAllocated = stackAllocated;
 	}
 
 	@Override
@@ -151,6 +161,12 @@ public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
 
 	@Override
 	public abstract ObjectOp setPresets(OpPresets presets);
+
+	public final boolean isStackAllocated() {
+		return this.stackAllocated;
+	}
+
+	public abstract ObjectOp setStackAllocated(boolean stackAllocated);
 
 	public abstract Obj getWellKnownType();
 

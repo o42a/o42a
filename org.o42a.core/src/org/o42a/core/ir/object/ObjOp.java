@@ -94,12 +94,26 @@ public final class ObjOp extends ObjectOp {
 		this.ascendant = proto.ascendant;
 	}
 
+	private ObjOp(ObjOp proto, boolean stackAllocated) {
+		super(proto, stackAllocated);
+		this.objectIR = proto.objectIR;
+		this.ascendant = proto.ascendant;
+	}
+
 	@Override
-	public ObjOp setPresets(OpPresets presets) {
+	public final ObjOp setPresets(OpPresets presets) {
 		if (presets.is(getPresets())) {
 			return this;
 		}
 		return new ObjOp(this, presets);
+	}
+
+	@Override
+	public final ObjOp setStackAllocated(boolean stackAllocated) {
+		if (isStackAllocated() == stackAllocated) {
+			return this;
+		}
+		return new ObjOp(this, stackAllocated);
 	}
 
 	public final ObjectIR getObjectIR() {
