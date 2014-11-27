@@ -20,13 +20,14 @@
 package org.o42a.core.ir.field.object;
 
 import static org.o42a.core.ir.field.object.ObjectConstructorFn.OBJECT_CONSTRUCTOR;
+import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE_OBJECT;
 import static org.o42a.core.ir.object.op.ObjHolder.objTrap;
 
 import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.CodePos;
+import org.o42a.codegen.code.Function;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.ir.object.ObjBuilder;
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.CtrOp;
 import org.o42a.core.ir.object.vmt.VmtIRChain;
 import org.o42a.core.ir.op.CodeDirs;
@@ -79,6 +80,28 @@ final class SAObjFldConstructorBuilder
 				ctr.newObject(dirs, objTrap()).toData(null, code);
 
 		result.returnValue(code);
+	}
+
+	@Override
+	protected ObjBuilder createBuilder(
+			Function<ObjectConstructorFn> constructor,
+			CodePos failure) {
+		return new ObjBuilder(
+				constructor,
+				failure,
+				fld().getObjectIR(),
+				COMPATIBLE_OBJECT) {
+			@Override
+			protected ObjOp host(
+					Block code,
+					CodePos exit,
+					ObjectIR hostIR,
+					ObjectPrecision hostPrecision) {
+				setDefaultPresets(
+						getDefaultPresets().setStackAllocationAllowed(true));
+				return super.host(code, exit, hostIR, hostPrecision);
+			}
+		};
 	}
 
 }
