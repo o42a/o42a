@@ -28,9 +28,9 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.StructRec;
-import org.o42a.core.ir.field.*;
-import org.o42a.core.ir.field.RefFld.StatefulOp;
-import org.o42a.core.ir.field.RefFld.StatefulType;
+import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.field.RefFld;
+import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
@@ -43,32 +43,34 @@ import org.o42a.core.ir.op.OpPresets;
 import org.o42a.core.member.MemberKey;
 
 
-public class ObjFldOp extends RefFldOp<
-		StatefulOp,
-		StatefulType,
-		Ptr<ObjFldConf.Op>,
-		StructRec<ObjFldConf.Op>,
-		ObjectConstructorFn> {
+public class ObjFldOp<
+		F extends RefFld.Op<F>,
+		T extends RefFld.Type<F>> extends RefFldOp<
+				F,
+				T,
+				Ptr<ObjFldConf.Op>,
+				StructRec<ObjFldConf.Op>,
+				ObjectConstructorFn> {
 
-	ObjFldOp(ObjOp host, ObjFld fld, OpMeans<RefFld.StatefulOp> ptr) {
+	ObjFldOp(ObjOp host, AbstractObjFld<F, T> fld, OpMeans<F> ptr) {
 		super(host, fld, ptr);
 	}
 
-	private ObjFldOp(ObjFldOp proto, OpPresets presets) {
+	private ObjFldOp(ObjFldOp<F, T> proto, OpPresets presets) {
 		super(proto, presets);
 	}
 
 	@Override
-	public final ObjFldOp setPresets(OpPresets presets) {
+	public final ObjFldOp<F, T> setPresets(OpPresets presets) {
 		if (presets.is(getPresets())) {
 			return this;
 		}
-		return new ObjFldOp(this, presets);
+		return new ObjFldOp<>(this, presets);
 	}
 
 	@Override
-	public final ObjFld fld() {
-		return (ObjFld) super.fld();
+	public final AbstractObjFld<F, T> fld() {
+		return (AbstractObjFld<F, T>) super.fld();
 	}
 
 	@Override
@@ -96,7 +98,13 @@ public class ObjFldOp extends RefFldOp<
 
 	@Override
 	protected ObjectOp findTarget(CodeDirs dirs, ObjHolder holder) {
-		return loadOrConstructTarget(dirs, holder, false);
+		if (!fld().isStateless()) {
+			return loadOrConstructTarget(dirs, holder, false);
+		}
+
+		final Block code = dirs.code();
+
+		return holder.set(code, createObject(code, constructTarget(dirs)));
 	}
 
 	@Override
@@ -131,6 +139,23 @@ public class ObjFldOp extends RefFldOp<
 				getBuilder(),
 				code.means(c -> ptr.to(null, c, ir.getType())))
 				.setPresets(getPresets());
+	}
+
+	private final DataOp constructTarget(CodeDirs dirs) {
+
+		final Block code = dirs.code();
+		final VmtIRChain.Op vmtc = host().vmtc(code);
+		final ObjectConstructorFn constructor = constructor(code, vmtc);
+
+		code.dumpName("Constructor: ", constructor);
+		code.dumpName("Host: ", host());
+
+		final CtrOp ctr = allocateCtr(getBuilder(), code);
+
+		ctr.fillOwner(code, host());
+		ctr.allocateObject(dirs);
+
+		return construct(code, constructor, vmtc);
 	}
 
 }

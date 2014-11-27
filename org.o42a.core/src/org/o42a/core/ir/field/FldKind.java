@@ -25,7 +25,7 @@ package org.o42a.core.ir.field;
  */
 public enum FldKind {
 
-	LINK(-1),
+	STATELESS(-1),
 	OBJ(0),
 	ALIAS(1),
 	VAR(2),

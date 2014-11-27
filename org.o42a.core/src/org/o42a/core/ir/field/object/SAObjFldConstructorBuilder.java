@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,16 +19,11 @@
 */
 package org.o42a.core.ir.field.object;
 
-import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
-import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
-import static org.o42a.core.ir.field.FldCtrOp.ALLOCATABLE_FLD_CTR;
-import static org.o42a.core.ir.field.RefVmtRecord.FLD_CTR_ID;
 import static org.o42a.core.ir.field.object.ObjectConstructorFn.OBJECT_CONSTRUCTOR;
-import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+import static org.o42a.core.ir.object.op.ObjHolder.objTrap;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.ir.field.FldCtrOp;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
@@ -37,10 +32,10 @@ import org.o42a.core.ir.object.vmt.VmtIRChain;
 import org.o42a.core.ir.op.CodeDirs;
 
 
-final class ObjFldConstructorBuilder
+final class SAObjFldConstructorBuilder
 		extends AbstractObjFldConstructorBuilder {
 
-	ObjFldConstructorBuilder(AbstractObjFld<?, ?> fld) {
+	SAObjFldConstructorBuilder(AbstractObjFld<?, ?> fld) {
 		super(fld);
 	}
 
@@ -57,22 +52,8 @@ final class ObjFldConstructorBuilder
 				.sample(fld().getTarget());
 		final VmtIRChain.Op vmtc =
 				builder.getFunction().arg(code, OBJECT_CONSTRUCTOR.vmtc());
-		final ObjFldOp<?, ?> fld =
-				(ObjFldOp<?, ?>) host.field(dirs, fld().getKey());
-		final FldCtrOp fctr =
-				code.allocate(FLD_CTR_ID, ALLOCATABLE_FLD_CTR).get(code);
 
-		final Block constructed = code.addBlock("constructed");
-
-		fctr.start(code, fld).goUnless(code, constructed.head());
-
-		fld.ptr()
-		.object(null, constructed)
-		.load(null, constructed, ATOMIC)
-		.toData(null, constructed)
-		.returnValue(constructed);
-
-		final ObjectOp object = allocate(dirs, ctr, true);
+		final ObjectOp object = allocate(dirs, ctr, false);
 
 		if (fld()
 				.getField()
@@ -84,10 +65,10 @@ final class ObjFldConstructorBuilder
 			// any configuration.
 			final DataOp result =
 					ctr.fillObject(dirs)
-					.newObject(dirs, tempObjHolder(dirs.getAllocator()))
+					.newObject(dirs, objTrap())
 					.toData(null, code);
 
-			finish(code, fld, fctr, result);
+			result.returnValue(code);
 
 			return;
 		}
@@ -95,19 +76,8 @@ final class ObjFldConstructorBuilder
 		ctr.fillObjectByAncestor(dirs, ds -> configure(ds, vmtc, object));
 
 		final DataOp result =
-				ctr.newObject(dirs, tempObjHolder(dirs.getAllocator()))
-				.toData(null, code);
+				ctr.newObject(dirs, objTrap()).toData(null, code);
 
-		finish(code, fld, fctr, result);
-	}
-
-	private void finish(
-			Block code,
-			ObjFldOp<?, ?> fld,
-			FldCtrOp fctr,
-			DataOp result) {
-		fld.ptr().object(null, code).store(code, result, ACQUIRE_RELEASE);
-		fctr.finish(code, fld);
 		result.returnValue(code);
 	}
 
