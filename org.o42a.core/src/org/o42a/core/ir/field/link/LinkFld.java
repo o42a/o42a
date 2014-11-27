@@ -43,12 +43,7 @@ public class LinkFld extends AbstractLinkFld<StatelessOp, StatelessType> {
 
 	@Override
 	public final FldKind getKind() {
-		return FldKind.LINK;
-	}
-
-	@Override
-	public StatelessType getInstance() {
-		throw new UnsupportedOperationException("Field is stateless");
+		return FldKind.STATELESS;
 	}
 
 	@Override

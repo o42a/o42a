@@ -45,13 +45,13 @@ public final class ObjFldConf {
 
 	public static final ID CONF_ID = ID.id("conf");
 
-	private final ObjFld fld;
+	private final AbstractObjFld<?, ?> fld;
 	private final ID id;
 	private final Init<Ptr<Op>> ptr = init(this::allocate);
 	private final Init<FuncPtr<ObjectConstructorFn>> constructor =
 			init(this::findConstructor);
 
-	ObjFldConf(ObjFld fld) {
+	ObjFldConf(AbstractObjFld<?, ?> fld) {
 		this.fld = fld;
 		this.id = fld.getId().detail(CONF_ID);
 	}
@@ -60,7 +60,7 @@ public final class ObjFldConf {
 		return this.id;
 	}
 
-	public final ObjFld fld() {
+	public final AbstractObjFld<?, ?> fld() {
 		return this.fld;
 	}
 
@@ -128,7 +128,7 @@ public final class ObjFldConf {
 		return fld().getGenerator().newFunction().create(
 				fld().getId().detail(CONSTRUCT_ID),
 				OBJECT_CONSTRUCTOR,
-				new ObjFldConstructorBuilder(fld()))
+				fld().constructorBuilder())
 				.getPointer();
 	}
 

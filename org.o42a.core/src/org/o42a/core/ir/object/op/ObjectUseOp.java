@@ -64,7 +64,9 @@ public final class ObjectUseOp extends IROp<ObjectUseOp.Op> {
 
 	void setUsed(Code code, ObjectOp object) {
 		code.dumpName("Trapped object caught: ", object);
-		this.ptr.get(code).object.store(code, object.toData(null, code));
+		this.ptr.get(code)
+		.object(code)
+		.store(code, object.toData(null, code));
 	}
 
 	void startUse(Code code, ObjectOp object) {
@@ -126,6 +128,13 @@ public final class ObjectUseOp extends IROp<ObjectUseOp.Op> {
 			this.op = op;
 		}
 
+		DataRecOp object(Code code) {
+			if (this.object != null) {
+				return this.object;
+			}
+			return this.op.object(null, code);
+		}
+
 		@Override
 		public String toString() {
 			if (this.op == null) {
@@ -135,7 +144,7 @@ public final class ObjectUseOp extends IROp<ObjectUseOp.Op> {
 		}
 
 		void init(Code code) {
-			this.object = this.op.object(null, code);
+			this.object = object(code);
 			this.object.store(code, code.nullDataPtr());
 		}
 

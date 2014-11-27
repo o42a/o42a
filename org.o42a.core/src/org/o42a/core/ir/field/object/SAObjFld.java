@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -21,34 +21,31 @@ package org.o42a.core.ir.field.object;
 
 import org.o42a.codegen.code.FunctionBuilder;
 import org.o42a.core.ir.field.FldKind;
-import org.o42a.core.ir.field.RefFld.StatefulOp;
-import org.o42a.core.ir.field.RefFld.StatefulType;
+import org.o42a.core.ir.field.RefFld.StatelessOp;
+import org.o42a.core.ir.field.RefFld.StatelessType;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.member.field.Field;
 
 
-public class ObjFld extends AbstractObjFld<StatefulOp, StatefulType> {
+public class SAObjFld extends AbstractObjFld<StatelessOp, StatelessType> {
 
-	public ObjFld(
-			ObjectIRBody bodyIR,
-			Field field,
-			boolean dummy) {
+	public SAObjFld(ObjectIRBody bodyIR, Field field, boolean dummy) {
 		super(bodyIR, field, dummy);
 	}
 
 	@Override
-	public final FldKind getKind() {
-		return FldKind.OBJ;
+	public FldKind getKind() {
+		return FldKind.STATELESS;
 	}
 
 	@Override
-	protected StatefulType getType() {
-		return STATEFUL_FLD;
+	protected StatelessType getType() {
+		throw new UnsupportedOperationException("Field is stateless");
 	}
 
 	@Override
 	protected FunctionBuilder<ObjectConstructorFn> constructorBuilder() {
-		return new ObjFldConstructorBuilder(this);
+		return new SAObjFldConstructorBuilder(this);
 	}
 
 }

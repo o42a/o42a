@@ -25,26 +25,26 @@ import static org.o42a.core.ir.field.object.ObjFldConf.OBJ_FLD_CONF_TYPE;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.ir.field.RefFld.StatefulOp;
-import org.o42a.core.ir.field.RefFld.StatefulType;
+import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.field.RefVmtRecord;
 import org.o42a.core.ir.field.object.ObjFldConf.Op;
 import org.o42a.core.ir.object.vmt.VmtIROp;
 
 
-final class ObjVmtRecord extends RefVmtRecord<
-		StatefulOp,
-		StatefulType,
+final class ObjVmtRecord<F extends RefFld.Op<F>, T extends RefFld.Type<F>>
+		extends RefVmtRecord<
+		F,
+		T,
 		Ptr<ObjFldConf.Op>,
 		StructRec<ObjFldConf.Op>> {
 
-	ObjVmtRecord(ObjFld fld) {
+	ObjVmtRecord(AbstractObjFld<F, T> fld) {
 		super(fld);
 	}
 
 	@Override
-	public final ObjFld fld() {
-		return (ObjFld) super.fld();
+	public final AbstractObjFld<F, T> fld() {
+		return (AbstractObjFld<F, T>) super.fld();
 	}
 
 	@Override
@@ -60,7 +60,7 @@ final class ObjVmtRecord extends RefVmtRecord<
 	@Override
 	protected Ptr<ObjFldConf.Op> reuseContent() {
 
-		final ObjFld fld = fld();
+		final AbstractObjFld<F, T> fld = fld();
 		final ObjFldConf conf = fld.conf();
 
 		if (conf.fld() == fld) {
