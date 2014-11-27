@@ -25,9 +25,7 @@ import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE_OBJECT;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Function;
-import org.o42a.codegen.code.FunctionBuilder;
+import org.o42a.codegen.code.*;
 import org.o42a.core.ir.field.RefVmtRecord;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjectOp;
@@ -57,11 +55,7 @@ abstract class AbstractObjFldConstructorBuilder
 	public void build(Function<ObjectConstructorFn> constructor) {
 
 		final Block failure = constructor.addBlock("failure");
-		final ObjBuilder builder = new ObjBuilder(
-				constructor,
-				failure.head(),
-				fld().getObjectIR(),
-				COMPATIBLE_OBJECT);
+		final ObjBuilder builder = createBuilder(constructor, failure.head());
 		final CodeDirs dirs = builder.dirs(constructor, failure.head());
 		final CodeDirs subDirs =
 				dirs.begin(
@@ -75,6 +69,16 @@ abstract class AbstractObjFldConstructorBuilder
 		if (failure.exists()) {
 			failure.nullDataPtr().returnValue(failure);
 		}
+	}
+
+	protected ObjBuilder createBuilder(
+			Function<ObjectConstructorFn> constructor,
+			CodePos failure) {
+		return new ObjBuilder(
+				constructor,
+				failure,
+				fld().getObjectIR(),
+				COMPATIBLE_OBJECT);
 	}
 
 	protected abstract void buildConstructor(
