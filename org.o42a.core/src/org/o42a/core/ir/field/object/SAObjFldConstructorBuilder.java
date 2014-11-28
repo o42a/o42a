@@ -21,7 +21,7 @@ package org.o42a.core.ir.field.object;
 
 import static org.o42a.core.ir.field.object.ObjectConstructorFn.OBJECT_CONSTRUCTOR;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE_OBJECT;
-import static org.o42a.core.ir.object.op.ObjHolder.objTrap;
+import static org.o42a.core.ir.object.op.ObjHolder.noObjHolder;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
@@ -66,7 +66,7 @@ final class SAObjFldConstructorBuilder
 			// any configuration.
 			final DataOp result =
 					ctr.fillObject(dirs)
-					.newObject(dirs, objTrap())
+					.newObject(dirs, noObjHolder())
 					.toData(null, code);
 
 			result.returnValue(code);
@@ -77,7 +77,7 @@ final class SAObjFldConstructorBuilder
 		ctr.fillObjectByAncestor(dirs, ds -> configure(ds, vmtc, object));
 
 		final DataOp result =
-				ctr.newObject(dirs, objTrap()).toData(null, code);
+				ctr.newObject(dirs, noObjHolder()).toData(null, code);
 
 		result.returnValue(code);
 	}
