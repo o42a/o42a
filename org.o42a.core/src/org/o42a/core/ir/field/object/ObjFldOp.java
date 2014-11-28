@@ -98,13 +98,10 @@ public class ObjFldOp<
 
 	@Override
 	protected ObjectOp findTarget(CodeDirs dirs, ObjHolder holder) {
-		if (!fld().isStateless()) {
+		if (!isStateless()) {
 			return loadOrConstructTarget(dirs, holder, false);
 		}
-
-		final Block code = dirs.code();
-
-		return holder.set(code, createObject(code, constructTarget(dirs)));
+		return holder.holdVolatile(dirs.code(), constructTarget(dirs));
 	}
 
 	@Override
@@ -141,21 +138,26 @@ public class ObjFldOp<
 				.setPresets(getPresets());
 	}
 
-	private final DataOp constructTarget(CodeDirs dirs) {
+	private final ObjectOp constructTarget(CodeDirs dirs) {
 
 		final Block code = dirs.code();
-		final VmtIRChain.Op vmtc = host().vmtc(code);
+		final ObjOp host = host().setPresets(getPresets());
+		final VmtIRChain.Op vmtc = host.vmtc(code);
 		final ObjectConstructorFn constructor = constructor(code, vmtc);
 
 		code.dumpName("Constructor: ", constructor);
-		code.dumpName("Host: ", host());
+		code.dumpName("Host: ", host);
 
 		final CtrOp ctr = allocateCtr(getBuilder(), code);
 
-		ctr.fillOwner(code, host());
-		ctr.allocateObject(dirs);
+		ctr.fillOwner(code, host)
+		.sample(fld().getTarget())
+		.allocateObject(dirs);
 
-		return construct(code, constructor, vmtc);
+		final DataOp objectPtr = constructor.call(code, vmtc, ctr);
+		final ObjectOp object = createObject(code, objectPtr);
+
+		return object.setStackAllocated(ctr.isStackAllocated());
 	}
 
 }
