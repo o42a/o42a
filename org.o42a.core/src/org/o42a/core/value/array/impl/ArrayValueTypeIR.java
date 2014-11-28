@@ -27,6 +27,7 @@ import org.o42a.core.ir.object.ObjectDataIR;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.OpPresets;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.type.*;
@@ -58,14 +59,8 @@ public final class ArrayValueTypeIR extends ValueTypeIR<Array> {
 		}
 
 		@Override
-		public Val initialValue(ObjectDataIR dataIR) {
-
-			final Obj object = dataIR.getObjectIR().getObject();
-			final ArrayValueType arrayType = getValueType().toArrayType();
-			final Array array =
-					arrayType.cast(object.value().getValue()).getCompilerValue();
-
-			return arrayType.ir(getGenerator()).staticsIR().val(array);
+		public OpPresets valuePresets(OpPresets presets) {
+			return presets.setStackAllocationAllowed(false);
 		}
 
 		@Override
@@ -74,6 +69,17 @@ public final class ArrayValueTypeIR extends ValueTypeIR<Array> {
 				return new RowValueOp(this, object);
 			}
 			return new ArrayValueOp(this, object);
+		}
+
+		@Override
+		public Val initialValue(ObjectDataIR dataIR) {
+
+			final Obj object = dataIR.getObjectIR().getObject();
+			final ArrayValueType arrayType = getValueType().toArrayType();
+			final Array array =
+					arrayType.cast(object.value().getValue()).getCompilerValue();
+
+			return arrayType.ir(getGenerator()).staticsIR().val(array);
 		}
 
 	}
