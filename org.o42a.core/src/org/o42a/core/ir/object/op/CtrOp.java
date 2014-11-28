@@ -172,10 +172,12 @@ public class CtrOp extends IROp<CtrOp.Op> {
 		final Block code = dirs.code();
 
 		if (isStackAllocated()) {
+			code.debug("Allocating object on stack");
 			this.objectPtr =
 					sampleIR.allocate(NEW_OBJECT_ID, code)
 					.toData(null, code);
 		} else {
+			code.debug("Allocating object in heap");
 			this.objectPtr =
 					allocFn()
 					.op(null, code)

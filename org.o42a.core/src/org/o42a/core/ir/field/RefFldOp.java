@@ -68,11 +68,12 @@ public abstract class RefFldOp<
 
 	public ObjectOp target(CodeDirs dirs, ObjHolder holder) {
 
+		final RefFld<F, T, P, R> fld = fld();
 		final Block code = dirs.code();
 
 		if (isOmitted()) {
 
-			final Obj target = fld().getTarget();
+			final Obj target = fld.getTarget();
 
 			if (target.isNone()) {
 				code.go(dirs.falseDir());
@@ -86,9 +87,13 @@ public abstract class RefFldOp<
 					.setPresets(getPresets()));
 		}
 
-		final FldKind kind = fld().getKind();
+		final FldKind kind = fld.getKind();
 
-		code.dumpName(kind + " field: ", this);
+		if (isStateless()) {
+			code.debug(kind + " field: " + fld.getId());
+		} else {
+			code.dumpName(kind + " field: ", this);
+		}
 		code.dumpName(kind + " host: ", host());
 
 		return findTarget(dirs, holder).setPresets(getPresets());
