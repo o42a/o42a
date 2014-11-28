@@ -108,8 +108,8 @@ public final class ObjFldConf {
 		if (fld().getBodyIR().bodies().isTypeBodies()
 				|| fld().getField().isOverride()) {
 
-			final ObjFld decl =
-					(ObjFld) fld()
+			final AbstractObjFld<?, ?> decl =
+					(AbstractObjFld<?, ?>) fld()
 					.get(
 							fld()
 							.getKey()
