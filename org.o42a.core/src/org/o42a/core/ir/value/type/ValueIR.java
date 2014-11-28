@@ -23,6 +23,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectDataIR;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.OpPresets;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.value.ValueType;
 
@@ -56,6 +57,20 @@ public abstract class ValueIR {
 	public final ObjectIR getObjectIR() {
 		return this.objectIR;
 	}
+
+	/**
+	 * Filters the value definition presets.
+	 *
+	 * <p>The values of some type contain object references. The referred
+	 * objects should not be allocated on stack. For such types this method
+	 * should filter out a {@link OpPresets#isStackAllocationAllowed() stack
+	 * allocation preset}.</p>
+	 *
+	 * @param presets automatically determined value definition presets.
+	 *
+	 * @return filtered presets, that will be actually used by value definition.
+	 */
+	public abstract OpPresets valuePresets(OpPresets presets);
 
 	public abstract ValueOp op(ObjectOp object);
 

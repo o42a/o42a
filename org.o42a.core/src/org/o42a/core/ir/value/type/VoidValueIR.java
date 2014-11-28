@@ -27,6 +27,7 @@ import org.o42a.core.ir.object.ObjectDataIR;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.OpPresets;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
 
@@ -35,6 +36,11 @@ public final class VoidValueIR extends ValueIR {
 
 	public VoidValueIR(ValueTypeIR<?> valueTypeIR, ObjectIR objectIR) {
 		super(valueTypeIR, objectIR);
+	}
+
+	@Override
+	public OpPresets valuePresets(OpPresets presets) {
+		return presets;
 	}
 
 	@Override

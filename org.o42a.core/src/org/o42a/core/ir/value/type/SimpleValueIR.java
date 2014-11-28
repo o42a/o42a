@@ -27,6 +27,7 @@ import org.o42a.codegen.code.op.Int64op;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.OpPresets;
 import org.o42a.core.ir.value.ValOp;
 
 
@@ -34,6 +35,11 @@ public abstract class SimpleValueIR extends ValueIR {
 
 	public SimpleValueIR(ValueTypeIR<?> valueTypeIR, ObjectIR objectIR) {
 		super(valueTypeIR, objectIR);
+	}
+
+	@Override
+	public OpPresets valuePresets(OpPresets presets) {
+		return presets;
 	}
 
 	@Override

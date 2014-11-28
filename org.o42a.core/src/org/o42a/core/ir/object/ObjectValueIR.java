@@ -35,6 +35,7 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.op.ObjectFn;
+import org.o42a.core.ir.op.OpPresets;
 import org.o42a.core.ir.value.ObjectValueFn;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
@@ -425,15 +426,20 @@ public final class ObjectValueIR {
 				CodePos exit,
 				ObjectIR hostIR,
 				ObjectPrecision hostPrecision) {
-		   if (!hostIR.getObject()
+			setDefaultPresets(
+					hostIR.getValueIR().valuePresets(defaultPresets(hostIR)));
+
+			return super.host(code, exit, hostIR, hostPrecision);
+		}
+
+		private OpPresets defaultPresets(ObjectIR hostIR) {
+			if (hostIR.getObject()
 					.analysis()
 					.valueEscapeMode(getGenerator().getEscapeAnalyzer())
 					.isEscapePossible()) {
-				setDefaultPresets(
-						getDefaultPresets()
-						.setStackAllocationAllowed(true));
+				return getDefaultPresets();
 			}
-			return super.host(code, exit, hostIR, hostPrecision);
+			return getDefaultPresets().setStackAllocationAllowed(true);
 		}
 
 	}

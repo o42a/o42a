@@ -27,6 +27,7 @@ import org.o42a.core.ir.object.ObjectDataIR;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.OpPresets;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.type.*;
@@ -53,6 +54,11 @@ final class StringValueTypeIR extends ValueTypeIR<String> {
 
 		StringValueIR(ValueTypeIR<?> valueTypeIR, ObjectIR objectIR) {
 			super(valueTypeIR, objectIR);
+		}
+
+		@Override
+		public OpPresets valuePresets(OpPresets presets) {
+			return presets;
 		}
 
 		@Override

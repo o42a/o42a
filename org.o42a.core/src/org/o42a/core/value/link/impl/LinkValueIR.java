@@ -30,6 +30,7 @@ import org.o42a.core.ir.object.ObjectDataIR;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.OpPresets;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.type.*;
@@ -43,6 +44,19 @@ final class LinkValueIR extends ValueIR {
 
 	LinkValueIR(LinkValueTypeIR valueStructIR, ObjectIR objectIR) {
 		super(valueStructIR, objectIR);
+	}
+
+	@Override
+	public OpPresets valuePresets(OpPresets presets) {
+		return presets.setStackAllocationAllowed(false);
+	}
+
+	@Override
+	public ValueOp op(ObjectOp object) {
+		if (!getValueType().isVariable()) {
+			return new LinkValueOp(this, object);
+		}
+		return new VarValueOp(this, object);
 	}
 
 	@Override
@@ -65,14 +79,6 @@ final class LinkValueIR extends ValueIR {
 				VAL_CONDITION,
 				0,
 				target.ir(getGenerator()).ptr().toAny());
-	}
-
-	@Override
-	public ValueOp op(ObjectOp object) {
-		if (!getValueType().isVariable()) {
-			return new LinkValueOp(this, object);
-		}
-		return new VarValueOp(this, object);
 	}
 
 	private static final class LinkValueOp extends DefaultValueOp {
