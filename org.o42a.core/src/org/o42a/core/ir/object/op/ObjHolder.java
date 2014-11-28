@@ -47,6 +47,10 @@ public abstract class ObjHolder {
 		return ObjTrap.OBJ_TRAP;
 	}
 
+	public static ObjHolder noObjHolder() {
+		return NoObjHolder.NO_OBJ_HOLDER;
+	}
+
 	public final <O extends ObjectOp> O set(Block code, O object) {
 		if (!holdableObject(object)) {
 			return object;
