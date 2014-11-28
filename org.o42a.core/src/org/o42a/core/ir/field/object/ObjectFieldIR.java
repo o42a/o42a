@@ -58,7 +58,16 @@ public final class ObjectFieldIR extends FieldIR {
 			return linkFld;
 		}
 
-		return new ObjFld(bodyIR, getField(), dummy);
+		if (getField()
+				.getFirstDeclaration()
+				.toObject()
+				.analysis()
+				.overridersEscapeMode(getGenerator().getEscapeAnalyzer())
+				.isEscapePossible()) {
+			return new ObjFld(bodyIR, getField(), dummy);
+		}
+
+		return new SAObjFld(bodyIR, getField(), dummy);
 	}
 
 	private RefFld<?, ?, ?, ?> declareLink(ObjectIRBody bodyIR, boolean dummy) {
