@@ -22,32 +22,12 @@ package org.o42a.core.ir.value;
 
 public interface ValHolderFactory {
 
-	ValHolderFactory NO_VAL_HOLDER = new ValHolderFactory() {
+	ValHolderFactory NO_VAL_HOLDER = value -> ValHolder.NO_VAL_HOLDER;
 
-		@Override
-		public ValHolder createValHolder(ValOp value) {
-			return ValHolder.NO_VAL_HOLDER;
-		}
+	ValHolderFactory TEMP_VAL_HOLDER =
+			value -> value.getDesc().tempValHolder(value);
 
-	};
-
-	ValHolderFactory TEMP_VAL_HOLDER = new ValHolderFactory() {
-
-		@Override
-		public ValHolder createValHolder(ValOp value) {
-			return value.getDesc().tempValHolder(value);
-		}
-
-	};
-
-	ValHolderFactory VAL_TRAP = new ValHolderFactory() {
-
-		@Override
-		public ValHolder createValHolder(ValOp value) {
-			return value.getDesc().valTrap(value);
-		}
-
-	};
+	ValHolderFactory VAL_TRAP = value -> value.getDesc().valTrap(value);
 
 	ValHolder createValHolder(ValOp value);
 
