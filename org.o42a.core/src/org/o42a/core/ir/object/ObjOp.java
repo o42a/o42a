@@ -205,7 +205,9 @@ public final class ObjOp extends ObjectOp {
 				.setPresets(getPresets());
 		final FldOp<?, ?> op = fld.op(code, host);
 
-		if (!op.isOmitted()) {
+		if (fld.isStateless()) {
+			code.debug("Stateless field: " + fld.getId());
+		} else if (!op.isOmitted()) {
 			code.dumpName("Field: ", op);
 		} else {
 			code.debug("Final field: " + op.getId());

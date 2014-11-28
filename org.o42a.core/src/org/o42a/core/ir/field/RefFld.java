@@ -138,7 +138,7 @@ public abstract class RefFld<
 			OpMeans<F> ptr);
 
 	private void fillTarget() {
-		if (getType().isStateless()) {
+		if (isStateless()) {
 			return;
 		}
 		if (runtimeConstructedTarget()) {
