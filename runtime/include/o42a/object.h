@@ -42,6 +42,48 @@ typedef void o42a_obj_value_ft(o42a_val_t *, o42a_obj_t *);
 
 
 /**
+ * Object lock.
+ */
+typedef struct o42a_obj_lock {
+
+	O42A_HEADER
+
+	/**
+	 * Object mutex.
+	 *
+	 * The mutex is valid only when mutex_init flags set. The o42a_obj_lock
+	 * function takes care of proper mutex initialization.
+	 *
+	 * Use o42a_obj_lock and o42a_obj_unlock respectively to lock or unlock this
+	 * mutex.
+	 */
+	pthread_mutex_t mutex;
+
+	/**
+	 * Threading condition of object.
+	 *
+	 * Waiting on this condition is always happens when the thread owns
+	 * an object mutex.
+	 *
+	 * The o42a_obj_lock function takes care of proper thread_cond
+	 * initialization.
+	 *
+	 * Use o42a_obj_wait to start waiting on this condition, o42a_obj_signal
+	 * to unblock at least one waiting thread, or o42a_obj_broadcast to unblock
+	 * all waiting thread.
+	 */
+	pthread_cond_t thread_cond;
+
+	/**
+	 * Pointer to the head of the constructing fields list.
+	 *
+	 * This is maintained with o42a_fld_start and o42a_fld_finish functions.
+	 */
+	struct o42a_fld_ctr *fld_ctrs;
+
+} o42a_obj_lock_t;
+
+/**
  * Object data.
  *
  * Contains object value and combines other data necessary to maintain object
@@ -77,37 +119,9 @@ struct o42a_obj_data {
 	const o42a_obj_desc_t *desc;
 
 	/**
-	 * Object mutex.
-	 *
-	 * The mutex is valid only when mutex_init flags set. The o42a_obj_lock
-	 * function takes care of proper mutex initialization.
-	 *
-	 * Use o42a_obj_lock and o42a_obj_unlock respectively to lock or unlock this
-	 * mutex.
+	 * Object lock.
 	 */
-	pthread_mutex_t mutex;
-
-	/**
-	 * Threading condition of object.
-	 *
-	 * Waiting on this condition is always happens when the thread owns
-	 * an object mutex.
-	 *
-	 * The o42a_obj_lock function takes care of proper thread_cond
-	 * initialization.
-	 *
-	 * Use o42a_obj_wait to start waiting on this condition, o42a_obj_signal
-	 * to unblock at least one waiting thread, or o42a_obj_broadcast to unblock
-	 * all waiting thread.
-	 */
-	pthread_cond_t thread_cond;
-
-	/**
-	 * Pointer to the head of the constructing fields list.
-	 *
-	 * This is maintained with o42a_fld_start and o42a_fld_finish functions.
-	 */
-	struct o42a_fld_ctr *fld_ctrs;
+	o42a_obj_lock_t lock;
 
 };
 
@@ -338,10 +352,9 @@ typedef struct o42a_obj_ctable {
 
 #ifndef NDEBUG
 
-extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
-	O42A_DBG_TYPE_INFO
-	o42a_dbg_field_info_t fields[7];
-} _O42A_DEBUG_TYPE_o42a_obj_data;
+extern const o42a_dbg_type_info5f_t _O42A_DEBUG_TYPE_o42a_obj_data;
+
+extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_lock;
 
 extern const o42a_dbg_type_info5f_t _O42A_DEBUG_TYPE_o42a_obj_desc;
 
@@ -547,6 +560,10 @@ void o42a_obj_value_stub(o42a_val_t *, o42a_obj_t *);
  */
 void o42a_obj_static(o42a_obj_t *);
 
+inline o42a_obj_lock_t *o42a_obj_lockof(o42a_obj_t *const object) {
+	return &object->object_data.lock;
+}
+
 /**
  * Locks an object mutex, initializing it if necessary.
  *
@@ -554,29 +571,29 @@ void o42a_obj_static(o42a_obj_t *);
  * means it can be locked multiple times by the same thread and remains locked
  * until unlocked the same number of times.
  */
-void o42a_obj_lock(o42a_obj_t *);
+void o42a_obj_lock(o42a_obj_lock_t *);
 
 /**
  * Unlocks an object mutex previously locked with o42a_obj_lock by the same
  * thread.
  */
-void o42a_obj_unlock(o42a_obj_t *);
+void o42a_obj_unlock(o42a_obj_lock_t *);
 
 
 /**
  * Waits for an object condition.
  */
-void o42a_obj_wait(o42a_obj_t *);
+void o42a_obj_wait(o42a_obj_lock_t *);
 
 /**
  * Unblocks at least one thread waiting on an object condition.
  */
-void o42a_obj_signal(o42a_obj_t *);
+void o42a_obj_signal(o42a_obj_lock_t *);
 
 /**
  * Unblocks all threads waiting on an object condition.
  */
-void o42a_obj_broadcast(o42a_obj_t *);
+void o42a_obj_broadcast(o42a_obj_lock_t *);
 
 /**
  * An object use by current thread.
