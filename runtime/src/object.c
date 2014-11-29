@@ -18,9 +18,9 @@
 
 #ifndef NDEBUG
 
-const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
+const o42a_dbg_type_info5f_t _O42A_DEBUG_TYPE_o42a_obj_data = {
 	.type_code = 0x042a0100,
-	.field_num = 7,
+	.field_num = 5,
 	.name = "o42a_obj_data_t",
 	.fields = {
 		{
@@ -49,18 +49,33 @@ const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
 					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_desc,
 		},
 		{
+			.data_type = O42A_TYPE_STRUCT,
+			.offset = offsetof(o42a_obj_data_t, lock),
+			.name = "lock",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_lock,
+		},
+	},
+};
+
+const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_lock = {
+	.type_code = 0x042a0103,
+	.field_num = 3,
+	.name = "o42a_obj_lock_t",
+	.fields = {
+		{
 			.data_type = O42A_TYPE_SYSTEM,
-			.offset = offsetof(o42a_obj_data_t, mutex),
+			.offset = offsetof(o42a_obj_lock_t, mutex),
 			.name = "mutex",
 		},
 		{
 			.data_type = O42A_TYPE_SYSTEM,
-			.offset = offsetof(o42a_obj_data_t, thread_cond),
+			.offset = offsetof(o42a_obj_lock_t, thread_cond),
 			.name = "thread_cond",
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
-			.offset = offsetof(o42a_obj_data_t, fld_ctrs),
+			.offset = offsetof(o42a_obj_lock_t, fld_ctrs),
 			.name = "fld_ctrs",
 			.type_info =
 					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_fld_ctr,
@@ -637,12 +652,13 @@ void o42a_init() {
 	O42A_RETURN;
 }
 
-static inline void obj_mutex_init(o42a_obj_data_t *const data) {
+static inline void obj_lock_init(o42a_obj_lock_t *const lock) {
 	O42A_ENTER(return);
-	if (O42A(pthread_mutex_init(&data->mutex, &recursive_mutex_attr))
-			|| O42A(pthread_cond_init(&data->thread_cond, NULL))) {
+	if (O42A(pthread_mutex_init(&lock->mutex, &recursive_mutex_attr))
+			|| O42A(pthread_cond_init(&lock->thread_cond, NULL))) {
 		o42a_error_print("Failed to initialize an object mutex");
 	}
+	lock->fld_ctrs = NULL;
 	O42A_RETURN;
 }
 
@@ -737,9 +753,8 @@ inline void o42a_obj_init(
 	data->desc = desc;
 	data->vmtc = NULL;
 	data->value.flags = O42A_VAL_INDEFINITE;
-	data->fld_ctrs = NULL;
 
-	O42A(obj_mutex_init(data));
+	O42A(obj_lock_init(o42a_obj_lockof(object)));
 
 	O42A_RETURN;
 }
@@ -943,7 +958,7 @@ static void static_obj_init(const o42a_gc_block_t *block) {
 
 	o42a_obj_t *const object = O42A(o42a_gc_dataof(block));
 
-	O42A(obj_mutex_init(&object->object_data));
+	O42A(obj_lock_init(o42a_obj_lockof(object)));
 
 	O42A_RETURN;
 }
@@ -957,45 +972,44 @@ inline void o42a_obj_static(o42a_obj_t *const object) {
 	O42A_RETURN;
 }
 
-void o42a_obj_lock(o42a_obj_t *const object) {
+extern o42a_obj_lock_t *o42a_obj_lockof(o42a_obj_t *);
+
+void o42a_obj_lock(o42a_obj_lock_t *const lock) {
 	O42A_ENTER(return);
-	O42A(o42a_obj_static(object));
 	// Lock the mutex.
-	if (O42A(pthread_mutex_lock(&object->object_data.mutex))) {
+	if (O42A(pthread_mutex_lock(&lock->mutex))) {
 		o42a_error_print("Failed to lock an object mutex");
 	}
 	O42A_RETURN;
 }
 
-void o42a_obj_unlock(o42a_obj_t *const object) {
+void o42a_obj_unlock(o42a_obj_lock_t *const lock) {
 	O42A_ENTER(return);
-	if (O42A(pthread_mutex_unlock(&object->object_data.mutex))) {
+	if (O42A(pthread_mutex_unlock(&lock->mutex))) {
 		o42a_error_print("Current thread does not own an object mutex");
 	}
 	O42A_RETURN;
 }
 
-void o42a_obj_wait(o42a_obj_t *const object) {
+void o42a_obj_wait(o42a_obj_lock_t *const lock) {
 	O42A_ENTER(return);
-	if (O42A(pthread_cond_wait(
-			&object->object_data.thread_cond,
-			&object->object_data.mutex))) {
+	if (O42A(pthread_cond_wait(&lock->thread_cond, &lock->mutex))) {
 		o42a_error_print("Current thread does not own an object mutex");
 	}
 	O42A_RETURN;
 }
 
-void o42a_obj_signal(o42a_obj_t *const object) {
+void o42a_obj_signal(o42a_obj_lock_t *const lock) {
 	O42A_ENTER(return);
-	if (O42A(pthread_cond_signal(&object->object_data.thread_cond))) {
+	if (O42A(pthread_cond_signal(&lock->thread_cond))) {
 		o42a_error_print("Failed to send signal to an object condition waiter");
 	}
 	O42A_RETURN;
 }
 
-void o42a_obj_broadcast(o42a_obj_t *const object) {
+void o42a_obj_broadcast(o42a_obj_lock_t *const lock) {
 	O42A_ENTER(return);
-	if (O42A(pthread_cond_broadcast(&object->object_data.thread_cond))) {
+	if (O42A(pthread_cond_broadcast(&lock->thread_cond))) {
 		o42a_error_print(
 				"Failed to broadcast signal to an object condition waiters");
 	}

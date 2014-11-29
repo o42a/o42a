@@ -19,10 +19,8 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.field.FldCtrOp.FLD_CTR_TYPE;
+import static org.o42a.core.ir.object.ObjectIRLock.OBJECT_IR_LOCK;
 import static org.o42a.core.ir.object.desc.ObjectIRDesc.OBJECT_DESC_TYPE;
-import static org.o42a.core.ir.system.MutexSystemType.MUTEX_SYSTEM_TYPE;
-import static org.o42a.core.ir.system.ThreadCondSystemType.THREAD_COND_SYSTEM_TYPE;
 import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
@@ -86,9 +84,7 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		this.value = data.addNewInstance(VALUE_ID, VAL_TYPE);
 		this.vmtc = data.addPtr("vmtc", VmtIRChain.VMT_IR_CHAIN_TYPE);
 		this.desc = data.addPtr("desc", OBJECT_DESC_TYPE);
-		data.addSystem("mutex", MUTEX_SYSTEM_TYPE);
-		data.addSystem("thread_cond", THREAD_COND_SYSTEM_TYPE);
-		data.addPtr("fld_ctrs", FLD_CTR_TYPE).setNull();
+		data.addNewInstance(ID.id("lock"), OBJECT_IR_LOCK);
 	}
 
 	@Override
