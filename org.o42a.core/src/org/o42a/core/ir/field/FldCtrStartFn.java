@@ -20,13 +20,14 @@
 package org.o42a.core.ir.field;
 
 import static org.o42a.core.ir.field.FldCtrOp.FLD_CTR_TYPE;
+import static org.o42a.core.ir.object.ObjectIRLock.OBJECT_IR_LOCK;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.ExtSignature;
 import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.BoolOp;
-import org.o42a.codegen.code.op.DataOp;
+import org.o42a.core.ir.object.ObjOp;
 
 
 public final class FldCtrStartFn extends Fn<FldCtrStartFn> {
@@ -34,6 +35,7 @@ public final class FldCtrStartFn extends Fn<FldCtrStartFn> {
 	public static final ExtSignature<BoolOp, FldCtrStartFn> FLD_CTR_START =
 			customSignature("FldCtrStartF", 2)
 			.addData("object")
+			.addPtr("lock", OBJECT_IR_LOCK)
 			.addPtr("ctr", FLD_CTR_TYPE)
 			.returnBool(c -> new FldCtrStartFn(c));
 
@@ -41,8 +43,14 @@ public final class FldCtrStartFn extends Fn<FldCtrStartFn> {
 		super(caller);
 	}
 
-	public final BoolOp call(Code code, DataOp object, FldCtrOp ctr) {
-		return invoke(null, code, FLD_CTR_START.result(), object, ctr);
+	public final BoolOp call(Code code, ObjOp object, FldCtrOp ctr) {
+		return invoke(
+				null,
+				code,
+				FLD_CTR_START.result(),
+				object.toData(null, code),
+				object.lock(code),
+				ctr);
 	}
 
 }

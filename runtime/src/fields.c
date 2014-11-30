@@ -175,13 +175,11 @@ o42a_obj_t *o42a_obj_ref_stub(
 
 o42a_bool_t o42a_fld_start(
 		o42a_obj_t *const object,
+		o42a_obj_lock_t *const lock,
 		o42a_fld_ctr_t *const ctr) {
 	O42A_ENTER(return O42A_FALSE);
 
 	O42A(o42a_obj_static(object));
-
-	o42a_obj_lock_t *const lock = O42A(o42a_obj_lockof(object));
-
 	O42A(o42a_obj_lock(lock));
 
 	const o42a_fld *const fld = ctr->fld;
@@ -250,13 +248,11 @@ o42a_bool_t o42a_fld_start(
 
 o42a_bool_t o42a_fld_val_start(
 		o42a_obj_t *const object,
+		o42a_obj_lock_t *const lock,
 		o42a_fld_ctr_t *const ctr) {
 	O42A_ENTER(return O42A_FALSE);
 
 	O42A(o42a_obj_static(object));
-
-	o42a_obj_lock_t *const lock = O42A(o42a_obj_lockof(object));
-
 	O42A(o42a_obj_lock(lock));
 
 	o42a_val_t *const value = ctr->fld = &object->object_data.value;
@@ -321,10 +317,11 @@ o42a_bool_t o42a_fld_val_start(
 	O42A_RETURN O42A_TRUE;
 }
 
-void o42a_fld_finish(o42a_obj_t *const object, o42a_fld_ctr_t *const ctr) {
+void o42a_fld_finish(
+		o42a_obj_t *const object,
+		o42a_obj_lock_t *const lock,
+		o42a_fld_ctr_t *const ctr) {
 	O42A_ENTER(return);
-
-	o42a_obj_lock_t *const lock = O42A(o42a_obj_lockof(object));
 
 	O42A(o42a_obj_lock(lock));
 

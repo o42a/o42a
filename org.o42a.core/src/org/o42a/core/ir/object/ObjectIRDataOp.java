@@ -49,10 +49,6 @@ public final class ObjectIRDataOp extends StructOp<ObjectIRDataOp> {
 		return new ObjectDataOp(builder, this);
 	}
 
-	public final StructRecOp<VmtIRChain.Op> vmtc(Code code) {
-		return ptr(null, code, getType().vmtc());
-	}
-
 	public final FuncOp<ObjectValueFn> valueFunc(Code code) {
 		return func(null, code, getType().valueFunc());
 	}
@@ -61,8 +57,16 @@ public final class ObjectIRDataOp extends StructOp<ObjectIRDataOp> {
 		return struct(null, code, getType().value());
 	}
 
+	public final StructRecOp<VmtIRChain.Op> vmtc(Code code) {
+		return ptr(null, code, getType().vmtc());
+	}
+
 	public final StructRecOp<ObjectIRDescOp> desc(Code code) {
 		return ptr(null, code, getType().desc());
+	}
+
+	public final ObjectIRLock.Op lock(Code code) {
+		return struct(null, code, getType().lock());
 	}
 
 	@Override

@@ -20,12 +20,13 @@
 package org.o42a.core.ir.field;
 
 import static org.o42a.core.ir.field.FldCtrOp.FLD_CTR_TYPE;
+import static org.o42a.core.ir.object.ObjectIRLock.OBJECT_IR_LOCK;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.ExtSignature;
 import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.op.DataOp;
+import org.o42a.core.ir.object.ObjOp;
 
 
 public final class FldCtrFinishFn extends Fn<FldCtrFinishFn> {
@@ -33,6 +34,7 @@ public final class FldCtrFinishFn extends Fn<FldCtrFinishFn> {
 	public static final ExtSignature<Void, FldCtrFinishFn> FLD_CTR_FINISH =
 			customSignature("FldCtrFinishF", 2)
 			.addData("object")
+			.addPtr("lock", OBJECT_IR_LOCK)
 			.addPtr("ctr", FLD_CTR_TYPE)
 			.returnVoid(c -> new FldCtrFinishFn(c));
 
@@ -40,8 +42,14 @@ public final class FldCtrFinishFn extends Fn<FldCtrFinishFn> {
 		super(caller);
 	}
 
-	public final void call(Code code, DataOp object, FldCtrOp ctr) {
-		invoke(null, code, FLD_CTR_FINISH.result(), object, ctr);
+	public final void call(Code code, ObjOp object, FldCtrOp ctr) {
+		invoke(
+				null,
+				code,
+				FLD_CTR_FINISH.result(),
+				object.toData(null, code),
+				object.lock(code),
+				ctr);
 	}
 
 }

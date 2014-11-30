@@ -71,11 +71,17 @@ struct o42a_fld_ctr {
 
 };
 
-o42a_bool_t o42a_fld_start(o42a_obj_t *, o42a_fld_ctr_t *);
+o42a_bool_t o42a_fld_start(
+		o42a_obj_t *,
+		o42a_obj_lock_t *,
+		o42a_fld_ctr_t *);
 
-o42a_bool_t o42a_fld_val_start(o42a_obj_t *, o42a_fld_ctr_t *);
+o42a_bool_t o42a_fld_val_start(
+		o42a_obj_t *,
+		o42a_obj_lock_t *,
+		o42a_fld_ctr_t *);
 
-void o42a_fld_finish(o42a_obj_t *, o42a_fld_ctr_t *);
+void o42a_fld_finish(o42a_obj_t *, o42a_obj_lock_t *, o42a_fld_ctr_t *);
 
 
 #ifdef __cplusplus

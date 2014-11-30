@@ -152,11 +152,13 @@ struct o42a_obj_desc {
 	o42a_rlist_t fields;
 
 	/**
-	 * Relative list to the list of ascendant descriptors.
+	 * Relative pointer to the list of ascendant descriptors.
 	 */
 	o42a_rlist_t ascendants;
 
-	/** Object size in bytes. */
+	/**
+	 * Object size in bytes.
+	 */
 	uint32_t object_size;
 
 };
@@ -559,10 +561,6 @@ void o42a_obj_value_stub(o42a_val_t *, o42a_obj_t *);
  * \param an object to initialize.
  */
 void o42a_obj_static(o42a_obj_t *);
-
-inline o42a_obj_lock_t *o42a_obj_lockof(o42a_obj_t *const object) {
-	return &object->object_data.lock;
-}
 
 /**
  * Locks an object mutex, initializing it if necessary.

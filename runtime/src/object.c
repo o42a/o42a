@@ -754,7 +754,7 @@ inline void o42a_obj_init(
 	data->vmtc = NULL;
 	data->value.flags = O42A_VAL_INDEFINITE;
 
-	O42A(obj_lock_init(o42a_obj_lockof(object)));
+	O42A(obj_lock_init(&object->object_data.lock));
 
 	O42A_RETURN;
 }
@@ -958,7 +958,7 @@ static void static_obj_init(const o42a_gc_block_t *block) {
 
 	o42a_obj_t *const object = O42A(o42a_gc_dataof(block));
 
-	O42A(obj_lock_init(o42a_obj_lockof(object)));
+	O42A(obj_lock_init(&object->object_data.lock));
 
 	O42A_RETURN;
 }
@@ -971,8 +971,6 @@ inline void o42a_obj_static(o42a_obj_t *const object) {
 	}
 	O42A_RETURN;
 }
-
-extern o42a_obj_lock_t *o42a_obj_lockof(o42a_obj_t *);
 
 void o42a_obj_lock(o42a_obj_lock_t *const lock) {
 	O42A_ENTER(return);
