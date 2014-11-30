@@ -29,6 +29,7 @@ import static org.o42a.util.fn.Init.init;
 
 import java.util.function.Function;
 
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.OpMeans;
@@ -162,6 +163,21 @@ public final class ObjOp extends ObjectOp {
 		return getObjectIR().getObjectValueIR().ptr().op(null, code);
 	}
 
+	public void fillDeps(CodeDirs dirs, HostOp host, Obj sample) {
+
+		// Run time dependencies can not be allocated on stack.
+		final HostOp depsHost = host.setPresets(
+				host.getPresets().setStackAllocationAllowed(false));
+
+		final Block code = dirs.code();
+		final ObjectIRBody mainBodyIR =
+				sample.ir(getGenerator()).typeBodies().getMainBodyIR();
+
+		for (DepIR depIR : mainBodyIR.allDeps()) {
+			uninitDep(code, depIR.getDep()).fill(dirs, depsHost);
+		}
+	}
+
 	public ObjOp cast(Obj ascendant) {
 		getObjectIR().getObject().assertDerivedFrom(ascendant);
 		if (ascendant.is(getAscendant())) {
@@ -250,18 +266,31 @@ public final class ObjOp extends ObjectOp {
 
 		final DepIR ir = getObjectIR().bodies().dep(dep);
 		final ObjOp host = cast(dep.getDeclaredIn());
+		final DepOp op = ir.op(code, host);
 
-		return ir.op(code, host);
+		code.dump("Dep: ", op);
+
+		return op;
 	}
 
 	@Override
 	public DepOp dep(CodeDirs dirs, Dep dep) {
 
 		final CodeDirs subDirs = dirs.begin(DEP_ID, dep.toString());
-		final Code code = subDirs.code();
-		final DepOp op = dep(code, dep);
+		final DepOp op = dep(subDirs.code(), dep);
 
 		subDirs.done();
+
+		return op;
+	}
+
+	public DepOp uninitDep(Code code, Dep dep) {
+
+		final DepIR ir = getObjectIR().bodies().dep(dep);
+		final ObjOp host = cast(dep.getDeclaredIn());
+		final DepOp op = ir.op(code, host);
+
+		code.dumpName("Uninit dep: ", op);
 
 		return op;
 	}

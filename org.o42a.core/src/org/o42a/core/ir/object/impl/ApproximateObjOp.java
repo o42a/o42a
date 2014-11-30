@@ -111,9 +111,10 @@ public final class ApproximateObjOp extends ObjectOp {
 			// Everything is compatible with void.
 			return getWellKnownType()
 					.ir(getGenerator())
-					.compatibleOp(dirs);
+					.compatibleOp(dirs)
+					.setPresets(getPresets());
 		}
-		return dynamicCast(id, dirs, ascendant);
+		return dynamicCast(id, dirs, ascendant).setPresets(getPresets());
 	}
 
 	@Override
@@ -144,7 +145,7 @@ public final class ApproximateObjOp extends ObjectOp {
 				dirs,
 				memberKey.getOrigin().toObject());
 
-		return ascendant.setPresets(getPresets()).field(dirs, memberKey);
+		return ascendant.field(dirs, memberKey);
 	}
 
 	@Override
@@ -155,7 +156,7 @@ public final class ApproximateObjOp extends ObjectOp {
 				dirs,
 				dep.getDeclaredIn());
 
-		return ascendant.setPresets(getPresets()).dep(dirs, dep);
+		return ascendant.dep(dirs, dep);
 	}
 
 	@Override
