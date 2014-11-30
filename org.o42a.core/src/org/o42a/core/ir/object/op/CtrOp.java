@@ -41,9 +41,7 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.object.VmtChainAllocFn;
-import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.object.ObjectValueIR;
+import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.vmt.VmtIR;
 import org.o42a.core.ir.object.vmt.VmtIRChain;
 import org.o42a.core.ir.op.*;
@@ -138,7 +136,7 @@ public class CtrOp extends IROp<CtrOp.Op> {
 		return this.host;
 	}
 
-	public final ObjectOp object(Code code) {
+	public final ObjOp object(Code code) {
 		if (this.objectPtr == null) {
 			this.objectPtr = ptr(code).object(code).load(null, code);
 		}
