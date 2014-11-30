@@ -67,12 +67,12 @@ final class ObjectValueBuilder implements FunctionBuilder<ObjectValueFn> {
 				function.arg(function, OBJECT_VALUE.value())
 				.op(function, builder, getValueType(), VAL_TRAP);
 		final ObjOp host = builder.host();
-		final ValueOp value = host.value();
+		final ValueOp<ObjOp> value = host.value();
 
 		assert getValueType().is(value.getValueType()) :
 			"Wrong value type";
 
-		final StateOp state = value.state();
+		final StateOp<ObjOp> state = value.state();
 
 		state.startEval(function);
 
@@ -122,7 +122,7 @@ final class ObjectValueBuilder implements FunctionBuilder<ObjectValueFn> {
 
 	private FldCtrOp writeKeptOrContinue(
 			Block code,
-			StateOp state,
+			StateOp<ObjOp> state,
 			ValOp result) {
 		if (!isStateful()) {
 			return null;
@@ -132,13 +132,16 @@ final class ObjectValueBuilder implements FunctionBuilder<ObjectValueFn> {
 		final FldCtrOp ctr =
 				code.allocate(FLD_CTR_ID, ALLOCATABLE_FLD_CTR).get(code);
 
-		ctr.start(code, state.host()).goUnless(code, valueKept.head());
+		ctr.startVal(code, state.host()).goUnless(code, valueKept.head());
 		writeKept(valueKept, state, result);
 
 		return ctr;
 	}
 
-	private static void writeKept(Block code, StateOp state, ValOp result) {
+	private static void writeKept(
+			Block code,
+			StateOp<ObjOp> state,
+			ValOp result) {
 		code.debug("Write kept");
 
 		final Block falseKept = code.addBlock("false_kept");

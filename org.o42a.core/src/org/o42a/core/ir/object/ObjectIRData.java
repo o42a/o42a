@@ -47,6 +47,7 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 	private ValType value;
 	private StructRec<VmtIRChain.Op> vmtc;
 	private StructRec<ObjectIRDescOp> desc;
+	private ObjectIRLock lock;
 
 	private ObjectIRData() {
 		super(ID.rawId("o42a_obj_data_t"));
@@ -57,10 +58,6 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		return TYPE_DEPENDENCIES;
 	}
 
-	public final StructRec<Op> vmtc() {
-		return this.vmtc;
-	}
-
 	public final FuncRec<ObjectValueFn> valueFunc() {
 		return this.valueFunc;
 	}
@@ -69,8 +66,16 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		return this.value;
 	}
 
+	public final StructRec<Op> vmtc() {
+		return this.vmtc;
+	}
+
 	public final StructRec<ObjectIRDescOp> desc() {
 		return this.desc;
+	}
+
+	public final ObjectIRLock lock() {
+		return this.lock;
 	}
 
 	@Override
@@ -84,7 +89,7 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		this.value = data.addNewInstance(VALUE_ID, VAL_TYPE);
 		this.vmtc = data.addPtr("vmtc", VmtIRChain.VMT_IR_CHAIN_TYPE);
 		this.desc = data.addPtr("desc", OBJECT_DESC_TYPE);
-		data.addNewInstance(ID.id("lock"), OBJECT_IR_LOCK);
+		this.lock = data.addNewInstance(ID.id("lock"), OBJECT_IR_LOCK);
 	}
 
 	@Override

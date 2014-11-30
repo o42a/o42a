@@ -29,7 +29,7 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
-import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.ObjOp;
 import org.o42a.util.string.ID;
 
 
@@ -63,11 +63,10 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 				code,
 				code.int16((short) fld.fld().getKind().code()));
 
-		return fn.op(null, code)
-				.call(code, fld.host().toData(null, code), this);
+		return fn.op(null, code).call(code, fld.host(), this);
 	}
 
-	public final BoolOp start(Code code, ObjectOp host) {
+	public final BoolOp startVal(Code code, ObjOp host) {
 
 		final FuncPtr<FldCtrStartFn> fn =
 				code.getGenerator().externalFunction().link(
@@ -81,21 +80,21 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 				.value(code)
 				.toData(null, code));
 
-		return fn.op(null, code).call(code, host.toData(null, code), this);
+		return fn.op(null, code).call(code, host, this);
 	}
 
 	public final void finish(Code code, FldIROp<?, ?> fld) {
 		finish(code, fld.host());
 	}
 
-	public final void finish(Code code, ObjectOp host) {
+	public final void finish(Code code, ObjOp host) {
 
 		final FuncPtr<FldCtrFinishFn> fn =
 				code.getGenerator().externalFunction().link(
 						"o42a_fld_finish",
 						FLD_CTR_FINISH);
 
-		fn.op(null, code).call(code, host.toData(null, code), this);
+		fn.op(null, code).call(code, host, this);
 	}
 
 	public static final class Type
