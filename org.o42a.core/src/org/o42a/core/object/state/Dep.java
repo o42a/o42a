@@ -70,7 +70,7 @@ public final class Dep extends Step implements SubID {
 	private byte compileTimeOnly;
 	private SyntheticDep synthetic;
 	private CondInit<Analyzer, UseFlag> isSynthetic = condInit(
-			(a, f) -> a.toUseCase() == f.getUseCase(),
+			(a, f) -> a.toUseCase().is(f.getUseCase()),
 			this::detectSynthetic);
 
 	Dep(Obj declaredIn, Ref ref, Name name, ID id) {

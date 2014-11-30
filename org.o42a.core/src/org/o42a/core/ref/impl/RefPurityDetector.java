@@ -22,6 +22,7 @@ package org.o42a.core.ref.impl;
 import static org.o42a.core.ref.RefPurity.IMPURE_REF;
 import static org.o42a.core.ref.RefPurity.PURE_REF;
 
+import org.o42a.analysis.Analyzer;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
@@ -42,18 +43,23 @@ import org.o42a.core.value.link.Link;
 
 public class RefPurityDetector implements PathWalker {
 
-	public static RefPurity detectPurity(Ref ref, Scope scope) {
+	public static RefPurity detectPurity(
+			Ref ref,
+			Analyzer analyzer,
+			Scope scope) {
 
-		final RefPurityDetector detector = new RefPurityDetector();
+		final RefPurityDetector detector = new RefPurityDetector(analyzer);
 
 		ref.resolve(scope.walkingResolver(detector)).resolve();
 
 		return detector.purity;
 	}
 
+	private final Analyzer analyzer;
 	private RefPurity purity = PURE_REF;
 
-	private RefPurityDetector() {
+	private RefPurityDetector(Analyzer analyzer) {
+		this.analyzer = analyzer;
 	}
 
 	@Override
@@ -97,7 +103,9 @@ public class RefPurityDetector implements PathWalker {
 		final MemberAlias alias = member.toAlias();
 
 		if (alias != null) {
-			return setPurity(alias.getRef().purity(container.getScope()));
+			return setPurity(alias.getRef().purity(
+					this.analyzer,
+					container.getScope()));
 		}
 
 		return impure();
@@ -110,13 +118,14 @@ public class RefPurityDetector implements PathWalker {
 
 	@Override
 	public boolean local(Step step, Scope scope, Local local) {
-		return setPurity(local.ref().purity(scope));
+		return setPurity(local.ref().purity(this.analyzer, scope));
 	}
 
 	@Override
 	public boolean dep(Obj object, Dep dep) {
-		return setPurity(
-				dep.ref().purity(object.getScope().getEnclosingScope()));
+		return setPurity(dep.ref().purity(
+				this.analyzer,
+				object.getScope().getEnclosingScope()));
 	}
 
 	@Override
@@ -127,9 +136,13 @@ public class RefPurityDetector implements PathWalker {
 		if (ancestor == null) {
 			return pure();
 		}
+		if (object.hasDeps(this.analyzer)) {
+			return impure();
+		}
 
-		return setPurity(
-				ancestor.getRef().purity(object.getScope().getEnclosingScope()));
+		return setPurity(ancestor.getRef().purity(
+				this.analyzer,
+				object.getScope().getEnclosingScope()));
 	}
 
 	@Override
