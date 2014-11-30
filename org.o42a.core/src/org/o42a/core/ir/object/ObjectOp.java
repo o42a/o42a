@@ -21,7 +21,6 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.field.inst.InstFldKind.INST_RESUME_FROM;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
-import static org.o42a.util.fn.Init.init;
 
 import java.util.function.Function;
 
@@ -49,7 +48,6 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.link.LinkValueType;
-import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 
 
@@ -127,7 +125,6 @@ public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
 
 	private final OpPresets presets;
 	private final ObjectPrecision precision;
-	private final Init<ValueOp> value = init(this::createValue);
 	private final boolean stackAllocated;
 
 	protected ObjectOp(
@@ -199,9 +196,7 @@ public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
 	}
 
 	@Override
-	public final ValueOp value() {
-		return this.value.get();
-	}
+	public abstract ValueOp<?> value();
 
 	public abstract ObjectOp phi(Code code, OpMeans<DataOp> ptr);
 
@@ -211,6 +206,13 @@ public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
 
 	public final ResumeFromOp resumeFrom(CodeDirs dirs) {
 		return (ResumeFromOp) instField(dirs, INST_RESUME_FROM);
+	}
+
+	public final ObjectIRLock.Op lock(CodeDirs dirs) {
+
+		final Block code = dirs.code();
+
+		return ptr().objectData(code).lock(code);
 	}
 
 	public abstract InstFldOp<?, ?> instField(CodeDirs dirs, InstFldKind kind);
@@ -293,8 +295,6 @@ public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
 
 		return out.toString();
 	}
-
-	protected abstract ValueOp createValue();
 
 	private static final class ObjectStoreOp extends AbstractObjectStoreOp {
 

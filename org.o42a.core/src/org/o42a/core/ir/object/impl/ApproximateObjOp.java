@@ -22,6 +22,7 @@ package org.o42a.core.ir.object.impl;
 import static org.o42a.core.ir.field.Fld.FIELD_ID;
 import static org.o42a.core.ir.object.ObjectPrecision.APPROXIMATE_OBJECT;
 import static org.o42a.core.ir.object.desc.AscendantDescIR.ASCENDANT_DESC_IR;
+import static org.o42a.util.fn.Init.init;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
@@ -42,12 +43,14 @@ import org.o42a.core.ir.value.type.ValueOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 
 
 public final class ApproximateObjOp extends ObjectOp {
 
 	private final Obj wellKnownType;
+	private final Init<ValueOp<?>> value = init(this::createValue);
 
 	public ApproximateObjOp(
 			CodeBuilder builder,
@@ -114,6 +117,11 @@ public final class ApproximateObjOp extends ObjectOp {
 	}
 
 	@Override
+	public final ValueOp<?> value() {
+		return this.value.get();
+	}
+
+	@Override
 	public InstFldOp<?, ?> instField(CodeDirs dirs, InstFldKind kind) {
 
 		final CodeDirs subDirs =
@@ -162,8 +170,7 @@ public final class ApproximateObjOp extends ObjectOp {
 		return ascendant.local(dirs, memberKey);
 	}
 
-	@Override
-	protected ValueOp createValue() {
+	private ValueOp<?> createValue() {
 		return getWellKnownType().ir(getGenerator()).getValueIR().op(this);
 	}
 

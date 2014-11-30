@@ -43,26 +43,28 @@ public abstract class SimpleValueIR extends ValueIR {
 	}
 
 	@Override
-	public ValueOp op(ObjectOp object) {
-		return new SimpleValueOp(this, object);
+	public <H extends ObjectOp> ValueOp<H> op(H object) {
+		return new SimpleValueOp<>(this, object);
 	}
 
-	private static final class SimpleValueOp extends DefaultValueOp {
+	private static final class SimpleValueOp<H extends ObjectOp>
+			extends DefaultValueOp<H> {
 
-		SimpleValueOp(ValueIR valueIR, ObjectOp object) {
+		SimpleValueOp(ValueIR valueIR, H object) {
 			super(valueIR, object);
 		}
 
 		@Override
-		public StateOp state() {
-			return new SimpleStateOp(object());
+		public StateOp<H> state() {
+			return new SimpleStateOp<>(object());
 		}
 
 	}
 
-	private static final class SimpleStateOp extends StateOp {
+	private static final class SimpleStateOp<H extends ObjectOp>
+			extends StateOp<H> {
 
-		SimpleStateOp(ObjectOp host) {
+		SimpleStateOp(H host) {
 			super(host);
 		}
 

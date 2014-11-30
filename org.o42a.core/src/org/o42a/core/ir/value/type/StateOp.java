@@ -38,13 +38,13 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.ValueType;
 
 
-public abstract class StateOp {
+public abstract class StateOp<H extends ObjectOp> {
 
-	private final ObjectOp host;
+	private final H host;
 	private ValType.Op value;
 	private ValFlagsOp flags;
 
-	public StateOp(ObjectOp host) {
+	public StateOp(H host) {
 		this.host = host;
 	}
 
@@ -64,7 +64,7 @@ public abstract class StateOp {
 		return host().getWellKnownType().type().getValueType();
 	}
 
-	public final ObjectOp host() {
+	public final H host() {
 		return this.host;
 	}
 

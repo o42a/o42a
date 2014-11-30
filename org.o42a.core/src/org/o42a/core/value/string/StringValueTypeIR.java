@@ -62,8 +62,8 @@ final class StringValueTypeIR extends ValueTypeIR<String> {
 		}
 
 		@Override
-		public ValueOp op(ObjectOp object) {
-			return new StringValueOp(this, object);
+		public <H extends ObjectOp> ValueOp<H> op(H object) {
+			return new StringValueOp<>(this, object);
 		}
 
 		@Override
@@ -81,22 +81,24 @@ final class StringValueTypeIR extends ValueTypeIR<String> {
 
 	}
 
-	private static final class StringValueOp extends DefaultValueOp {
+	private static final class StringValueOp<H extends ObjectOp>
+			extends DefaultValueOp<H> {
 
-		StringValueOp(ValueIR valueIR, ObjectOp object) {
+		StringValueOp(ValueIR valueIR, H object) {
 			super(valueIR, object);
 		}
 
 		@Override
-		public StateOp state() {
-			return new StringStateOp(object());
+		public StateOp<H> state() {
+			return new StringStateOp<>(object());
 		}
 
 	}
 
-	private static final class StringStateOp extends StateOp {
+	private static final class StringStateOp<H extends ObjectOp>
+			extends StateOp<H> {
 
-		StringStateOp(ObjectOp host) {
+		StringStateOp(H host) {
 			super(host);
 		}
 

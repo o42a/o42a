@@ -44,8 +44,8 @@ public final class VoidValueIR extends ValueIR {
 	}
 
 	@Override
-	public ValueOp op(ObjectOp object) {
-		return new VoidValueOp(this, object);
+	public <H extends ObjectOp> ValueOp<H> op(H object) {
+		return new VoidValueOp<>(this, object);
 	}
 
 	@Override
@@ -53,22 +53,24 @@ public final class VoidValueIR extends ValueIR {
 		return VOID_VAL;
 	}
 
-	private static final class VoidValueOp extends DefaultValueOp {
+	private static final class VoidValueOp<H extends ObjectOp>
+			extends DefaultValueOp<H> {
 
-		VoidValueOp(ValueIR valueIR, ObjectOp object) {
+		VoidValueOp(ValueIR valueIR, H object) {
 			super(valueIR, object);
 		}
 
 		@Override
-		public StateOp state() {
-			return new VoidStateOp(object());
+		public StateOp<H> state() {
+			return new VoidStateOp<>(object());
 		}
 
 	}
 
-	private static final class VoidStateOp extends StateOp {
+	private static final class VoidStateOp<H extends ObjectOp>
+			extends StateOp<H> {
 
-		VoidStateOp(ObjectOp host) {
+		VoidStateOp(H host) {
 			super(host);
 		}
 

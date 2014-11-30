@@ -25,9 +25,9 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 
 
-public abstract class StatefulValueOp extends ValueOp {
+public abstract class StatefulValueOp<H extends ObjectOp> extends ValueOp<H> {
 
-	public StatefulValueOp(ValueIR valueIR, ObjectOp object) {
+	public StatefulValueOp(ValueIR valueIR, H object) {
 		super(valueIR, object);
 		assert valueIR.getValueType().isStateful() :
 			valueIR.getValueType() + " is stateless";

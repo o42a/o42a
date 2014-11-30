@@ -72,7 +72,7 @@ public abstract class ValueIR {
 	 */
 	public abstract OpPresets valuePresets(OpPresets presets);
 
-	public abstract ValueOp op(ObjectOp object);
+	public abstract <H extends ObjectOp> ValueOp<H> op(H object);
 
 	public abstract Val initialValue(ObjectDataIR dataIR);
 
