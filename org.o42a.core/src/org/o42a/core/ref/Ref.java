@@ -131,9 +131,9 @@ public class Ref extends Statement implements RefBuilder {
 		return typeParameters != null ? typeParameters.getValueType() : null;
 	}
 
-	public final RefPurity purity(Scope scope) {
+	public final RefPurity purity(Analyzer analyzer, Scope scope) {
 		assert assertCompatible(scope);
-		return detectPurity(this, scope);
+		return detectPurity(this, analyzer, scope);
 	}
 
 	public final EscapeFlag escapeFlag(EscapeAnalyzer analyzer, Scope scope) {

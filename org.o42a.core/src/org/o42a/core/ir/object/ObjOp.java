@@ -165,16 +165,12 @@ public final class ObjOp extends ObjectOp {
 
 	public void fillDeps(CodeDirs dirs, HostOp host, Obj sample) {
 
-		// Run time dependencies can not be allocated on stack.
-		final HostOp depsHost = host.setPresets(
-				host.getPresets().setStackAllocationAllowed(false));
-
 		final Block code = dirs.code();
 		final ObjectIRBody mainBodyIR =
 				sample.ir(getGenerator()).typeBodies().getMainBodyIR();
 
 		for (DepIR depIR : mainBodyIR.allDeps()) {
-			uninitDep(code, depIR.getDep()).fill(dirs, depsHost);
+			uninitDep(code, depIR.getDep()).fill(dirs, host);
 		}
 	}
 
