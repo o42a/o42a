@@ -30,7 +30,6 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.field.dep.DepIR;
 import org.o42a.core.ir.field.dep.DepOp;
 import org.o42a.core.ir.field.inst.InstFldKind;
 import org.o42a.core.ir.field.inst.InstFldOp;
@@ -177,16 +176,6 @@ public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
 
 	public ObjectValueFn valueFunc(Code code) {
 		return objectData(code).ptr().valueFunc(code).load(null, code);
-	}
-
-	public void fillDeps(CodeDirs dirs, HostOp host, Obj sample) {
-
-		final ObjectIRBody mainBodyIR =
-				sample.ir(getGenerator()).typeBodies().getMainBodyIR();
-
-		for (DepIR depIR : mainBodyIR.allDeps()) {
-			dep(dirs, depIR.getDep()).fill(dirs, host);
-		}
 	}
 
 	public abstract ObjOp cast(ID id, CodeDirs dirs, Obj ascendant);
