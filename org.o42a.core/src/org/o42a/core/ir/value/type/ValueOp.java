@@ -34,12 +34,12 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.value.ValueType;
 
 
-public abstract class ValueOp implements HostValueOp {
+public abstract class ValueOp<H extends ObjectOp> implements HostValueOp {
 
 	private final ValueIR valueIR;
-	private final ObjectOp object;
+	private final H object;
 
-	public ValueOp(ValueIR valueIR, ObjectOp object) {
+	public ValueOp(ValueIR valueIR, H object) {
 		this.valueIR = valueIR;
 		this.object = object;
 	}
@@ -60,7 +60,7 @@ public abstract class ValueOp implements HostValueOp {
 		return this.valueIR;
 	}
 
-	public final ObjectOp object() {
+	public final H object() {
 		return this.object;
 	}
 
@@ -91,7 +91,7 @@ public abstract class ValueOp implements HostValueOp {
 				value.materialize(dirs, tempObjHolder(dirs.getAllocator())));
 	}
 
-	public abstract StateOp state();
+	public abstract StateOp<H> state();
 
 	@Override
 	public String toString() {

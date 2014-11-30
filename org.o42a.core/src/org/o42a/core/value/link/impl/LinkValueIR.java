@@ -52,11 +52,11 @@ final class LinkValueIR extends ValueIR {
 	}
 
 	@Override
-	public ValueOp op(ObjectOp object) {
+	public <H extends ObjectOp> ValueOp<H> op(H object) {
 		if (!getValueType().isVariable()) {
-			return new LinkValueOp(this, object);
+			return new LinkValueOp<>(this, object);
 		}
-		return new VarValueOp(this, object);
+		return new VarValueOp<>(this, object);
 	}
 
 	@Override
@@ -81,35 +81,38 @@ final class LinkValueIR extends ValueIR {
 				target.ir(getGenerator()).ptr().toAny());
 	}
 
-	private static final class LinkValueOp extends DefaultValueOp {
+	private static final class LinkValueOp<H extends ObjectOp>
+			extends DefaultValueOp<H> {
 
-		LinkValueOp(LinkValueIR variableIR, ObjectOp object) {
+		LinkValueOp(LinkValueIR variableIR, H object) {
 			super(variableIR, object);
 		}
 
 		@Override
-		public StateOp state() {
-			return new LinkStateOp(object());
+		public StateOp<H> state() {
+			return new LinkStateOp<>(object());
 		}
 
 	}
 
-	private static final class VarValueOp extends StatefulValueOp {
+	private static final class VarValueOp<H extends ObjectOp>
+			extends StatefulValueOp<H> {
 
-		VarValueOp(ValueIR valueIR, ObjectOp object) {
+		VarValueOp(ValueIR valueIR, H object) {
 			super(valueIR, object);
 		}
 
 		@Override
-		public StateOp state() {
-			return new VarStateOp(object());
+		public StateOp<H> state() {
+			return new VarStateOp<>(object());
 		}
 
 	}
 
-	private static abstract class AbstractLinkStateOp extends StateOp {
+	private static abstract class AbstractLinkStateOp<H extends ObjectOp>
+			extends StateOp<H> {
 
-		AbstractLinkStateOp(ObjectOp host) {
+		AbstractLinkStateOp(H host) {
 			super(host);
 		}
 
@@ -133,9 +136,10 @@ final class LinkValueIR extends ValueIR {
 
 	}
 
-	private static final class LinkStateOp extends AbstractLinkStateOp {
+	private static final class LinkStateOp<H extends ObjectOp>
+			extends AbstractLinkStateOp<H> {
 
-		LinkStateOp(ObjectOp host) {
+		LinkStateOp(H host) {
 			super(host);
 		}
 
@@ -146,9 +150,10 @@ final class LinkValueIR extends ValueIR {
 
 	}
 
-	private static final class VarStateOp extends AbstractLinkStateOp {
+	private static final class VarStateOp<H extends ObjectOp>
+			extends AbstractLinkStateOp<H> {
 
-		VarStateOp(ObjectOp host) {
+		VarStateOp(H host) {
 			super(host);
 		}
 

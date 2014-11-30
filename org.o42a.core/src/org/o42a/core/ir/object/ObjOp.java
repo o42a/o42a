@@ -21,9 +21,11 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.field.Fld.FIELD_ID;
 import static org.o42a.core.ir.field.dep.DepOp.DEP_ID;
+import static org.o42a.core.ir.field.inst.InstFldKind.INST_RESUME_FROM;
 import static org.o42a.core.ir.field.local.LocalIR.LOCAL_ID;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE_OBJECT;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT_OBJECT;
+import static org.o42a.util.fn.Init.init;
 
 import java.util.function.Function;
 
@@ -36,9 +38,7 @@ import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.dep.DepIR;
 import org.o42a.core.ir.field.dep.DepOp;
-import org.o42a.core.ir.field.inst.InstFld;
-import org.o42a.core.ir.field.inst.InstFldKind;
-import org.o42a.core.ir.field.inst.InstFldOp;
+import org.o42a.core.ir.field.inst.*;
 import org.o42a.core.ir.field.local.LocalIR;
 import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.vmt.VmtIRChain;
@@ -51,6 +51,7 @@ import org.o42a.core.ir.value.type.ValueOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.state.Dep;
+import org.o42a.util.fn.Init;
 import org.o42a.util.string.ID;
 
 
@@ -58,6 +59,7 @@ public final class ObjOp extends ObjectOp {
 
 	private final ObjectIR objectIR;
 	private final Obj ascendant;
+	private final Init<ValueOp<ObjOp>> value = init(this::createValue);
 
 	ObjOp(
 			CodeBuilder builder,
@@ -160,8 +162,7 @@ public final class ObjOp extends ObjectOp {
 		return getObjectIR().getObjectValueIR().ptr().op(null, code);
 	}
 
-	@Override
-	public ObjOp cast(ID id, CodeDirs dirs, Obj ascendant) {
+	public ObjOp cast(Obj ascendant) {
 		getObjectIR().getObject().assertDerivedFrom(ascendant);
 		if (ascendant.is(getAscendant())) {
 			return this;
@@ -171,7 +172,36 @@ public final class ObjOp extends ObjectOp {
 				getObjectIR(),
 				this,
 				ascendant,
-				COMPATIBLE_OBJECT);
+				COMPATIBLE_OBJECT)
+		.setPresets(getPresets());
+	}
+
+	@Override
+	public ObjOp cast(ID id, CodeDirs dirs, Obj ascendant) {
+		return cast(ascendant);
+	}
+
+	@Override
+	public final ValueOp<ObjOp> value() {
+		return this.value.get();
+	}
+
+	public final ResumeFromOp resumeFrom(Code code) {
+		return (ResumeFromOp) instField(code, INST_RESUME_FROM);
+	}
+
+	public final ObjectIRLock.Op lock(Code code) {
+		return ptr().objectData(code).lock(code);
+	}
+
+	public InstFldOp<?, ?> instField(Code code, InstFldKind kind) {
+
+		final InstFld<?, ?> fld = getObjectIR().bodies().instFld(kind);
+		final InstFldOp<?, ?> op = fld.op(code, this);
+
+		code.dumpName("Field: ", op);
+
+		return op;
 	}
 
 	@Override
@@ -179,30 +209,17 @@ public final class ObjOp extends ObjectOp {
 
 		final CodeDirs subDirs =
 				dirs.begin(FIELD_ID, "Field " + kind + " of " + this);
-		final Code code = subDirs.code();
-		final InstFld<?, ?> fld = getObjectIR().bodies().instFld(kind);
-		final InstFldOp<?, ?> op = fld.op(code, this);
-
-		code.dumpName("Field: ", op);
+		final InstFldOp<?, ?> op = instField(subDirs.code(), kind);
 
 		subDirs.done();
 
 		return op;
 	}
 
-	@Override
-	public FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey) {
+	public FldOp<?, ?> field(Code code, MemberKey memberKey) {
 
-		final CodeDirs subDirs =
-				dirs.begin(FIELD_ID, "Field " + memberKey + " of " + this);
-		final Code code = subDirs.code();
 		final Fld<?, ?> fld = getObjectIR().bodies().fld(memberKey);
-		final ID hostId = FIELD_HOST_ID.sub(memberKey.getMemberId());
-		final ObjOp host = cast(
-				hostId,
-				subDirs,
-				memberKey.getOrigin().toObject())
-				.setPresets(getPresets());
+		final ObjOp host = cast(memberKey.getOrigin().toObject());
 		final FldOp<?, ?> op = fld.op(code, host);
 
 		if (fld.isStateless()) {
@@ -213,9 +230,28 @@ public final class ObjOp extends ObjectOp {
 			code.debug("Final field: " + op.getId());
 		}
 
+		return op;
+	}
+
+	@Override
+	public FldOp<?, ?> field(CodeDirs dirs, MemberKey memberKey) {
+
+		final CodeDirs subDirs =
+				dirs.begin(FIELD_ID, "Field " + memberKey + " of " + this);
+		final Code code = subDirs.code();
+		final FldOp<?, ?> op = field(code, memberKey);
+
 		subDirs.done();
 
 		return op;
+	}
+
+	public DepOp dep(Code code, Dep dep) {
+
+		final DepIR ir = getObjectIR().bodies().dep(dep);
+		final ObjOp host = cast(dep.getDeclaredIn());
+
+		return ir.op(code, host);
 	}
 
 	@Override
@@ -223,15 +259,20 @@ public final class ObjOp extends ObjectOp {
 
 		final CodeDirs subDirs = dirs.begin(DEP_ID, dep.toString());
 		final Code code = subDirs.code();
-		final DepIR ir = getObjectIR().bodies().dep(dep);
-		final ObjOp host = cast(
-				DEP_HOST_ID.sub(dep),
-				subDirs,
-				dep.getDeclaredIn())
-				.setPresets(getPresets());
-		final DepOp op = ir.op(code, host);
+		final DepOp op = dep(code, dep);
 
 		subDirs.done();
+
+		return op;
+	}
+
+	public LocalIROp local(Code code, MemberKey memberKey) {
+
+		final LocalIR local = getObjectIR().bodies().local(memberKey);
+		final ObjOp host = cast(memberKey.getOrigin().toObject());
+		final LocalIROp op = local.op(code, host);
+
+		code.dump("Local: ", op);
 
 		return op;
 	}
@@ -242,15 +283,7 @@ public final class ObjOp extends ObjectOp {
 		final CodeDirs subDirs =
 				dirs.begin(LOCAL_ID, memberKey.toString());
 		final Code code = subDirs.code();
-		final LocalIR local = getObjectIR().bodies().local(memberKey);
-		final ID hostId = FIELD_HOST_ID.sub(memberKey.getMemberId());
-		final ObjOp host = cast(
-				hostId,
-				subDirs,
-				memberKey.getOrigin().toObject());
-		final LocalIROp op = local.op(code, host);
-
-		code.dump("Local: ", op);
+		final LocalIROp op = local(code, memberKey);
 
 		subDirs.done();
 
@@ -275,19 +308,6 @@ public final class ObjOp extends ObjectOp {
 		return super.localStore(id, getLocal);
 	}
 
-	@Override
-	protected ValueOp createValue() {
-
-		final ValueIR valueIR = getAscendant().ir(getGenerator()).getValueIR();
-		final ValueOp value = valueIR.op(this);
-
-		if (!getPrecision().isExact()) {
-			return value;
-		}
-
-		return new ExactValueOp(value);
-	}
-
 	private boolean validPrecision() {
 		assert getPrecision().isCompatible() :
 			"Wrong object precision: " + this;
@@ -304,17 +324,29 @@ public final class ObjOp extends ObjectOp {
 		return true;
 	}
 
-	private static final class ExactValueOp extends ValueOp {
+	private ValueOp<ObjOp> createValue() {
 
-		private final ValueOp value;
+		final ValueIR valueIR = getAscendant().ir(getGenerator()).getValueIR();
+		final ValueOp<ObjOp> value = valueIR.op(this);
 
-		ExactValueOp(ValueOp value) {
+		if (!getPrecision().isExact()) {
+			return value;
+		}
+
+		return new ExactValueOp(value);
+	}
+
+	private static final class ExactValueOp extends ValueOp<ObjOp> {
+
+		private final ValueOp<ObjOp> value;
+
+		ExactValueOp(ValueOp<ObjOp> value) {
 			super(value.getValueIR(), value.object());
 			this.value = value;
 		}
 
 		@Override
-		public StateOp state() {
+		public StateOp<ObjOp> state() {
 			return this.value.state();
 		}
 
@@ -323,7 +355,7 @@ public final class ObjOp extends ObjectOp {
 
 			final DefDirs defDirs = dirs.nested().def();
 
-			objectValueIR().writeValue(defDirs, obj());
+			objectValueIR().writeValue(defDirs, object());
 			defDirs.done();
 
 			return defDirs.result();
@@ -334,12 +366,8 @@ public final class ObjOp extends ObjectOp {
 			defaultVoid(dirs);
 		}
 
-		private final ObjOp obj() {
-			return (ObjOp) object();
-		}
-
 		private final ObjectIR objectIR() {
-			return obj().getAscendant().ir(getGenerator());
+			return object().getAscendant().ir(getGenerator());
 		}
 
 		private final ObjectValueIR objectValueIR() {

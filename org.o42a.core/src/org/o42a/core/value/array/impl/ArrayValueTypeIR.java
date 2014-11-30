@@ -64,11 +64,11 @@ public final class ArrayValueTypeIR extends ValueTypeIR<Array> {
 		}
 
 		@Override
-		public ValueOp op(ObjectOp object) {
+		public <H extends ObjectOp> ValueOp<H> op(H object) {
 			if (!getValueType().isVariable()) {
-				return new RowValueOp(this, object);
+				return new RowValueOp<>(this, object);
 			}
-			return new ArrayValueOp(this, object);
+			return new ArrayValueOp<>(this, object);
 		}
 
 		@Override
@@ -77,42 +77,46 @@ public final class ArrayValueTypeIR extends ValueTypeIR<Array> {
 			final Obj object = dataIR.getObjectIR().getObject();
 			final ArrayValueType arrayType = getValueType().toArrayType();
 			final Array array =
-					arrayType.cast(object.value().getValue()).getCompilerValue();
+					arrayType.cast(object.value().getValue())
+					.getCompilerValue();
 
 			return arrayType.ir(getGenerator()).staticsIR().val(array);
 		}
 
 	}
 
-	private static final class RowValueOp extends DefaultValueOp {
+	private static final class RowValueOp<H extends ObjectOp>
+			extends DefaultValueOp<H> {
 
-		RowValueOp(ArrayValueIR valueIR, ObjectOp object) {
+		RowValueOp(ArrayValueIR valueIR, H object) {
 			super(valueIR, object);
 		}
 
 		@Override
-		public StateOp state() {
-			return new ArrayStateOp(object());
+		public StateOp<H> state() {
+			return new ArrayStateOp<>(object());
 		}
 
 	}
 
-	private static final class ArrayValueOp extends StatefulValueOp {
+	private static final class ArrayValueOp<H extends ObjectOp>
+			extends StatefulValueOp<H> {
 
-		ArrayValueOp(ArrayValueIR valueIR, ObjectOp object) {
+		ArrayValueOp(ArrayValueIR valueIR, H object) {
 			super(valueIR, object);
 		}
 
 		@Override
-		public StateOp state() {
-			return new ArrayStateOp(object());
+		public StateOp<H> state() {
+			return new ArrayStateOp<>(object());
 		}
 
 	}
 
-	private static final class ArrayStateOp extends StateOp {
+	private static final class ArrayStateOp<H extends ObjectOp>
+			extends StateOp<H> {
 
-		ArrayStateOp(ObjectOp host) {
+		ArrayStateOp(H host) {
 			super(host);
 		}
 
