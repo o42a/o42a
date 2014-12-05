@@ -62,6 +62,9 @@ final class ValueDefsUses implements UserInfo {
 	public final UseFlag selectUse(
 			Analyzer analyzer,
 			UseSelector<ValuePartUsage> selector) {
+		if (!this.uses.isInitialized()) {
+			return analyzer.toUseCase().unusedFlag();
+		}
 		return uses().selectUse(analyzer, selector);
 	}
 
