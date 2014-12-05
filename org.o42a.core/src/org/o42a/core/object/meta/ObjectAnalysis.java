@@ -25,7 +25,7 @@ import static org.o42a.core.object.meta.DetectEscapeFlag.OWN_ESCAPE_MODE;
 import static org.o42a.core.object.meta.EscapeDetectionMethod.ALWAYS_ESCAPE;
 import static org.o42a.core.object.meta.EscapeDetectionMethod.ANCESTOR_ESCAPE;
 import static org.o42a.core.object.meta.EscapeDetectionMethod.OBJECT_ESCAPE;
-import static org.o42a.util.fn.Init.init;
+import static org.o42a.util.fn.CondInit.condInit;
 
 import org.o42a.analysis.escape.*;
 import org.o42a.core.member.Member;
@@ -33,15 +33,17 @@ import org.o42a.core.member.alias.MemberAlias;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.util.fn.Init;
+import org.o42a.util.fn.CondInit;
 
 
 public final class ObjectAnalysis {
 
 	private final Obj object;
 
-	private final Init<EscapeDetectionMethod> escapeDetectionMethod =
-			init(this::chooseEscapeDetectionMethod);
+	private final CondInit<EscapeAnalyzer, EDMethod> escapeDetectionMethod =
+			condInit(
+					(a, m) -> m.getAnalyzer().is(a),
+					this::chooseEscapeDetectionMethod);
 	private final EscapeInit ownEscapeMode =
 			escapeInit(this::detectOwnEscapeMode);
 	private final EscapeInit overridersEscapeMode =
@@ -69,10 +71,10 @@ public final class ObjectAnalysis {
 	}
 
 	public final EscapeFlag ancestorEscapeFlag(EscapeAnalyzer analyzer) {
-		if (!escapeDetectionMethod().alwaysEscapes()) {
+		if (!escapeDetectionMethod(analyzer).alwaysEscapes()) {
 			return analyzer.escapeImpossible();
 		}
-		if (!escapeDetectionMethodByAncestor().alwaysEscapes()) {
+		if (!escapeDetectionMethodByAncestor(analyzer).alwaysEscapes()) {
 			return analyzer.escapeImpossible();
 		}
 		return analyzer.escapePossible();
@@ -90,7 +92,7 @@ public final class ObjectAnalysis {
 	}
 
 	public final EscapeFlag valueEscapeFlag(EscapeAnalyzer analyzer) {
-		if (escapeDetectionMethod().alwaysEscapes()) {
+		if (escapeDetectionMethod(analyzer).alwaysEscapes()) {
 			return analyzer.escapePossible();
 		}
 		return getObject()
@@ -127,10 +129,9 @@ public final class ObjectAnalysis {
 	public final EscapeFlag overridersEscapeFlag(
 			EscapeAnalyzer analyzer,
 			DetectEscapeFlag detect) {
-		return escapeDetectionMethod(detect).overridersEscapeFlag(
-				analyzer,
-				getObject(),
-				detect);
+		return escapeDetectionMethod(analyzer, detect)
+				.getMethod()
+				.overridersEscapeFlag(analyzer, getObject(), detect);
 	}
 
 	public final EscapeMode derivativesEscapeMode(EscapeAnalyzer analyzer) {
@@ -144,20 +145,20 @@ public final class ObjectAnalysis {
 	public EscapeFlag derivativesEscapeFlag(
 			EscapeAnalyzer analyzer,
 			DetectEscapeFlag detect) {
-		return escapeDetectionMethod(detect).derivativesEscapeFlag(
-				analyzer,
-				getObject(),
-				detect);
+		return escapeDetectionMethod(analyzer, detect)
+				.getMethod()
+				.derivativesEscapeFlag(analyzer, getObject(), detect);
 	}
 
-	private final EscapeDetectionMethod escapeDetectionMethod() {
-		return this.escapeDetectionMethod.get();
+	private final EDMethod escapeDetectionMethod(EscapeAnalyzer analyzer) {
+		return this.escapeDetectionMethod.get(analyzer);
 	}
 
-	private final EscapeDetectionMethod escapeDetectionMethod(
+	private final EDMethod escapeDetectionMethod(
+			EscapeAnalyzer analyzer,
 			DetectEscapeFlag detect) {
 
-		final EscapeDetectionMethod method = escapeDetectionMethod();
+		final EDMethod method = escapeDetectionMethod(analyzer);
 
 		if (!detect.objectDefinitionsIgnored()) {
 			return method;
@@ -166,66 +167,68 @@ public final class ObjectAnalysis {
 		return method.ignoreObjectDefinitions();
 	}
 
-	private EscapeDetectionMethod chooseEscapeDetectionMethod() {
+	private EDMethod chooseEscapeDetectionMethod(EscapeAnalyzer analyzer) {
 		if (!getObject().value().getStatefulness().isStateless()) {
 			// Stateful and eager objects always escape.
-			return ALWAYS_ESCAPE;
+			return new EDMethod(analyzer, ALWAYS_ESCAPE);
 		}
-		return escapeDetectionMethodByAncestor();
+		return escapeDetectionMethodByAncestor(analyzer);
 	}
 
-	private EscapeDetectionMethod escapeDetectionMethodByAncestor() {
+	private EDMethod escapeDetectionMethodByAncestor(EscapeAnalyzer analyzer) {
 
 		final TypeRef ancestor = getObject().type().getAncestor();
 
 		if (ancestor == null) {
 			// Void.
-			return OBJECT_ESCAPE;
+			return new EDMethod(analyzer, OBJECT_ESCAPE);
 		}
 		if (!ancestor.getRef()
-				.purity(getObject().getScope().getEnclosingScope())
+				.purity(
+						analyzer.getAnalyzer(),
+						getObject().getScope().getEnclosingScope())
 				.isPure()) {
 			// Ancestor isn't pure.
 			// Can not detect escape mode.
-			return ALWAYS_ESCAPE;
+			return new EDMethod(analyzer, ALWAYS_ESCAPE);
 		}
 		if (ancestor.isStatic()) {
 			// Static ancestor.
 			// The value definition can be overridden by derivatives only.
-			return OBJECT_ESCAPE;
+			return new EDMethod(analyzer, OBJECT_ESCAPE);
 		}
 		if (getObject().value().getDefinitions().areInherited()) {
 			// The value definition is inherited from relative ancestor.
 			// So, it can be overridden by another ancestor without
 			// overriding the object itself.
-			return ANCESTOR_ESCAPE;
+			return new EDMethod(analyzer, ANCESTOR_ESCAPE);
 		}
 
 		// The object has its own value definition.
 		// It can be overridden by derivatives only.
-		return OBJECT_ESCAPE;
+		return new EDMethod(analyzer, OBJECT_ESCAPE);
 	}
 
 	private EscapeFlag detectOwnEscapeMode(EscapeAnalyzer analyzer) {
 		if (this.ownEscapeMode.check(this::valueEscapeFlag)) {
 			return this.ownEscapeMode.lastFlag();
 		}
-		if (checkMembersEscape()) {
+		if (checkMembersEscape(analyzer)) {
 			return this.ownEscapeMode.lastFlag();
 		}
 		return analyzer.escapeImpossible();
 	}
 
-	private boolean checkMembersEscape() {
+	private boolean checkMembersEscape(EscapeAnalyzer analyzer) {
 		for (Member member : getObject().getMembers()) {
-			if (checkMemberEscape(member)) {
+			if (checkMemberEscape(analyzer, member)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private boolean checkMemberEscape(Member member) {
+	private boolean checkMemberEscape(EscapeAnalyzer analyzer, Member member) {
 
 		final MemberField field = member.toField();
 
@@ -237,7 +240,9 @@ public final class ObjectAnalysis {
 
 		if (alias != null) {
 			return this.ownEscapeMode.check(
-					a -> alias.getRef().purity(getObject().getScope()).isPure()
+					a -> alias.getRef().purity(
+							analyzer.getAnalyzer(),
+							getObject().getScope()).isPure()
 					? a.escapeImpossible()
 					: a.escapePossible());
 		}
@@ -259,6 +264,51 @@ public final class ObjectAnalysis {
 		}
 
 		return this.ownEscapeMode.check(object.analysis()::ownEscapeFlag);
+	}
+
+	private static final class EDMethod {
+
+		private final EscapeAnalyzer analyzer;
+		private final EscapeDetectionMethod method;
+
+		EDMethod(EscapeAnalyzer analyzer, EscapeDetectionMethod method) {
+			this.analyzer = analyzer;
+			this.method = method;
+		}
+
+		final EscapeAnalyzer getAnalyzer() {
+			return this.analyzer;
+		}
+
+		final EscapeDetectionMethod getMethod() {
+			return this.method;
+		}
+
+		final boolean alwaysEscapes() {
+			return getMethod().alwaysEscapes();
+		}
+
+		final EDMethod ignoreObjectDefinitions() {
+
+			final EscapeDetectionMethod method = getMethod();
+			final EscapeDetectionMethod newMethod =
+					method.ignoreObjectDefinitions();
+
+			if (method == newMethod) {
+				return this;
+			}
+
+			return new EDMethod(getAnalyzer(), newMethod);
+		}
+
+		@Override
+		public String toString() {
+			if (this.method == null) {
+				return super.toString();
+			}
+			return this.method.toString();
+		}
+
 	}
 
 }

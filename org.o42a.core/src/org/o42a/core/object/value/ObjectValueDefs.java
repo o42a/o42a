@@ -75,7 +75,7 @@ public final class ObjectValueDefs implements UserInfo {
 	public final boolean isUsed(
 			Analyzer analyzer,
 			UseSelector<ValuePartUsage> selector) {
-		return this.uses.isUsed(analyzer, selector);
+		return uses().isUsed(analyzer, selector);
 	}
 
 	public final void accessBy(UserInfo user) {
