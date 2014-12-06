@@ -179,7 +179,7 @@ o42a_bool_t o42a_fld_start(
 		o42a_fld_ctr_t *const ctr) {
 	O42A_ENTER(return O42A_FALSE);
 
-	O42A(o42a_obj_static(object));
+	O42A(o42a_obj_static(object, lock));
 	O42A(o42a_obj_lock(lock));
 
 	const o42a_fld *const fld = ctr->fld;
@@ -252,7 +252,7 @@ o42a_bool_t o42a_fld_val_start(
 		o42a_fld_ctr_t *const ctr) {
 	O42A_ENTER(return O42A_FALSE);
 
-	O42A(o42a_obj_static(object));
+	O42A(o42a_obj_static(object, lock));
 	O42A(o42a_obj_lock(lock));
 
 	o42a_val_t *const value = ctr->fld = &object->object_data.value;

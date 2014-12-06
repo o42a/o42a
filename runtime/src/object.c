@@ -953,21 +953,27 @@ void o42a_obj_value_stub(
 }
 
 
-static void static_obj_init(const o42a_gc_block_t *block) {
+static void static_obj_init(const o42a_gc_block_t *block, void *lock) {
 	O42A_ENTER(return);
 
 	o42a_obj_t *const object = O42A(o42a_gc_dataof(block));
 
-	O42A(obj_lock_init(&object->object_data.lock));
+	O42A(obj_lock_init(lock));
 
 	O42A_RETURN;
 }
 
-inline void o42a_obj_static(o42a_obj_t *const object) {
+inline void o42a_obj_static(
+		o42a_obj_t *const object,
+		o42a_obj_lock_t *const lock) {
 	O42A_ENTER(return);
 	o42a_gc_block_t *const gc_block = O42A(o42a_gc_blockof(object));
 	if (!gc_block->list) {
-		O42A(o42a_gc_static(gc_block, &static_obj_init));
+		if (lock) {
+			O42A(o42a_gc_static(gc_block, &static_obj_init, lock));
+		} else {
+			O42A(o42a_gc_static(gc_block, NULL, NULL));
+		}
 	}
 	O42A_RETURN;
 }

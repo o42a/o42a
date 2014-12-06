@@ -20,13 +20,13 @@
 package org.o42a.core.ir;
 
 import org.o42a.codegen.code.Function;
-import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.object.Obj;
 
 
 final class DefaultBuilder extends CodeBuilder {
 
-	private final ObjectOp host;
+	private final ObjOp host;
 
 	DefaultBuilder(Function<?> function, Obj object) {
 		super(object.getContext(), function);
@@ -35,7 +35,7 @@ final class DefaultBuilder extends CodeBuilder {
 	}
 
 	@Override
-	public ObjectOp host() {
+	public ObjOp host() {
 		return this.host;
 	}
 
