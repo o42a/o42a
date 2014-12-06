@@ -13,6 +13,7 @@
 #include <pthread.h>
 #include <sched.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "o42a/error.h"
 
@@ -120,7 +121,7 @@ enum o42a_gc_block_flags {
 	O42A_GC_BLOCK_CHECKED = 0x01,
 
 	/**
-	 * The data blocks links to other data blocks.
+	 * The data block links to other data blocks.
 	 *
 	 * This is only valid for O42A_GC_LIST_USED list. The block with this flag
 	 * set won't be deallocated even though the block's use count is zero.
@@ -228,6 +229,7 @@ inline void o42a_gc_free(o42a_gc_block_t *const block) {
 #ifndef NDEBUG
 	block->lock = ~0;
 	block->list = ~0;
+	O42A(memset(o42a_gc_dataof(block), 0, block->size));
 	if (o42a_debug_ison) {
 		o42a_debug("Allocated at:\n");
 		o42a_dbg_print_stack_dump(
@@ -519,12 +521,11 @@ static inline void gc_thread_mark_used(
 	O42A(gc_unlock());
 
 	while (1) {
-
-		o42a_gc_block_t *next;
-
 		O42A(o42a_gc_lock_block(block));
 
-		next = block->next;
+		const o42a_bool_t mark = O42A(gc_mark(block));// Mark the block.
+		o42a_gc_block_t *next = block->next;
+
 		if (!block->use_count && !(block->flags & O42A_GC_BLOCK_LINKING)) {
 			// Block were used, but its use count dropped to zero.
 			// Move it to the next oddity "white" list.
@@ -535,9 +536,10 @@ static inline void gc_thread_mark_used(
 			// until the next iteration.
 			assert(block->list == O42A_GC_LIST_USED);
 
+			O42A_DEBUG("Not used any more: %#lx\n", (long) block);
+
 			O42A(gc_lock());
 
-			O42A_DEBUG("Not used any more: %#lx\n", (long) block);
 			O42A(gc_list_remove(block));
 			O42A(gc_block_uncheck(block));
 			O42A(gc_list_add(
@@ -548,19 +550,13 @@ static inline void gc_thread_mark_used(
 			gc_has_white = O42A_TRUE;
 
 			O42A(gc_unlock());
+		}
 
-			O42A(o42a_gc_unlock_block(block));
-		} else {
+		O42A(o42a_gc_unlock_block(block));
 
-			// Mark the block.
-			o42a_bool_t mark = O42A(gc_mark(block));
-
-			O42A(o42a_gc_unlock_block(block));
-
-			// Mark the referenced data.
-			if (mark) {
-				O42A(block->desc->mark(o42a_gc_dataof(block)));
-			}
+		if (mark) {
+			// Mark the referenced data if needed.
+			O42A(block->desc->mark(o42a_gc_dataof(block)));
 		}
 
 		if (block == last) {
