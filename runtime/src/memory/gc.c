@@ -762,7 +762,8 @@ void o42a_gc_signal() {
 
 int o42a_gc_static(
 		o42a_gc_block_t *const block,
-		void (*init)(const o42a_gc_block_t *)) {
+		void (*init)(const o42a_gc_block_t *, void *),
+		void *arg) {
 	O42A_ENTER(0);
 
 	if (block->list == O42A_GC_LIST_STATIC) {
@@ -784,8 +785,9 @@ int o42a_gc_static(
 	assert(block->list == O42A_GC_LIST_NEW_STATIC && "Block is not static");
 
 	O42A(gc_static(block));
+
 	if (init) {
-		init(block);
+		O42A(init(block, arg));
 	}
 
 	O42A(o42a_gc_unlock_block(block));

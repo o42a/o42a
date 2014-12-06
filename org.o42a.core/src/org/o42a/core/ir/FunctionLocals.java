@@ -19,14 +19,14 @@
 */
 package org.o42a.core.ir;
 
-import static org.o42a.core.ir.object.op.ByObjectFn.BY_OBJECT;
+import static org.o42a.core.ir.object.op.StaticObjectInitFn.STATIC_OBJECT_INIT;
 
 import java.util.IdentityHashMap;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.cmd.LocalOp;
 import org.o42a.core.ir.cmd.LocalsCode;
-import org.o42a.core.ir.object.op.ByObjectFn;
+import org.o42a.core.ir.object.op.StaticObjectInitFn;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.st.sentence.Local;
@@ -95,13 +95,13 @@ final class FunctionLocals extends LocalsCode {
 		this.staticObjectInitialized = true;
 
 		final Code code = this.initStaticObject;
-		final ByObjectFn fn =
+		final StaticObjectInitFn fn =
 				this.builder.getGenerator()
 				.externalFunction()
-				.link("o42a_obj_static", BY_OBJECT)
+				.link("o42a_obj_static", STATIC_OBJECT_INIT)
 				.op(null, code);
 
-		fn.call(code, this.builder.host().toData(null, code));
+		fn.init(code, this.builder.host());
 
 		this.builder.host();
 	}
