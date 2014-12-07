@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.ir.field.inst.InstFldKind.INST_LOCK;
 import static org.o42a.core.ir.field.inst.InstFldKind.INST_RESUME_FROM;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
@@ -31,9 +32,7 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.OpMeans;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.dep.DepOp;
-import org.o42a.core.ir.field.inst.InstFldKind;
-import org.o42a.core.ir.field.inst.InstFldOp;
-import org.o42a.core.ir.field.inst.ResumeFromOp;
+import org.o42a.core.ir.field.inst.*;
 import org.o42a.core.ir.field.local.LocalIROp;
 import org.o42a.core.ir.object.impl.ApproximateObjOp;
 import org.o42a.core.ir.object.op.ObjHolder;
@@ -197,11 +196,8 @@ public abstract class ObjectOp extends DefiniteIROp<ObjectIROp>
 		return (ResumeFromOp) instField(dirs, INST_RESUME_FROM);
 	}
 
-	public final ObjectIRLock.Op lock(CodeDirs dirs) {
-
-		final Block code = dirs.code();
-
-		return ptr().objectData(code).lock(code);
+	public final LockFldOp lock(CodeDirs dirs) {
+		return (LockFldOp) instField(dirs, INST_LOCK);
 	}
 
 	public abstract InstFldOp<?, ?> instField(CodeDirs dirs, InstFldKind kind);

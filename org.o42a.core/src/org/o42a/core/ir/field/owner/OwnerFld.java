@@ -65,6 +65,11 @@ public final class OwnerFld
 		return FldKind.OWNER;
 	}
 
+	@Override
+	public final boolean requiresLock() {
+		return false;
+	}
+
 	public final Obj getAscendant() {
 		return this.ascendant;
 	}

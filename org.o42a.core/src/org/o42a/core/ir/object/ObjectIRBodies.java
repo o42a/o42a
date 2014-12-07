@@ -136,12 +136,16 @@ public final class ObjectIRBodies implements Iterable<ObjectIRBody> {
 
 	public final InstFld<?, ?> instFld(InstFldKind kind) {
 
-		final InstFld<?, ?> fld = instFields().get(kind);
+		final InstFld<?, ?> fld = findInstFld(kind);
 
 		assert fld != null :
-			"Instance field " + fld + " not found";
+			"Instance field " + kind.getId() + " not found";
 
 		return fld;
+	}
+
+	public final InstFld<?, ?> findInstFld(InstFldKind kind) {
+		return instFields().get(kind);
 	}
 
 	public final Fld<?, ?> fld(MemberKey memberKey) {

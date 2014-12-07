@@ -118,11 +118,6 @@ struct o42a_obj_data {
 	 */
 	const o42a_obj_desc_t *desc;
 
-	/**
-	 * Object lock.
-	 */
-	o42a_obj_lock_t lock;
-
 };
 
 /**
@@ -354,7 +349,7 @@ typedef struct o42a_obj_ctable {
 
 #ifndef NDEBUG
 
-extern const o42a_dbg_type_info5f_t _O42A_DEBUG_TYPE_o42a_obj_data;
+extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_data;
 
 extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_lock;
 
@@ -482,6 +477,13 @@ o42a_obj_t *o42a_obj_alloc(const o42a_obj_desc_t *);
 void o42a_obj_init(o42a_obj_t *, const o42a_obj_desc_t *);
 
 /**
+ * Initializes object lock.
+ *
+ * \param lock object lock to initialize.
+ */
+void o42a_obj_lock_init(o42a_obj_lock_t *);
+
+/**
  * Constructs previously allocated object.
  *
  * Disposes object construction if construction failed.
@@ -558,9 +560,10 @@ void o42a_obj_value_stub(o42a_val_t *, o42a_obj_t *);
  *
  * Does nothing if the given object is not static, or initialized already.
  *
- * \param an object to initialize.
+ * \param object an object to initialize.
+ * \param lock object lock, or NULL if object has no lock.
  */
-void o42a_obj_static(o42a_obj_t *);
+void o42a_obj_static(o42a_obj_t *, o42a_obj_lock_t *);
 
 /**
  * Locks an object mutex, initializing it if necessary.

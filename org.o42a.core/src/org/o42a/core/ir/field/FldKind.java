@@ -32,7 +32,8 @@ public enum FldKind {
 	OWNER(3, true),
 	DEP(4, true),
 	LOCAL(5),
-	RESUME_FROM(6);
+	LOCK(6),
+	RESUME_FROM(7);
 
 	private final int code;
 	private final boolean inheritable;

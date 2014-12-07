@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2012-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,40 +17,48 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.field;
+package org.o42a.core.ir.object.op;
 
-import static org.o42a.core.ir.field.FldCtrOp.FLD_CTR_TYPE;
+import static org.o42a.core.ir.field.inst.InstFldKind.INST_LOCK;
 import static org.o42a.core.ir.field.inst.ObjectIRLock.OBJECT_IR_LOCK;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.ExtSignature;
 import org.o42a.codegen.code.Fn;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.op.BoolOp;
+import org.o42a.core.ir.field.inst.ObjectIRLock;
 import org.o42a.core.ir.object.ObjOp;
 
 
-public final class FldCtrStartFn extends Fn<FldCtrStartFn> {
+public class StaticObjectInitFn extends Fn<StaticObjectInitFn> {
 
-	public static final ExtSignature<BoolOp, FldCtrStartFn> FLD_CTR_START =
-			customSignature("FldCtrStartF", 2)
+	public static final
+	ExtSignature<Void, StaticObjectInitFn> STATIC_OBJECT_INIT =
+			customSignature("StaticObjectInitF", 2)
 			.addData("object")
 			.addPtr("lock", OBJECT_IR_LOCK)
-			.addPtr("ctr", FLD_CTR_TYPE)
-			.returnBool(c -> new FldCtrStartFn(c));
+			.returnVoid(c -> new StaticObjectInitFn(c));
 
-	private FldCtrStartFn(FuncCaller<FldCtrStartFn> caller) {
+	private StaticObjectInitFn(FuncCaller<StaticObjectInitFn> caller) {
 		super(caller);
 	}
 
-	public final BoolOp call(Code code, ObjOp object, FldCtrOp ctr) {
-		return invoke(
+	public final void init(Code code, ObjOp object) {
+
+		final ObjectIRLock.Op lock;
+
+		if (object.getObjectIR().bodies().findInstFld(INST_LOCK) == null) {
+			lock = code.nullPtr(OBJECT_IR_LOCK);
+		} else {
+			lock = object.lock(code).ptr();
+		}
+
+		invoke(
 				null,
 				code,
-				FLD_CTR_START.result(),
+				STATIC_OBJECT_INIT.result(),
 				object.toData(null, code),
-				object.lock(code).ptr(),
-				ctr);
+				lock);
 	}
 
 }
