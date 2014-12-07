@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2012-2014 Ruslan Lopatin
+    Copyright (C) 2014 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,26 +17,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir;
+package org.o42a.core.ir.field.inst;
 
-import org.o42a.codegen.code.Function;
+import org.o42a.codegen.code.op.OpMeans;
+import org.o42a.core.ir.field.FldIR;
+import org.o42a.core.ir.field.inst.ObjectIRLock.Op;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.object.Obj;
 
 
-final class DefaultBuilder extends CodeBuilder {
+public class LockFldOp extends InstFldOp<ObjectIRLock.Op, ObjectIRLock> {
 
-	private final ObjOp host;
-
-	DefaultBuilder(Function<?> function, Obj object) {
-		super(object.getContext(), function);
-		this.host = object.ir(getGenerator()).exactOp(this, getFunction());
-		initFunction();
-	}
-
-	@Override
-	public ObjOp host() {
-		return this.host;
+	public LockFldOp(ObjOp host, FldIR<Op, ObjectIRLock> fld, OpMeans<Op> ptr) {
+		super(host, fld, ptr);
 	}
 
 }

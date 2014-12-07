@@ -24,7 +24,7 @@ import static org.o42a.core.ir.op.OpPresets.DEFAULT_OP_PRESETS;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.core.ir.cmd.LocalsCode;
-import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.OpPresets;
@@ -82,7 +82,7 @@ public abstract class CodeBuilder {
 				defaultPresets != null ? defaultPresets : DEFAULT_OP_PRESETS;
 	}
 
-	public abstract ObjectOp host();
+	public abstract ObjOp host();
 
 	public final GCCode gc() {
 		return this.gc;

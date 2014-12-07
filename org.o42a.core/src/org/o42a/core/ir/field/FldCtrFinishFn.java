@@ -20,7 +20,7 @@
 package org.o42a.core.ir.field;
 
 import static org.o42a.core.ir.field.FldCtrOp.FLD_CTR_TYPE;
-import static org.o42a.core.ir.object.ObjectIRLock.OBJECT_IR_LOCK;
+import static org.o42a.core.ir.field.inst.ObjectIRLock.OBJECT_IR_LOCK;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.ExtSignature;
@@ -48,7 +48,7 @@ public final class FldCtrFinishFn extends Fn<FldCtrFinishFn> {
 				code,
 				FLD_CTR_FINISH.result(),
 				object.toData(null, code),
-				object.lock(code),
+				object.lock(code).ptr(),
 				ctr);
 	}
 

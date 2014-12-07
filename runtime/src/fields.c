@@ -121,7 +121,7 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 	},
 	[O42A_FLD_OWNER] = {// Owner object pointer.
 		.inherit = &fld_ptr_copy,
-		.propagate = &o42a_fld_owner_propagate,
+		.propagate = &o42a_fld_owner_set,
 		.mark = &fld_ptr_mark,
 		.sweep = &fld_sweep_none,
 		.is_init = NULL,// Eagerly constructed.
@@ -137,6 +137,13 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 		.inherit = fld_ptr_reset,
 		.propagate = fld_ptr_reset,
 		.mark = fld_ptr_mark,
+		.sweep = fld_sweep_none,
+		.is_init = NULL,// Eagerly constructed.
+	},
+	[O42A_FLD_LOCK] = {// Object lock.
+		.inherit = o42a_fld_lock_init,
+		.propagate = o42a_fld_lock_init,
+		.mark = fld_mark_none,
 		.sweep = fld_sweep_none,
 		.is_init = NULL,// Eagerly constructed.
 	},
@@ -179,7 +186,7 @@ o42a_bool_t o42a_fld_start(
 		o42a_fld_ctr_t *const ctr) {
 	O42A_ENTER(return O42A_FALSE);
 
-	O42A(o42a_obj_static(object));
+	O42A(o42a_obj_static(object, lock));
 	O42A(o42a_obj_lock(lock));
 
 	const o42a_fld *const fld = ctr->fld;
@@ -252,7 +259,7 @@ o42a_bool_t o42a_fld_val_start(
 		o42a_fld_ctr_t *const ctr) {
 	O42A_ENTER(return O42A_FALSE);
 
-	O42A(o42a_obj_static(object));
+	O42A(o42a_obj_static(object, lock));
 	O42A(o42a_obj_lock(lock));
 
 	o42a_val_t *const value = ctr->fld = &object->object_data.value;

@@ -25,7 +25,7 @@ const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_fld_owner = {
 };
 #endif /* NDEBUG */
 
-void o42a_fld_owner_propagate(o42a_obj_ctable_t *const ctable) {
+void o42a_fld_owner_set(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
 
 	assert(ctable->owner && "Object owner is unknown");

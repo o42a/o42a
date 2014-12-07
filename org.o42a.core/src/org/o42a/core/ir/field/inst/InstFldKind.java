@@ -22,6 +22,7 @@ package org.o42a.core.ir.field.inst;
 import static org.o42a.core.ir.field.FldKind.RESUME_FROM;
 import static org.o42a.util.string.ID.rawId;
 
+import org.o42a.core.ir.field.FldIR;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.object.Obj;
@@ -29,6 +30,24 @@ import org.o42a.util.string.ID;
 
 
 public enum InstFldKind {
+
+	INST_LOCK(FldKind.LOCK, rawId("lock")) {
+
+		@Override
+		public LockFld declare(ObjectIRBody bodyIR, Obj ascendant) {
+			if (bodyIR.isMain()
+					&& bodyIR.getObjectIR().getValueIR().requiresLock()) {
+				return new LockFld(bodyIR);
+			}
+			for (FldIR<?, ?> fld : bodyIR.vmtFields()) {
+				if (fld.requiresLock()) {
+					return new LockFld(bodyIR);
+				}
+			}
+			return null;
+		}
+
+	},
 
 	INST_RESUME_FROM(RESUME_FROM, rawId("resume_from")) {
 

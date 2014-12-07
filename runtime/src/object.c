@@ -18,9 +18,9 @@
 
 #ifndef NDEBUG
 
-const o42a_dbg_type_info5f_t _O42A_DEBUG_TYPE_o42a_obj_data = {
+const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_data = {
 	.type_code = 0x042a0100,
-	.field_num = 5,
+	.field_num = 4,
 	.name = "o42a_obj_data_t",
 	.fields = {
 		{
@@ -47,13 +47,6 @@ const o42a_dbg_type_info5f_t _O42A_DEBUG_TYPE_o42a_obj_data = {
 			.name = "desc",
 			.type_info =
 					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_desc,
-		},
-		{
-			.data_type = O42A_TYPE_STRUCT,
-			.offset = offsetof(o42a_obj_data_t, lock),
-			.name = "lock",
-			.type_info =
-					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_lock,
 		},
 	},
 };
@@ -652,7 +645,7 @@ void o42a_init() {
 	O42A_RETURN;
 }
 
-static inline void obj_lock_init(o42a_obj_lock_t *const lock) {
+inline void o42a_obj_lock_init(o42a_obj_lock_t *const lock) {
 	O42A_ENTER(return);
 	if (O42A(pthread_mutex_init(&lock->mutex, &recursive_mutex_attr))
 			|| O42A(pthread_cond_init(&lock->thread_cond, NULL))) {
@@ -753,8 +746,6 @@ inline void o42a_obj_init(
 	data->desc = desc;
 	data->vmtc = NULL;
 	data->value.flags = O42A_VAL_INDEFINITE;
-
-	O42A(obj_lock_init(&object->object_data.lock));
 
 	O42A_RETURN;
 }
@@ -953,21 +944,27 @@ void o42a_obj_value_stub(
 }
 
 
-static void static_obj_init(const o42a_gc_block_t *block) {
+static void static_obj_init(const o42a_gc_block_t *block, void *lock) {
 	O42A_ENTER(return);
 
 	o42a_obj_t *const object = O42A(o42a_gc_dataof(block));
 
-	O42A(obj_lock_init(&object->object_data.lock));
+	O42A(o42a_obj_lock_init(lock));
 
 	O42A_RETURN;
 }
 
-inline void o42a_obj_static(o42a_obj_t *const object) {
+inline void o42a_obj_static(
+		o42a_obj_t *const object,
+		o42a_obj_lock_t *const lock) {
 	O42A_ENTER(return);
 	o42a_gc_block_t *const gc_block = O42A(o42a_gc_blockof(object));
 	if (!gc_block->list) {
-		O42A(o42a_gc_static(gc_block, &static_obj_init));
+		if (lock) {
+			O42A(o42a_gc_static(gc_block, &static_obj_init, lock));
+		} else {
+			O42A(o42a_gc_static(gc_block, NULL, NULL));
+		}
 	}
 	O42A_RETURN;
 }

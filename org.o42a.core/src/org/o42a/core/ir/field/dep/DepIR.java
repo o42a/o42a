@@ -75,6 +75,11 @@ public class DepIR implements FldIR<DepIR.Op, DepIR.Type> {
 	}
 
 	@Override
+	public final boolean requiresLock() {
+		return false;
+	}
+
+	@Override
 	public final FldKind getKind() {
 		return FldKind.DEP;
 	}

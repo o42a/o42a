@@ -209,12 +209,16 @@ void o42a_gc_unlock_block(o42a_gc_block_t *);
  * submitted to GC, while the block is still locked.
  *
  * \param data block.
- * \param init data initializer function pointer.
+ * \param init data initializer function pointer, or NULL.
+ * \param arg an argument which will be passed to initializer function.
  *
  * \return 1 if the given static data block successfully submitted to GC,
  * -1 if it were submitted before, or 0 if it is not static.
  */
-int o42a_gc_static(o42a_gc_block_t *, void (*init)(const o42a_gc_block_t *));
+int o42a_gc_static(
+		o42a_gc_block_t *,
+		void (*init)(const o42a_gc_block_t *, void *),
+		void *);
 
 /**
  * Discards a garbage-collected data block.
