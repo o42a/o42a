@@ -121,7 +121,7 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 	},
 	[O42A_FLD_OWNER] = {// Owner object pointer.
 		.inherit = &fld_ptr_copy,
-		.propagate = &o42a_fld_owner_propagate,
+		.propagate = &o42a_fld_owner_set,
 		.mark = &fld_ptr_mark,
 		.sweep = &fld_sweep_none,
 		.is_init = NULL,// Eagerly constructed.
