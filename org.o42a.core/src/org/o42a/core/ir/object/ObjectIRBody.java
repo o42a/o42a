@@ -296,7 +296,10 @@ public final class ObjectIRBody {
 			if (createField(fields, declared)) {
 				continue;
 			}
-			createLocal(fields, declared);
+			if (createLocal(fields, declared)) {
+				continue;
+			}
+
 			final MemberField declaredField = declared.toField();
 
 			if (declaredField != null) {
@@ -309,16 +312,6 @@ public final class ObjectIRBody {
 				}
 				createField(fields, declaredField);
 				continue;
-			}
-
-			final MemberLocal local = declared.toLocal();
-
-			if (local == null) {
-				continue;
-			}
-
-			if (!local.getLocal().isOmitted(getGenerator())) {
-				fields.put(local.getMemberKey(), new LocalIR(this, local));
 			}
 		}
 

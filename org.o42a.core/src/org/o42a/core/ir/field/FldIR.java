@@ -45,6 +45,10 @@ public interface FldIR<F extends StructOp<F>, T extends Type<F>> {
 		return getKind().isStateless();
 	}
 
+	default boolean requiresLock() {
+		return !isStateless();
+	}
+
 	default Generator getGenerator() {
 		return getBodyIR().getGenerator();
 	}

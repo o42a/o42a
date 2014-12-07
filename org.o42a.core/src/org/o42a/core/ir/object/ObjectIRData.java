@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.object.ObjectIRLock.OBJECT_IR_LOCK;
 import static org.o42a.core.ir.object.desc.ObjectIRDesc.OBJECT_DESC_TYPE;
 import static org.o42a.core.ir.value.ObjectValueFn.OBJECT_VALUE;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
@@ -47,7 +46,6 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 	private ValType value;
 	private StructRec<VmtIRChain.Op> vmtc;
 	private StructRec<ObjectIRDescOp> desc;
-	private ObjectIRLock lock;
 
 	private ObjectIRData() {
 		super(ID.rawId("o42a_obj_data_t"));
@@ -74,10 +72,6 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		return this.desc;
 	}
 
-	public final ObjectIRLock lock() {
-		return this.lock;
-	}
-
 	@Override
 	public ObjectIRDataOp op(StructWriter<ObjectIRDataOp> writer) {
 		return new ObjectIRDataOp(writer);
@@ -89,7 +83,6 @@ public final class ObjectIRData extends Type<ObjectIRDataOp> {
 		this.value = data.addNewInstance(VALUE_ID, VAL_TYPE);
 		this.vmtc = data.addPtr("vmtc", VmtIRChain.VMT_IR_CHAIN_TYPE);
 		this.desc = data.addPtr("desc", OBJECT_DESC_TYPE);
-		this.lock = data.addNewInstance(ID.id("lock"), OBJECT_IR_LOCK);
 	}
 
 	@Override

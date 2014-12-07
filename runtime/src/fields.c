@@ -140,6 +140,13 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 		.sweep = fld_sweep_none,
 		.is_init = NULL,// Eagerly constructed.
 	},
+	[O42A_FLD_LOCK] = {// Object lock.
+		.inherit = o42a_fld_lock_init,
+		.propagate = o42a_fld_lock_init,
+		.mark = fld_mark_none,
+		.sweep = fld_sweep_none,
+		.is_init = NULL,// Eagerly constructed.
+	},
 	[O42A_FLD_RESUME_FROM] = {// Resume from pointer field.
 		.inherit = fld_ptr_reset,
 		.propagate = fld_ptr_reset,

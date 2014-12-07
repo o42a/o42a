@@ -65,10 +65,6 @@ public final class ObjectIRDataOp extends StructOp<ObjectIRDataOp> {
 		return ptr(null, code, getType().desc());
 	}
 
-	public final ObjectIRLock.Op lock(Code code) {
-		return struct(null, code, getType().lock());
-	}
-
 	@Override
 	public String toString() {
 		return getType() + " data";
