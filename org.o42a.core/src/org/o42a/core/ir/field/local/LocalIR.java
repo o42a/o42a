@@ -63,6 +63,11 @@ public final class LocalIR implements FldIR<LocalIR.Op, LocalIR.Type> {
 		return FldKind.LOCAL;
 	}
 
+	@Override
+	public final boolean requiresLock() {
+		return false;
+	}
+
 	public final MemberLocal getMember() {
 		return this.member;
 	}

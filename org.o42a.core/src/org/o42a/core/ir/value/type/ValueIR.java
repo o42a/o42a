@@ -58,6 +58,10 @@ public abstract class ValueIR {
 		return this.objectIR;
 	}
 
+	public boolean requiresLock() {
+		return getValueType().isStateful();
+	}
+
 	/**
 	 * Filters the value definition presets.
 	 *

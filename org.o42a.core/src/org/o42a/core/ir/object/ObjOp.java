@@ -21,6 +21,7 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.field.Fld.FIELD_ID;
 import static org.o42a.core.ir.field.dep.DepOp.DEP_ID;
+import static org.o42a.core.ir.field.inst.InstFldKind.INST_LOCK;
 import static org.o42a.core.ir.field.inst.InstFldKind.INST_RESUME_FROM;
 import static org.o42a.core.ir.field.local.LocalIR.LOCAL_ID;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE_OBJECT;
@@ -202,8 +203,8 @@ public final class ObjOp extends ObjectOp {
 		return (ResumeFromOp) instField(code, INST_RESUME_FROM);
 	}
 
-	public final ObjectIRLock.Op lock(Code code) {
-		return ptr().objectData(code).lock(code);
+	public final LockFldOp lock(Code code) {
+		return (LockFldOp) instField(code, INST_LOCK);
 	}
 
 	public InstFldOp<?, ?> instField(Code code, InstFldKind kind) {

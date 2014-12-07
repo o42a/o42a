@@ -17,48 +17,50 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object.op;
+package org.o42a.core.ir.field.inst;
 
+import static org.o42a.codegen.data.Content.noContent;
 import static org.o42a.core.ir.field.inst.InstFldKind.INST_LOCK;
 import static org.o42a.core.ir.field.inst.ObjectIRLock.OBJECT_IR_LOCK;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.ExtSignature;
-import org.o42a.codegen.code.Fn;
-import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.core.ir.field.inst.ObjectIRLock;
+import org.o42a.codegen.data.Content;
 import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectIRBody;
 
 
-public class StaticObjectInitFn extends Fn<StaticObjectInitFn> {
+public class LockFld extends InstFld<ObjectIRLock.Op, ObjectIRLock> {
 
-	public static final
-	ExtSignature<Void, StaticObjectInitFn> STATIC_OBJECT_INIT =
-			customSignature("StaticObjectInitF", 2)
-			.addData("object")
-			.addPtr("lock", OBJECT_IR_LOCK)
-			.returnVoid(c -> new StaticObjectInitFn(c));
-
-	private StaticObjectInitFn(FuncCaller<StaticObjectInitFn> caller) {
-		super(caller);
+	public LockFld(ObjectIRBody bodyIR) {
+		super(bodyIR);
 	}
 
-	public final void init(Code code, ObjOp object) {
+	@Override
+	public InstFldKind getInstFldKind() {
+		return INST_LOCK;
+	}
 
-		final ObjectIRLock.Op lock;
+	@Override
+	public LockFldOp op(Code code, ObjOp host) {
+		return new LockFldOp(
+				host,
+				this,
+				code.means(c -> host.ptr().field(c, getTypeInstance())));
+	}
 
-		if (object.getObjectIR().bodies().findInstFld(INST_LOCK) == null) {
-			lock = code.nullPtr(OBJECT_IR_LOCK);
-		} else {
-			lock = object.lock(code).ptr();
-		}
+	@Override
+	public LockFld derive(ObjectIRBody inheritantBodyIR) {
+		return new LockFld(inheritantBodyIR);
+	}
 
-		invoke(
-				null,
-				code,
-				STATIC_OBJECT_INIT.result(),
-				object.toData(null, code),
-				lock);
+	@Override
+	protected ObjectIRLock getType() {
+		return OBJECT_IR_LOCK;
+	}
+
+	@Override
+	protected Content<ObjectIRLock> content() {
+		return noContent();
 	}
 
 }

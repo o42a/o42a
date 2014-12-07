@@ -58,6 +58,11 @@ public abstract class InstFld<F extends StructOp<F>, T extends Type<F>>
 	public abstract InstFldKind getInstFldKind();
 
 	@Override
+	public boolean requiresLock() {
+		return false;
+	}
+
+	@Override
 	public final Obj getDeclaredIn() {
 		return getBodyIR().getSampleDeclaration();
 	}
